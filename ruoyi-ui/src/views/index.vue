@@ -1,6 +1,6 @@
 <template>
   <div class="app-container home">
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :sm="24" :lg="24">
         <blockquote class="text-warning" style="font-size: 14px">
           领取阿里云通用云产品1888优惠券
@@ -825,7 +825,7 @@
           </div>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
