@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">业务报表系统</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -56,7 +56,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2022 ruoyi.vip All Rights Reserved.</span>
+      <span>Copyright © 2022-2022 中粟 All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -161,7 +161,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background1.jpg");
   background-size: cover;
 }
 .title {
