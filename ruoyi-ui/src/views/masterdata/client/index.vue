@@ -144,7 +144,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修供应商数据对话框 -->
+    <!-- 添加或修改客户数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <h3>客户基本信息</h3>
