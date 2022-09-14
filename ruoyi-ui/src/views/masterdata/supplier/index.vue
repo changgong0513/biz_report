@@ -1,57 +1,58 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
-      <el-form-item label="公司名称" prop="roleName">
+      <!-- 公司名称 -->
+      <el-form-item label="公司名称" prop="companyName">
         <el-input
-          v-model="queryParams.roleName"
+          v-model="queryParams.companyName"
           placeholder="请输入公司名称"
           clearable
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="企业法人" prop="roleKey">
+      <!-- 企业法人 -->
+      <el-form-item label="企业法人" prop="legalPerson">
         <el-input
-          v-model="queryParams.roleKey"
+          v-model="queryParams.legalPerson"
           placeholder="请输入企业法人"
           clearable
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="注册城市" prop="status">
+      <!-- 注册城市 -->
+      <el-form-item label="注册城市" prop="registerCity">
         <el-select
-          v-model="queryParams.status"
+          v-model="queryParams.registerCity"
           placeholder="注册城市"
           clearable
           style="width: 240px"
         >
           <el-option
-            v-for="dict in dict.type.sys_normal_disable"
+            v-for="dict in dict.type.masterdata_register_city"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="注册资金" prop="roleKey">
+      <!-- 注册资金 -->
+      <el-form-item label="注册资金" prop="registeredCapital">
         <el-input
-          v-model="queryParams.roleKey"
+          v-model="queryParams.registeredCapital"
           placeholder="请输入注册资金"
           clearable
           style="width: 240px"
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <!-- 成立日期 -->
       <el-form-item label="成立日期">
         <el-date-picker
           v-model="dateRange"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="date"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -93,41 +94,18 @@
           v-hasPermi="['system:role:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['system:role:export']"
-        >导出</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公司名称" prop="roleId" width="120" />
-      <el-table-column label="成立日期" prop="roleName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="注册城市" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="地址" prop="roleSort" width="100" />
-      <el-table-column label="企业法人" align="center" width="100">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="注册资金" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="固定电话" prop="roleSort" width="100" />
+      <el-table-column label="公司名称" prop="companyName" width="240" />
+      <el-table-column label="成立日期" prop="dateRange" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="注册城市" prop="registerCity" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="地址" prop="address" width="240" />
+      <el-table-column label="企业法人" prop="legalPerson" align="center" width="100" />
+      <el-table-column label="注册资金" prop="registeredCapital" align="center"  width="100" />
+      <el-table-column label="固定电话" prop="phone" width="150" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
@@ -144,17 +122,6 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:role:remove']"
           >删除</el-button>
-          <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
-            <span class="el-dropdown-link">
-              <i class="el-icon-d-arrow-right el-icon--right"></i>更多
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="handleDataScope" icon="el-icon-circle-check"
-                v-hasPermi="['system:role:edit']">数据权限</el-dropdown-item>
-              <el-dropdown-item command="handleAuthUser" icon="el-icon-user"
-                v-hasPermi="['system:role:edit']">分配用户</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
@@ -167,13 +134,169 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="请输入角色名称" />
-        </el-form-item>
-        <el-form-item prop="roleKey">
+    <!-- 添加或修供应商数据对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <h3>供应商基本信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="公司名称" prop="companyName">
+              <el-input v-model="form.nickName" placeholder="请输入公司名称" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="成立日期">
+              <el-date-picker
+                v-model="form.establishDate"
+                style="width: 240px"
+                value-format="yyyy-MM-dd"
+                type="date"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="注册城市" prop="registerCity">
+              <el-select
+                v-model="queryParams.registerCity"
+                placeholder="注册城市"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_register_city"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="注册资金" prop="registeredCapital">
+              <el-input v-model="form.registeredCapital" placeholder="请输入注册资金" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="企业法人" prop="legalPerson">
+              <el-input v-model="form.legalPerson" placeholder="请输入企业法人" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="固定电话" prop="fixedPhone">
+              <el-input v-model="form.fixedPhone" placeholder="请输入固定电话" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="传真号码" prop="faxNumber">
+              <el-input v-model="form.faxNumber" placeholder="请输入传真号码" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮编" prop="zipCode">
+              <el-input v-model="form.zipCode" placeholder="请输入邮编" maxlength="6" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="营业时间" prop="businessHours">
+              <el-input v-model="form.fixedPhone" placeholder="请输入营业时间" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="公司网址" prop="companyWebsite">
+              <el-input v-model="form.fixedPhone" placeholder="请输入公司网址" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>供应商联系人信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名" prop="contactsName">
+              <el-input v-model="form.contactsName" placeholder="请输入姓名" maxlength="10" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="手机" prop="contactsMobile">
+              <el-input v-model="form.contactsMobile" placeholder="请输入手机" maxlength="11" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电子邮箱" prop="contactsEmail">
+              <el-input v-model="form.contactsEmail" placeholder="请输入电子邮箱" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="办公地点" prop="contactsOfficeLocation">
+              <el-input v-model="form.fixedPhone" placeholder="请输入办公地点" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>供应商账户信息</h3>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="开户行" prop="depositBank">
+              <el-select
+                v-model="queryParams.depositBank"
+                placeholder="开户行"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_deposit_bank"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="账号" prop="accountNumber">
+              <el-input v-model="form.accountNumber" placeholder="请输入账号" maxlength="32" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="税号" prop="taxNumber">
+              <el-input v-model="form.taxNumber" placeholder="请输入税号" maxlength="32" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发票地址" prop="invoiceAddress">
+              <el-input v-model="form.invoiceAddress" placeholder="请输入发票地址" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发票类型" prop="invoiceType">
+              <el-select
+                v-model="queryParams.invoiceType"
+                placeholder="发票类型"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_invoice_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- <el-form-item prop="roleKey">
           <span slot="label">
             <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top">
               <i class="el-icon-question"></i>
@@ -194,86 +317,28 @@
             >{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="菜单权限">
-          <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="menuOptions"
-            show-checkbox
-            ref="menu"
-            node-key="id"
-            :check-strictly="!form.menuCheckStrictly"
-            empty-text="加载中，请稍候"
-            :props="defaultProps"
-          ></el-tree>
-        </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 分配角色数据权限对话框 -->
-    <el-dialog :title="title" :visible.sync="openDataScope" width="500px" append-to-body>
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="角色名称">
-          <el-input v-model="form.roleName" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限字符">
-          <el-input v-model="form.roleKey" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限范围">
-          <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="数据权限" v-show="form.dataScope == 2">
-          <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-          <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-          <el-checkbox v-model="form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-          <el-tree
-            class="tree-border"
-            :data="deptOptions"
-            show-checkbox
-            default-expand-all
-            ref="dept"
-            node-key="id"
-            :check-strictly="!form.deptCheckStrictly"
-            empty-text="加载中，请稍候"
-            :props="defaultProps"
-          ></el-tree>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">确 定</el-button>
-        <el-button @click="cancelDataScope">取 消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, deptTreeSelect } from "@/api/system/role";
-import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
+import { addRole, updateRole, dataScope } from "@/api/system/role";
 
 export default {
-  name: "Role",
-  dicts: ['sys_normal_disable'],
+  name: "Supplier",
+  dicts: ['masterdata_register_city', 'masterdata_deposit_bank', 'masterdata_invoice_type'],
   data() {
     return {
       // 遮罩层
-      loading: true,
+      loading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -284,47 +349,24 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 角色表格数据
-      roleList: [],
+      // 供应商表格数据
+      supplierList: [
+        {
+          companyName: "广西力达农牧科技有限公司",
+          dateRange: "2021/12/20",
+          registerCity: "唐山市",
+          address: "唐山市高新区火炬路124号",
+          legalPerson: "张三",
+          registeredCapital: "23534",
+          phone: "028-89991606"
+        }
+      ],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
-      // 是否显示弹出层（数据权限）
-      openDataScope: false,
-      menuExpand: false,
-      menuNodeAll: false,
-      deptExpand: true,
-      deptNodeAll: false,
       // 日期范围
       dateRange: [],
-      // 数据范围选项
-      dataScopeOptions: [
-        {
-          value: "1",
-          label: "全部数据权限"
-        },
-        {
-          value: "2",
-          label: "自定数据权限"
-        },
-        {
-          value: "3",
-          label: "本部门数据权限"
-        },
-        {
-          value: "4",
-          label: "本部门及以下数据权限"
-        },
-        {
-          value: "5",
-          label: "仅本人数据权限"
-        }
-      ],
-      // 菜单列表
-      menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -341,123 +383,50 @@ export default {
       },
       // 表单校验
       rules: {
-        roleName: [
-          { required: true, message: "角色名称不能为空", trigger: "blur" }
+        companyName: [
+          { required: true, message: "公司名称不能为空", trigger: "blur" }
         ],
-        roleKey: [
-          { required: true, message: "权限字符不能为空", trigger: "blur" }
-        ],
-        roleSort: [
-          { required: true, message: "角色顺序不能为空", trigger: "blur" }
+        legalPerson: [
+          { required: true, message: "企业法人不能为空", trigger: "blur" }
         ]
       }
     };
   },
   created() {
-    this.getList();
+    //this.getList();
+    console.log("created回调------取得供应商表格数据");
   },
   methods: {
     /** 查询角色列表 */
     getList() {
-      this.loading = true;
-      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-          this.roleList = response.rows;
-          this.total = response.total;
-          this.loading = false;
-        }
-      );
-    },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      menuTreeselect().then(response => {
-        this.menuOptions = response.data;
-      });
-    },
-    // 所有菜单节点数据
-    getMenuAllCheckedKeys() {
-      // 目前被选中的菜单节点
-      let checkedKeys = this.$refs.menu.getCheckedKeys();
-      // 半选中的菜单节点
-      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-      return checkedKeys;
-    },
-    // 所有部门节点数据
-    getDeptAllCheckedKeys() {
-      // 目前被选中的部门节点
-      let checkedKeys = this.$refs.dept.getCheckedKeys();
-      // 半选中的部门节点
-      let halfCheckedKeys = this.$refs.dept.getHalfCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-      return checkedKeys;
-    },
-    /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect(roleId) {
-      return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus;
-        return response;
-      });
-    },
-    /** 根据角色ID查询部门树结构 */
-    getDeptTree(roleId) {
-      return deptTreeSelect(roleId).then(response => {
-        this.deptOptions = response.depts;
-        return response;
-      });
-    },
-    // 角色状态修改
-    handleStatusChange(row) {
-      let text = row.status === "0" ? "启用" : "停用";
-      this.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗？').then(function() {
-        return changeRoleStatus(row.roleId, row.status);
-      }).then(() => {
-        this.$modal.msgSuccess(text + "成功");
-      }).catch(function() {
-        row.status = row.status === "0" ? "1" : "0";
-      });
+      // this.loading = true;
+      // listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      //     this.roleList = response.rows;
+      //     this.total = response.total;
+      //     this.loading = false;
+      //   }
+      // );
+      this.total = 2;
     },
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
     },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false;
-      this.reset();
-    },
     // 表单重置
     reset() {
-      if (this.$refs.menu != undefined) {
-        this.$refs.menu.setCheckedKeys([]);
-      }
-      this.menuExpand = false,
-      this.menuNodeAll = false,
-      this.deptExpand = true,
-      this.deptNodeAll = false,
-      this.form = {
-        roleId: undefined,
-        roleName: undefined,
-        roleKey: undefined,
-        roleSort: 0,
-        status: "0",
-        menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
-        remark: undefined
-      };
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      // this.queryParams.pageNum = 1;
+      // this.getList();
+      alert("搜索按钮操作");
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
-      this.resetForm("queryForm");
+      // this.dateRange = [];
+      // this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
@@ -466,102 +435,33 @@ export default {
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
-    // 更多操作触发
-    handleCommand(command, row) {
-      switch (command) {
-        case "handleDataScope":
-          this.handleDataScope(row);
-          break;
-        case "handleAuthUser":
-          this.handleAuthUser(row);
-          break;
-        default:
-          break;
-      }
-    },
-    // 树权限（展开/折叠）
-    handleCheckedTreeExpand(value, type) {
-      if (type == 'menu') {
-        let treeList = this.menuOptions;
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
-        }
-      } else if (type == 'dept') {
-        let treeList = this.deptOptions;
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
-        }
-      }
-    },
-    // 树权限（全选/全不选）
-    handleCheckedTreeNodeAll(value, type) {
-      if (type == 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions: []);
-      } else if (type == 'dept') {
-        this.$refs.dept.setCheckedNodes(value ? this.deptOptions: []);
-      }
-    },
-    // 树权限（父子联动）
-    handleCheckedTreeConnect(value, type) {
-      if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true: false;
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true: false;
-      }
-    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getMenuTreeselect();
       this.open = true;
-      this.title = "添加角色";
+      this.title = "添加供应商";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
-      const roleId = row.roleId || this.ids
-      const roleMenu = this.getRoleMenuTreeselect(roleId);
-      getRole(roleId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.$nextTick(() => {
-          roleMenu.then(res => {
-            let checkedKeys = res.checkedKeys
-            checkedKeys.forEach((v) => {
-                this.$nextTick(()=>{
-                    this.$refs.menu.setChecked(v, true ,false);
-                })
-            })
-          });
-        });
-        this.title = "修改角色";
-      });
-    },
-    /** 选择角色权限范围触发 */
-    dataScopeSelectChange(value) {
-      if(value !== '2') {
-        this.$refs.dept.setCheckedKeys([]);
-      }
-    },
-    /** 分配数据权限操作 */
-    handleDataScope(row) {
-      this.reset();
-      const deptTreeSelect = this.getDeptTree(row.roleId);
-      getRole(row.roleId).then(response => {
-        this.form = response.data;
-        this.openDataScope = true;
-        this.$nextTick(() => {
-          deptTreeSelect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys);
-          });
-        });
-        this.title = "分配数据权限";
-      });
-    },
-    /** 分配用户操作 */
-    handleAuthUser: function(row) {
-      const roleId = row.roleId;
-      this.$router.push("/system/role-auth/user/" + roleId);
+      // this.reset();
+      // const roleId = row.roleId || this.ids
+      // const roleMenu = this.getRoleMenuTreeselect(roleId);
+      // getRole(roleId).then(response => {
+      //   this.form = response.data;
+      //   this.open = true;
+      //   this.$nextTick(() => {
+      //     roleMenu.then(res => {
+      //       let checkedKeys = res.checkedKeys
+      //       checkedKeys.forEach((v) => {
+      //           this.$nextTick(()=>{
+      //               this.$refs.menu.setChecked(v, true ,false);
+      //           })
+      //       })
+      //     });
+      //   });
+      //   this.title = "修改角色";
+      // });
+      alert("修改按钮操作");
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -598,19 +498,21 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const roleIds = row.roleId || this.ids;
-      this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
-        return delRole(roleIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      // const roleIds = row.roleId || this.ids;
+      // this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
+      //   return delRole(roleIds);
+      // }).then(() => {
+      //   this.getList();
+      //   this.$modal.msgSuccess("删除成功");
+      // }).catch(() => {});
+      alert("删除按钮操作");
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/role/export', {
-        ...this.queryParams
-      }, `role_${new Date().getTime()}.xlsx`)
+      // this.download('system/role/export', {
+      //   ...this.queryParams
+      // }, `role_${new Date().getTime()}.xlsx`)
+      alert(导出按钮操作);
     }
   }
 };
