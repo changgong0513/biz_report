@@ -186,6 +186,12 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!-- 添加自定义模块（业务报表api） -->
+            <dependency>
+                <groupId>com.xmy</groupId>
+                <artifactId>xmy-biz-api</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -196,6 +202,8 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
+        <!-- 添加自定义模块（业务报表api） -->
+        <module>xmy-biz-api</module>
     </modules>
     <packaging>pom</packaging>
 

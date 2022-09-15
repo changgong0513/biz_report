@@ -144,7 +144,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修供应商数据对话框 -->
+    <!-- 添加或修改供应商数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <h3>供应商基本信息</h3>
@@ -316,7 +316,7 @@
 </template>
 
 <script>
-import { addRole, updateRole, dataScope } from "@/api/system/role";
+import { addClient } from "@/api/masterdata/client";
 
 export default {
   name: "Supplier",
@@ -422,9 +422,11 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加供应商";
+      // this.reset();
+      // this.open = true;
+      // this.title = "添加供应商";
+      alert("新增按钮操作");
+      addClient();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
