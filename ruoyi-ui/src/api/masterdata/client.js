@@ -38,3 +38,11 @@ export function updateClient(data) {
     data: data
   })
 }
+
+// 删除客户
+export function delClient(userId) {
+  return request({
+    url: '/md/client/' + userId,
+    method: 'delete'
+  })
+}

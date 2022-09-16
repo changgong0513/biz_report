@@ -104,7 +104,7 @@ public class MasterDataClientInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:remove')")
     @Log(title = "业务报表", businessType = BusinessType.DELETE)
     @DeleteMapping("/{baseIds}")
-    public AjaxResult remove(@PathVariable Long[] baseIds)
+    public AjaxResult remove(@PathVariable String[] baseIds)
     {
         return toAjax(masterDataClientInfoService.deleteMasterDataClientInfoByBaseIds(baseIds));
     }

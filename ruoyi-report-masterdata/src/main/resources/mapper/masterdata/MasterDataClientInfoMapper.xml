@@ -165,7 +165,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where base_id = #{baseId}
     </update>
 
-    <delete id="deleteMasterDataClientInfoByBaseId" parameterType="Long">
+    <delete id="deleteMasterDataClientInfoByBaseId" parameterType="String">
         delete from master_data_client_info where base_id = #{baseId}
     </delete>
 

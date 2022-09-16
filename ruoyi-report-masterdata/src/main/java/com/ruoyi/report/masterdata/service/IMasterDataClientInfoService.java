@@ -50,7 +50,7 @@ public interface IMasterDataClientInfoService
      * @param baseIds 需要删除的业务报表主键集合
      * @return 结果
      */
-    public int deleteMasterDataClientInfoByBaseIds(Long[] baseIds);
+    public int deleteMasterDataClientInfoByBaseIds(String[] baseIds);
 
     /**
      * 删除业务报表信息
@@ -58,6 +58,6 @@ public interface IMasterDataClientInfoService
      * @param baseId 业务报表主键
      * @return 结果
      */
-    public int deleteMasterDataClientInfoByBaseId(Long baseId);
+    public int deleteMasterDataClientInfoByBaseId(String baseId);
 }
 

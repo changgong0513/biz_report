@@ -78,7 +78,7 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
      * @return 结果
      */
     @Override
-    public int deleteMasterDataClientInfoByBaseIds(Long[] baseIds)
+    public int deleteMasterDataClientInfoByBaseIds(String[] baseIds)
     {
         return masterDataClientInfoMapper.deleteMasterDataClientInfoByBaseIds(baseIds);
     }
@@ -90,7 +90,7 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
      * @return 结果
      */
     @Override
-    public int deleteMasterDataClientInfoByBaseId(Long baseId)
+    public int deleteMasterDataClientInfoByBaseId(String baseId)
     {
         return masterDataClientInfoMapper.deleteMasterDataClientInfoByBaseId(baseId);
     }
