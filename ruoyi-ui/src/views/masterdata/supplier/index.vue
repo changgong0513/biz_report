@@ -151,7 +151,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称" prop="companyName">
-              <el-input v-model="form.nickName" placeholder="请输入公司名称" maxlength="50" />
+              <el-input v-model="form.companyName" placeholder="请输入公司名称" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -212,14 +212,19 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="营业时间" prop="businessHours">
-              <el-input v-model="form.fixedPhone" placeholder="请输入营业时间" />
+              <el-input v-model="form.businessHours" placeholder="请输入营业时间" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="公司地址" prop="companyAdress">
+              <el-input v-model="form.companyAdress" placeholder="请输入公司地址" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="公司网址" prop="companyWebsite">
-              <el-input v-model="form.fixedPhone" placeholder="请输入公司网址" />
+              <el-input v-model="form.companyWebsite" placeholder="请输入公司网址" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -245,7 +250,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="办公地点" prop="contactsOfficeLocation">
-              <el-input v-model="form.fixedPhone" placeholder="请输入办公地点" />
+              <el-input v-model="form.contactsOfficeLocation" placeholder="请输入办公地点" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -255,7 +260,7 @@
           <el-col :span="24">
             <el-form-item label="开户行" prop="depositBank">
               <el-select
-                v-model="queryParams.depositBank"
+                v-model="form.depositBank"
                 placeholder="开户行"
                 clearable
                 style="width: 240px"
@@ -291,7 +296,7 @@
           <el-col :span="12">
             <el-form-item label="发票类型" prop="invoiceType">
               <el-select
-                v-model="queryParams.invoiceType"
+                v-model="form.invoiceType"
                 placeholder="发票类型"
                 clearable
                 style="width: 240px"
@@ -452,25 +457,26 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-          if (this.form.roleId != undefined) {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            updateRole(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-          } else {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            addRole(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }
-        }
-      });
+      // this.$refs["form"].validate(valid => {
+      //   if (valid) {
+      //     if (this.form.roleId != undefined) {
+      //       this.form.menuIds = this.getMenuAllCheckedKeys();
+      //       updateRole(this.form).then(response => {
+      //         this.$modal.msgSuccess("修改成功");
+      //         this.open = false;
+      //         this.getList();
+      //       });
+      //     } else {
+      //       this.form.menuIds = this.getMenuAllCheckedKeys();
+      //       addRole(this.form).then(response => {
+      //         this.$modal.msgSuccess("新增成功");
+      //         this.open = false;
+      //         this.getList();
+      //       });
+      //     }
+      //   }
+      // });
+      addClient(this.form);
     },
     /** 提交按钮（数据权限） */
     submitDataScope: function() {
