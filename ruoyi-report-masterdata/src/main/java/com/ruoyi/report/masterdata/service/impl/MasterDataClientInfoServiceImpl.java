@@ -28,7 +28,7 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
      * @return 业务报表
      */
     @Override
-    public MasterDataClientInfo selectMasterDataClientInfoByBaseId(Long baseId)
+    public MasterDataClientInfo selectMasterDataClientInfoByBaseId(String baseId)
     {
         return masterDataClientInfoMapper.selectMasterDataClientInfoByBaseId(baseId);
     }

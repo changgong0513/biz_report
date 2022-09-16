@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectMasterDataClientInfoByBaseId" parameterType="Long" resultMap="MasterDataClientInfoResult">
+    <select id="selectMasterDataClientInfoByBaseId" parameterType="String" resultMap="MasterDataClientInfoResult">
         <include refid="selectMasterDataClientInfoVo"/>
         where base_id = #{baseId}
     </select>

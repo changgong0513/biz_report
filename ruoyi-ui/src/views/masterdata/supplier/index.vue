@@ -107,7 +107,7 @@
           v-hasPermi="['system:role:export']"
         >批量导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getSupplierList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
@@ -135,6 +135,8 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:role:remove']"
           >删除</el-button>
+          <!-- 供应商编号（隐藏域） -->
+          <!-- <div v-show="!scope.row.baseId">{{scope.row.baseId}}</div> -->
         </template>
       </el-table-column>
     </el-table>
@@ -144,7 +146,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
-      @pagination="getList"
+      @pagination="getSupplierList"
     />
 
     <!-- 添加或修改供应商数据对话框 -->
@@ -324,7 +326,7 @@
 </template>
 
 <script>
-import { listClient, addClient } from "@/api/masterdata/client";
+import { listClient, addClient, getClient, updateClient } from "@/api/masterdata/client";
 
 export default {
   name: "Supplier",
@@ -412,7 +414,7 @@ export default {
     };
   },
   created() {
-    console.log("created回调------取得供应商表格数据");
+    // console.log("created回调------取得供应商表格数据");
     this.getSupplierList();
   },
   methods: {
@@ -438,7 +440,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       // this.queryParams.pageNum = 1;
-      // this.getList();
+      // this.getSupplierList();
       alert("搜索按钮操作");
     },
     /** 重置按钮操作 */
@@ -449,7 +451,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map(item => item.baseId)
+      // console.log("@@@@@@" + this.ids);
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -461,52 +464,36 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      // this.reset();
-      // const roleId = row.roleId || this.ids
-      // const roleMenu = this.getRoleMenuTreeselect(roleId);
-      // getRole(roleId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.$nextTick(() => {
-      //     roleMenu.then(res => {
-      //       let checkedKeys = res.checkedKeys
-      //       checkedKeys.forEach((v) => {
-      //           this.$nextTick(()=>{
-      //               this.$refs.menu.setChecked(v, true ,false);
-      //           })
-      //       })
-      //     });
-      //   });
-      //   this.title = "修改角色";
-      // });
-      alert("修改按钮操作");
+      this.reset();
+      const baseId = row.baseId || this.ids
+      getClient(baseId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改供应商";
+      });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // 供应商
-          this.form.recordFlag = 1;
-          addClient(this.form).then(response => {
-            this.$modal.msgSuccess("新增成功");
-            this.open = false;
-            this.getSupplierList();
-          }); 
+          if (this.form.baseId != undefined) {
+            this.form.recordFlag = 1;
+            updateClient(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getSupplierList();
+            });
+          } else {
+            // 供应商
+            this.form.recordFlag = 1;
+            addClient(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getSupplierList();
+            });
+          }
         }
       });
-
-      
-    },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function() {
-      if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
-        dataScope(this.form).then(response => {
-          this.$modal.msgSuccess("修改成功");
-          this.openDataScope = false;
-          this.getList();
-        });
-      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -514,7 +501,7 @@ export default {
       // this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
       //   return delRole(roleIds);
       // }).then(() => {
-      //   this.getList();
+      //   this.getSupplierList();
       //   this.$modal.msgSuccess("删除成功");
       // }).catch(() => {});
       alert("删除按钮操作");

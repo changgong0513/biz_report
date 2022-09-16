@@ -63,7 +63,7 @@ public class MasterDataClientInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:query')")
     @GetMapping(value = "/{baseId}")
-    public AjaxResult getInfo(@PathVariable("baseId") Long baseId)
+    public AjaxResult getInfo(@PathVariable("baseId") String baseId)
     {
         return AjaxResult.success(masterDataClientInfoService.selectMasterDataClientInfoByBaseId(baseId));
     }

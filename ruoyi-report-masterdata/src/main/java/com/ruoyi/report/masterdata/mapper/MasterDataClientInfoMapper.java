@@ -18,7 +18,7 @@ public interface MasterDataClientInfoMapper
      * @param baseId 业务报表主键
      * @return 业务报表
      */
-    public MasterDataClientInfo selectMasterDataClientInfoByBaseId(Long baseId);
+    public MasterDataClientInfo selectMasterDataClientInfoByBaseId(String baseId);
 
     /**
      * 查询业务报表列表
