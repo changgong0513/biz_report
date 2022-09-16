@@ -427,11 +427,9 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      // this.reset();
-      // this.open = true;
-      // this.title = "添加供应商";
-      alert("新增按钮操作");
-      addClient();
+      this.reset();
+      this.open = true;
+      this.title = "添加供应商";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
