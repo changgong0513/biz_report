@@ -52,7 +52,10 @@
           v-model="dateRange"
           style="width: 240px"
           value-format="yyyy-MM-dd"
-          type="date"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -321,7 +324,7 @@
 </template>
 
 <script>
-import { addClient } from "@/api/masterdata/client";
+import { listClient, addClient } from "@/api/masterdata/client";
 
 export default {
   name: "Supplier",
@@ -341,17 +344,7 @@ export default {
       // 总条数
       total: 0,
       // 供应商表格数据
-      supplierList: [
-        {
-          companyName: "广西力达农牧科技有限公司",
-          dateRange: "2021/12/20",
-          registerCity: "唐山市",
-          address: "唐山市高新区火炬路124号",
-          legalPerson: "张三",
-          registeredCapital: "23534",
-          phone: "028-89991606"
-        }
-      ],
+      supplierList: null,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -362,9 +355,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        roleName: undefined,
-        roleKey: undefined,
-        status: undefined
+        companyName: undefined,
+        legalPerson: undefined,
+        registerCity: undefined,
+        registeredCapital: undefined
       },
       // 表单参数
       form: {},
@@ -418,15 +412,14 @@ export default {
     };
   },
   created() {
-    //this.getList();
     console.log("created回调------取得供应商表格数据");
+    this.getSupplierList();
   },
   methods: {
     /** 查询供应商列表 */
     getSupplierList() {
-      // 显示遮罩层
       this.loading = true;
-      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listClient(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.supplierList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -497,7 +490,7 @@ export default {
           addClient(this.form).then(response => {
             this.$modal.msgSuccess("新增成功");
             this.open = false;
-            this.getList();
+            this.getSupplierList();
           }); 
         }
       });
