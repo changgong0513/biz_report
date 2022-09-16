@@ -506,10 +506,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('system/role/export', {
-      //   ...this.queryParams
-      // }, `role_${new Date().getTime()}.xlsx`)
-      alert(导出按钮操作);
+      this.download('/md/client/export', {
+        ...this.queryParams
+      }, `主数据管理_供应商列表_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     }
   }
 };
