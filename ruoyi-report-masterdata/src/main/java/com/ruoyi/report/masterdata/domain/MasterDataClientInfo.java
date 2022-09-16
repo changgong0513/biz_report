@@ -16,7 +16,7 @@ public class MasterDataClientInfo extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 客户编号 */
-    private Long baseId;
+    private String baseId;
 
     /** 公司名称 */
     @Excel(name = "公司名称")
@@ -105,12 +105,12 @@ public class MasterDataClientInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setBaseId(Long baseId)
+    public void setBaseId(String baseId)
     {
         this.baseId = baseId;
     }
 
-    public Long getBaseId()
+    public String getBaseId()
     {
         return baseId;
     }
