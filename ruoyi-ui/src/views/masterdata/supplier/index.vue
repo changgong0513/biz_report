@@ -374,11 +374,45 @@ export default {
       },
       // 表单校验
       rules: {
+        // 公司名称
         companyName: [
           { required: true, message: "公司名称不能为空", trigger: "blur" }
         ],
+        // 公司地址
+        companyAdress: [
+          { required: true, message: "公司地址不能为空", trigger: "blur" }
+        ],
+        // 企业法人
         legalPerson: [
           { required: true, message: "企业法人不能为空", trigger: "blur" }
+        ],
+        // 联系人姓名
+        contactsName: [
+          { required: true, message: "联系人姓名不能为空", trigger: "blur" }
+        ],
+        // 联系人手机
+        contactsMobile: [
+          { required: true, message: "联系人手机不能为空", trigger: "blur" }
+        ],
+        // 开户行
+        depositBank: [
+          { required: true, message: "开户行不能为空", trigger: "blur" }
+        ],
+        // 账号
+        accountNumber: [
+          { required: true, message: "账号不能为空", trigger: "blur" }
+        ],
+        // 税号
+        taxNumber: [
+          { required: true, message: "税号不能为空", trigger: "blur" }
+        ],
+        // 发票地址
+        invoiceAddress: [
+          { required: true, message: "发票地址不能为空", trigger: "blur" }
+        ],
+        // 发票类型
+        invoiceType: [
+          { required: true, message: "发票类型不能为空", trigger: "blur" }
         ]
       }
     };
@@ -388,8 +422,9 @@ export default {
     console.log("created回调------取得供应商表格数据");
   },
   methods: {
-    /** 查询角色列表 */
-    getList() {
+    /** 查询供应商列表 */
+    getSupplierList() {
+      // 显示遮罩层
       this.loading = true;
       listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.supplierList = response.rows;
@@ -455,26 +490,19 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     if (this.form.roleId != undefined) {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       updateRole(this.form).then(response => {
-      //         this.$modal.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       addRole(this.form).then(response => {
-      //         this.$modal.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
-      addClient(this.form);
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          // 供应商
+          this.form.recordFlag = 1;
+          addClient(this.form).then(response => {
+            this.$modal.msgSuccess("新增成功");
+            this.open = false;
+            this.getList();
+          }); 
+        }
+      });
+
+      
     },
     /** 提交按钮（数据权限） */
     submitDataScope: function() {

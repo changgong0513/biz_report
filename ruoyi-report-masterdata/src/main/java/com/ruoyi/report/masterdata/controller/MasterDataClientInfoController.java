@@ -80,16 +80,6 @@ public class MasterDataClientInfoController extends BaseController
         masterDataClientInfo.setCreateBy(SecurityUtils.getUsername());
         masterDataClientInfo.setUpdateBy(SecurityUtils.getUsername());
         masterDataClientInfo.setBaseId(IdUtils.fastSimpleUUID());
-        masterDataClientInfo.setCompanyAdress("测试公司地址");
-        masterDataClientInfo.setLegalPerson("测试企业法人");
-        masterDataClientInfo.setRecordFlag(1L);
-        masterDataClientInfo.setContactsName("姓名");
-        masterDataClientInfo.setContactsMobile("12345678901");
-        masterDataClientInfo.setDepositBank(1L);
-        masterDataClientInfo.setAccountNumber("123456");
-        masterDataClientInfo.setTaxNumber("789012");
-        masterDataClientInfo.setInvoiceAddress("发票地址");
-        masterDataClientInfo.setInvoiceType(1L);
         System.out.println("------新增业务报表大数据：" + masterDataClientInfo);
 
         return toAjax(masterDataClientInfoService.insertMasterDataClientInfo(masterDataClientInfo));
