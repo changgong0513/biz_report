@@ -60,13 +60,6 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
-
-        <!-- 添加自定义模块（业务报表api） -->
-        <dependency>
-            <groupId>com.xmy</groupId>
-            <artifactId>xmy-biz-api</artifactId>
-            <version>${ruoyi.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
