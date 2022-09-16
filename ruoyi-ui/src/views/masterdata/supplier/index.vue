@@ -439,14 +439,13 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
-      // this.getSupplierList();
-      alert("搜索按钮操作");
+      this.queryParams.pageNum = 1;
+      this.getSupplierList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.dateRange = [];
-      // this.resetForm("queryForm");
+      this.dateRange = [];
+      this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
