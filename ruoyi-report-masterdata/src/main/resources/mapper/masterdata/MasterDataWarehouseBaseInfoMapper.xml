@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.masterdata.mapper.MasterDataWarehouseBaseInfoMapper">
+    
+    <resultMap type="MasterDataWarehouseBaseInfo" id="MasterDataWarehouseBaseInfoResult">
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="warehouseCode"    column="warehouse_code"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="warehouseRegion"    column="warehouse_region"    />
+        <result property="warehouseAddress"    column="warehouse_address"    />
+        <result property="managementDepartment"    column="management_department"    />
+        <result property="warehouseManager"    column="warehouse_manager"    />
+        <result property="contactMobile1"    column="contact_mobile1"    />
+        <result property="contactMobile2"    column="contact_mobile2"    />
+        <result property="warehouseCategory"    column="warehouse_category"    />
+        <result property="useArea"    column="use_area"    />
+        <result property="maximumCapacity"    column="maximum_capacity"    />
+        <result property="measurementUnit"    column="measurement_unit"    />
+        <result property="buildDate"    column="build_date"    />
+        <result property="warehouseRemarks"    column="warehouse_remarks"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectMasterDataWarehouseBaseInfoVo">
+        select warehouse_id, warehouse_code, warehouse_name, warehouse_region, warehouse_address, management_department, warehouse_manager, contact_mobile1, contact_mobile2, warehouse_category, use_area, maximum_capacity, measurement_unit, build_date, warehouse_remarks, create_by, create_time, update_by, update_time, biz_version from master_data_warehouse_base_info
+    </sql>
+
+    <select id="selectMasterDataWarehouseBaseInfoList" parameterType="MasterDataWarehouseBaseInfo" resultMap="MasterDataWarehouseBaseInfoResult">
+        <include refid="selectMasterDataWarehouseBaseInfoVo"/>
+        <where>  
+            <if test="warehouseCode != null  and warehouseCode != ''"> and warehouse_code = #{warehouseCode}</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+            <if test="warehouseRegion != null "> and warehouse_region = #{warehouseRegion}</if>
+            <if test="warehouseAddress != null  and warehouseAddress != ''"> and warehouse_address = #{warehouseAddress}</if>
+            <if test="managementDepartment != null "> and management_department = #{managementDepartment}</if>
+            <if test="warehouseManager != null  and warehouseManager != ''"> and warehouse_manager = #{warehouseManager}</if>
+            <if test="contactMobile1 != null  and contactMobile1 != ''"> and contact_mobile1 = #{contactMobile1}</if>
+            <if test="contactMobile2 != null  and contactMobile2 != ''"> and contact_mobile2 = #{contactMobile2}</if>
+            <if test="warehouseCategory != null "> and warehouse_category = #{warehouseCategory}</if>
+            <if test="useArea != null "> and use_area = #{useArea}</if>
+            <if test="maximumCapacity != null "> and maximum_capacity = #{maximumCapacity}</if>
+            <if test="measurementUnit != null "> and measurement_unit = #{measurementUnit}</if>
+            <if test="buildDate != null  and buildDate != ''"> and build_date = #{buildDate}</if>
+            <if test="warehouseRemarks != null  and warehouseRemarks != ''"> and warehouse_remarks = #{warehouseRemarks}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
+        </where>
+    </select>
+    
+    <select id="selectMasterDataWarehouseBaseInfoByWarehouseId" parameterType="Long" resultMap="MasterDataWarehouseBaseInfoResult">
+        <include refid="selectMasterDataWarehouseBaseInfoVo"/>
+        where warehouse_id = #{warehouseId}
+    </select>
+        
+    <insert id="insertMasterDataWarehouseBaseInfo" parameterType="MasterDataWarehouseBaseInfo">
+        insert into master_data_warehouse_base_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">warehouse_id,</if>
+            <if test="warehouseCode != null and warehouseCode != ''">warehouse_code,</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name,</if>
+            <if test="warehouseRegion != null">warehouse_region,</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">warehouse_address,</if>
+            <if test="managementDepartment != null">management_department,</if>
+            <if test="warehouseManager != null and warehouseManager != ''">warehouse_manager,</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">contact_mobile1,</if>
+            <if test="contactMobile2 != null">contact_mobile2,</if>
+            <if test="warehouseCategory != null">warehouse_category,</if>
+            <if test="useArea != null">use_area,</if>
+            <if test="maximumCapacity != null">maximum_capacity,</if>
+            <if test="measurementUnit != null">measurement_unit,</if>
+            <if test="buildDate != null">build_date,</if>
+            <if test="warehouseRemarks != null">warehouse_remarks,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null">#{warehouseId},</if>
+            <if test="warehouseCode != null and warehouseCode != ''">#{warehouseCode},</if>
+            <if test="warehouseName != null and warehouseName != ''">#{warehouseName},</if>
+            <if test="warehouseRegion != null">#{warehouseRegion},</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">#{warehouseAddress},</if>
+            <if test="managementDepartment != null">#{managementDepartment},</if>
+            <if test="warehouseManager != null and warehouseManager != ''">#{warehouseManager},</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">#{contactMobile1},</if>
+            <if test="contactMobile2 != null">#{contactMobile2},</if>
+            <if test="warehouseCategory != null">#{warehouseCategory},</if>
+            <if test="useArea != null">#{useArea},</if>
+            <if test="maximumCapacity != null">#{maximumCapacity},</if>
+            <if test="measurementUnit != null">#{measurementUnit},</if>
+            <if test="buildDate != null">#{buildDate},</if>
+            <if test="warehouseRemarks != null">#{warehouseRemarks},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMasterDataWarehouseBaseInfo" parameterType="MasterDataWarehouseBaseInfo">
+        update master_data_warehouse_base_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseCode != null and warehouseCode != ''">warehouse_code = #{warehouseCode},</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name = #{warehouseName},</if>
+            <if test="warehouseRegion != null">warehouse_region = #{warehouseRegion},</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">warehouse_address = #{warehouseAddress},</if>
+            <if test="managementDepartment != null">management_department = #{managementDepartment},</if>
+            <if test="warehouseManager != null and warehouseManager != ''">warehouse_manager = #{warehouseManager},</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">contact_mobile1 = #{contactMobile1},</if>
+            <if test="contactMobile2 != null">contact_mobile2 = #{contactMobile2},</if>
+            <if test="warehouseCategory != null">warehouse_category = #{warehouseCategory},</if>
+            <if test="useArea != null">use_area = #{useArea},</if>
+            <if test="maximumCapacity != null">maximum_capacity = #{maximumCapacity},</if>
+            <if test="measurementUnit != null">measurement_unit = #{measurementUnit},</if>
+            <if test="buildDate != null">build_date = #{buildDate},</if>
+            <if test="warehouseRemarks != null">warehouse_remarks = #{warehouseRemarks},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where warehouse_id = #{warehouseId}
+    </update>
+
+    <delete id="deleteMasterDataWarehouseBaseInfoByWarehouseId" parameterType="Long">
+        delete from master_data_warehouse_base_info where warehouse_id = #{warehouseId}
+    </delete>
+
+    <delete id="deleteMasterDataWarehouseBaseInfoByWarehouseIds" parameterType="String">
+        delete from master_data_warehouse_base_info where warehouse_id in 
+        <foreach item="warehouseId" collection="array" open="(" separator="," close=")">
+            #{warehouseId}
+        </foreach>
+    </delete>
+</mapper>
