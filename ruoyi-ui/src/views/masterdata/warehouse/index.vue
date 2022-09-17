@@ -160,7 +160,7 @@
 
     <!-- 添加或修改仓库数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="仓库ID">
@@ -169,23 +169,43 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="仓库编码" prop="warehouseCode">
-              <el-input v-model="form.warehouseCode" placeholder="请输入仓库编码" />
+              <el-input 
+                v-model="form.warehouseCode" 
+                placeholder="请输入仓库编码" 
+                style="width: 280px"
+                maxlength="64"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="仓库名称" prop="warehouseName">
-              <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
+              <el-input 
+                v-model="form.warehouseName" 
+                placeholder="请输入仓库名称" 
+                style="width: 280px"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="成立日期">
+              <el-date-picker
+                v-model="form.buildDate"
+                style="width: 280px"
+                value-format="yyyy-MM-dd"
+                type="date"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="区划" prop="warehouseRegion">
               <el-select
                 v-model="form.warehouseRegion"
                 placeholder="区划"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_warehouse_region"
@@ -196,9 +216,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item label="仓库地址" prop="warehouseAddress">
-              <el-input v-model="form.warehouseAddress" placeholder="请输入仓库地址" />
+              <el-input 
+                v-model="form.warehouseAddress" 
+                placeholder="请输入仓库地址" 
+                style="width: 280px"
+                maxlength="256"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -209,7 +234,7 @@
                 v-model="form.managementDepartment"
                 placeholder="管理部门"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_management_department"
@@ -227,20 +252,20 @@
                 v-model="form.warehouseManager"
                 placeholder="请输入管理人员"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="联系方式1" prop="contactMobile1">
-              <el-input v-model="form.contactMobile1" placeholder="请输入联系方式" />
+              <el-input v-model="form.contactMobile1" placeholder="请输入手机号码" style="width: 280px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="联系方式2" prop="contactMobile2">
-              <el-input v-model="form.contactMobile2" placeholder="请输入联系方式" />
+              <el-input v-model="form.contactMobile2" placeholder="请输入手机号码" style="width: 280px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -250,7 +275,7 @@
                 v-model="form.warehouseCategory"
                 placeholder="仓库类别"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_warehouse_category"
@@ -263,19 +288,31 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="占地面积" prop="useArea">
-              <el-input v-model="form.useArea" placeholder="请输入占地面积" />
+              <el-input v-model="form.useArea" placeholder="请输入占地面积" style="width: 280px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="最大容量" prop="maximumCapacity">
-              <el-input v-model="form.maximumCapacity" placeholder="请输入最大容量" />
+              <el-input v-model="form.maximumCapacity" placeholder="请输入最大容量" style="width: 280px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="计量单位" prop="measurementUnit">
-              <el-input v-model="form.measurementUnit" placeholder="请输入计量单位" />
+              <el-select
+                v-model="form.measurementUnit"
+                placeholder="计量单位"
+                clearable
+                style="width: 280px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8"></el-col>
@@ -302,7 +339,11 @@ import { listWarehouse, getWarehouse, addWarehouse, updateWarehous, delWarehous 
 
 export default {
   name: "Warehouse",
-  dicts: ['masterdata_warehouse_region', 'masterdata_warehouse_category', 'masterdata_management_department'],
+  dicts: ['masterdata_warehouse_region', 
+          'masterdata_warehouse_category', 
+          'masterdata_management_department',
+          'masterdata_warehouse_measurement_unit'
+  ],
   data() {
     return {
       // 遮罩层
@@ -375,6 +416,13 @@ export default {
         ],
         measurementUnit: [
           { required: true, message: "计量单位不能为空", trigger: "blur" }
+        ],
+        contactMobile1: [
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: "请输入正确的手机号码",
+            trigger: "blur"
+          }
         ]
       }, 
       // warehouseId: uuid(32, 10)
