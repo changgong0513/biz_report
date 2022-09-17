@@ -377,7 +377,8 @@ export default {
           { required: true, message: "计量单位不能为空", trigger: "blur" }
         ]
       }, 
-      warehouseId: uuid(32, 10)
+      // warehouseId: uuid(32, 10)
+      warehouseId: null
     };
   },
   created() {
@@ -387,7 +388,7 @@ export default {
     /** 查询仓库列表 */
     getList() {
       this.loading = true;
-      listWarehouse(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listWarehouse(this.queryParams).then(response => {
           this.warehouseList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -416,6 +417,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.warehouseId)
+      console.log("ids = " + this.ids);
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -424,11 +426,13 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加仓库";
+      this.warehouseId = uuid(32, 10);
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const warehouseId = row.warehouseId || this.ids
+      const warehouseId = row.warehouseId || this.ids[0]
+      this.warehouseId = warehouseId;
       getWarehouse(warehouseId).then(response => {
         this.form = response.data;
         this.open = true;
@@ -453,7 +457,7 @@ export default {
             addWarehouse(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              //this.getList();
+              this.getList();
             });
           }
         }
