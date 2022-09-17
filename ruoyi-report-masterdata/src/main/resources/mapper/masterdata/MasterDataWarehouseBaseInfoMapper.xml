@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.report.masterdata.mapper.MasterDataWarehouseBaseInfoMapper">
-    
+
     <resultMap type="MasterDataWarehouseBaseInfo" id="MasterDataWarehouseBaseInfoResult">
         <result property="warehouseId"    column="warehouse_id"    />
         <result property="warehouseCode"    column="warehouse_code"    />
@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectMasterDataWarehouseBaseInfoList" parameterType="MasterDataWarehouseBaseInfo" resultMap="MasterDataWarehouseBaseInfoResult">
         <include refid="selectMasterDataWarehouseBaseInfoVo"/>
-        <where>  
+        <where>
             <if test="warehouseCode != null  and warehouseCode != ''"> and warehouse_code = #{warehouseCode}</if>
             <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
             <if test="warehouseRegion != null "> and warehouse_region = #{warehouseRegion}</if>
@@ -51,12 +51,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
         </where>
     </select>
-    
-    <select id="selectMasterDataWarehouseBaseInfoByWarehouseId" parameterType="Long" resultMap="MasterDataWarehouseBaseInfoResult">
+
+    <select id="selectMasterDataWarehouseBaseInfoByWarehouseId" parameterType="String" resultMap="MasterDataWarehouseBaseInfoResult">
         <include refid="selectMasterDataWarehouseBaseInfoVo"/>
         where warehouse_id = #{warehouseId}
     </select>
-        
+
     <insert id="insertMasterDataWarehouseBaseInfo" parameterType="MasterDataWarehouseBaseInfo">
         insert into master_data_warehouse_base_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null and updateBy != ''">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="bizVersion != null">biz_version,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="warehouseId != null">#{warehouseId},</if>
             <if test="warehouseCode != null and warehouseCode != ''">#{warehouseCode},</if>
@@ -102,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="bizVersion != null">#{bizVersion},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateMasterDataWarehouseBaseInfo" parameterType="MasterDataWarehouseBaseInfo">
@@ -131,12 +131,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where warehouse_id = #{warehouseId}
     </update>
 
-    <delete id="deleteMasterDataWarehouseBaseInfoByWarehouseId" parameterType="Long">
+    <delete id="deleteMasterDataWarehouseBaseInfoByWarehouseId" parameterType="String">
         delete from master_data_warehouse_base_info where warehouse_id = #{warehouseId}
     </delete>
 
     <delete id="deleteMasterDataWarehouseBaseInfoByWarehouseIds" parameterType="String">
-        delete from master_data_warehouse_base_info where warehouse_id in 
+        delete from master_data_warehouse_base_info where warehouse_id in
         <foreach item="warehouseId" collection="array" open="(" separator="," close=")">
             #{warehouseId}
         </foreach>

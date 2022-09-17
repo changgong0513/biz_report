@@ -17,7 +17,7 @@ public interface MasterDataWarehouseBaseInfoMapper
      * @param warehouseId 仓库管理主键
      * @return 仓库管理
      */
-    public MasterDataWarehouseBaseInfo selectMasterDataWarehouseBaseInfoByWarehouseId(Long warehouseId);
+    public MasterDataWarehouseBaseInfo selectMasterDataWarehouseBaseInfoByWarehouseId(String warehouseId);
 
     /**
      * 查询仓库管理列表
@@ -49,7 +49,7 @@ public interface MasterDataWarehouseBaseInfoMapper
      * @param warehouseId 仓库管理主键
      * @return 结果
      */
-    public int deleteMasterDataWarehouseBaseInfoByWarehouseId(Long warehouseId);
+    public int deleteMasterDataWarehouseBaseInfoByWarehouseId(String warehouseId);
 
     /**
      * 批量删除仓库管理
@@ -57,5 +57,5 @@ public interface MasterDataWarehouseBaseInfoMapper
      * @param warehouseIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteMasterDataWarehouseBaseInfoByWarehouseIds(Long[] warehouseIds);
+    public int deleteMasterDataWarehouseBaseInfoByWarehouseIds(String[] warehouseIds);
 }

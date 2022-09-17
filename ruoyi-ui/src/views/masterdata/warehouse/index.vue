@@ -164,7 +164,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="仓库ID">
-              <el-input v-model="warehouseId" :disabled="true" />
+              <el-input v-model="warehouseId" :disabled="true" style="width: 280px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -182,7 +182,7 @@
           <el-col :span="8">
             <el-form-item label="区划" prop="warehouseRegion">
               <el-select
-                v-model="queryParams.warehouseRegion"
+                v-model="form.warehouseRegion"
                 placeholder="区划"
                 clearable
                 style="width: 240px"
@@ -206,7 +206,7 @@
           <el-col :span="8">
             <el-form-item label="管理部门" prop="managementDepartment">
               <el-select
-                v-model="queryParams.managementDepartment"
+                v-model="form.managementDepartment"
                 placeholder="管理部门"
                 clearable
                 style="width: 240px"
@@ -224,7 +224,7 @@
             <!-- 管理人员 -->
             <el-form-item label="管理人员" prop="warehouseManager">
               <el-input
-                v-model="queryParams.warehouseManager"
+                v-model="form.warehouseManager"
                 placeholder="请输入管理人员"
                 clearable
                 style="width: 240px"
@@ -247,7 +247,7 @@
             <!-- 仓库类别 -->
             <el-form-item label="仓库类别" prop="warehouseCategory">
               <el-select
-                v-model="queryParams.warehouseCategory"
+                v-model="form.warehouseCategory"
                 placeholder="仓库类别"
                 clearable
                 style="width: 240px"
@@ -283,7 +283,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="remarks">
-              <el-input v-model="form.remarks" placeholder="请输入备注" />
+              <el-input v-model="form.warehouseRemarks" placeholder="请输入备注" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -297,10 +297,11 @@
 </template>
 
 <script>
-import { addRole, updateRole, dataScope } from "@/api/system/role";
+import { uuid } from "@/utils/xmy";
+import { listWarehouse, addWarehouse } from "@/api/masterdata/warehouse";
 
 export default {
-  name: "Supplier",
+  name: "Warehouse",
   dicts: ['masterdata_warehouse_region', 'masterdata_warehouse_category', 'masterdata_management_department'],
   data() {
     return {
@@ -317,18 +318,7 @@ export default {
       // 总条数
       total: 0,
       // 供应商表格数据
-      warehouseList: [
-        {
-          warehouseName: "昌图双庙直属库",
-          buildDate: "2021/12/20",
-          warehouseRegion: "辽宁省",
-          warehouseCategory: "收纳粮库",
-          warehouseAddress: "阜新市人民政府的地址在细河区中华路45号",
-          useArea: "1002",
-          managementDepartment: "商务部",
-          warehouseManager: "张三"
-        }
-      ],
+      warehouseList: null,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -339,9 +329,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        roleName: undefined,
-        roleKey: undefined,
-        status: undefined
+        warehouseName: undefined,
+        warehouseRegion: undefined,
+        warehouseCategory: undefined,
+        managementDepartment: undefined,
+        warehouseManager: undefined
       },
       // 表单参数
       form: {},
@@ -351,25 +343,51 @@ export default {
       },
       // 表单校验
       rules: {
-        companyName: [
-          { required: true, message: "公司名称不能为空", trigger: "blur" }
+        warehouseCode: [
+          { required: true, message: "仓库编码不能为空", trigger: "blur" }
         ],
-        legalPerson: [
-          { required: true, message: "企业法人不能为空", trigger: "blur" }
+        warehouseName: [
+          { required: true, message: "仓库名称不能为空", trigger: "blur" }
+        ],
+        warehouseRegion: [
+          { required: true, message: "区划不能为空", trigger: "blur" }
+        ],
+        warehouseAddress: [
+          { required: true, message: "仓库地址不能为空", trigger: "blur" }
+        ],
+        managementDepartment: [
+          { required: true, message: "管理部门不能为空", trigger: "blur" }
+        ],
+        warehouseManager: [
+          { required: true, message: "管理人员不能为空", trigger: "blur" }
+        ],
+        contactMobile1: [
+          { required: true, message: "联系方式1不能为空", trigger: "blur" }
+        ],
+        warehouseCategory: [
+          { required: true, message: "仓库类别不能为空", trigger: "blur" }
+        ],
+        useArea: [
+          { required: true, message: "占地面积不能为空", trigger: "blur" }
+        ],
+        maximumCapacity: [
+          { required: true, message: "最大容量不能为空", trigger: "blur" }
+        ],
+        measurementUnit: [
+          { required: true, message: "计量单位不能为空", trigger: "blur" }
         ]
       }, 
-      warehouseId: "yw123456"
+      warehouseId: uuid(32, 10)
     };
   },
   created() {
-    //this.getList();
-    console.log("created回调------取得供应商表格数据");
+    this.getList();
   },
   methods: {
-    /** 查询角色列表 */
+    /** 查询仓库列表 */
     getList() {
       this.loading = true;
-      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listWarehouse(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.warehouseList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -387,14 +405,12 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
-      // this.getList();
-      alert("搜索按钮操作");
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.dateRange = [];
-      // this.resetForm("queryForm");
+      this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
@@ -433,36 +449,27 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
+      console.log("进入提交");
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.roleId != undefined) {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            updateRole(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+          if (this.form.warehouseId != undefined) {
+            // updateWarehouse(this.form).then(response => {
+            //   this.$modal.msgSuccess("修改成功");
+            //   this.open = false;
+            //   this.getList();
+            // });
           } else {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            addRole(this.form).then(response => {
+            console.log("@@@@@@提交添加");
+            this.form.warehouseId = this.warehouseId;
+            console.log("@@@@@@提交添加的warehouseId=" + this.form.warehouseId);
+            addWarehouse(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              this.getList();
+              //this.getList();
             });
           }
         }
       });
-    },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function() {
-      if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
-        dataScope(this.form).then(response => {
-          this.$modal.msgSuccess("修改成功");
-          this.openDataScope = false;
-          this.getList();
-        });
-      }
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -477,10 +484,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('system/role/export', {
-      //   ...this.queryParams
-      // }, `role_${new Date().getTime()}.xlsx`)
-      alert("导出按钮操作");
+      this.download('/md/warehouse/export', {
+        ...this.queryParams
+      }, `主数据管理_仓库列表_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     }
   }
 };

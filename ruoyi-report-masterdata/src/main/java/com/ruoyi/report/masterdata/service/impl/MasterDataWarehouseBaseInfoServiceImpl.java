@@ -27,7 +27,7 @@ public class MasterDataWarehouseBaseInfoServiceImpl implements IMasterDataWareho
      * @return 仓库管理
      */
     @Override
-    public MasterDataWarehouseBaseInfo selectMasterDataWarehouseBaseInfoByWarehouseId(Long warehouseId)
+    public MasterDataWarehouseBaseInfo selectMasterDataWarehouseBaseInfoByWarehouseId(String warehouseId)
     {
         return masterDataWarehouseBaseInfoMapper.selectMasterDataWarehouseBaseInfoByWarehouseId(warehouseId);
     }
@@ -77,7 +77,7 @@ public class MasterDataWarehouseBaseInfoServiceImpl implements IMasterDataWareho
      * @return 结果
      */
     @Override
-    public int deleteMasterDataWarehouseBaseInfoByWarehouseIds(Long[] warehouseIds)
+    public int deleteMasterDataWarehouseBaseInfoByWarehouseIds(String[] warehouseIds)
     {
         return masterDataWarehouseBaseInfoMapper.deleteMasterDataWarehouseBaseInfoByWarehouseIds(warehouseIds);
     }
@@ -89,7 +89,7 @@ public class MasterDataWarehouseBaseInfoServiceImpl implements IMasterDataWareho
      * @return 结果
      */
     @Override
-    public int deleteMasterDataWarehouseBaseInfoByWarehouseId(Long warehouseId)
+    public int deleteMasterDataWarehouseBaseInfoByWarehouseId(String warehouseId)
     {
         return masterDataWarehouseBaseInfoMapper.deleteMasterDataWarehouseBaseInfoByWarehouseId(warehouseId);
     }

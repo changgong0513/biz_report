@@ -2,6 +2,9 @@ package com.ruoyi.report.masterdata.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @date 2022-09-17
  */
 @RestController
-@RequestMapping("/report-masterdata/warehouse")
+@RequestMapping("/md/warehouse")
 public class MasterDataWarehouseBaseInfoController extends BaseController
 {
     @Autowired
@@ -64,7 +67,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:query')")
     @GetMapping(value = "/{warehouseId}")
-    public AjaxResult getInfo(@PathVariable("warehouseId") Long warehouseId)
+    public AjaxResult getInfo(@PathVariable("warehouseId") String warehouseId)
     {
         return AjaxResult.success(masterDataWarehouseBaseInfoService.selectMasterDataWarehouseBaseInfoByWarehouseId(warehouseId));
     }
@@ -77,6 +80,12 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody MasterDataWarehouseBaseInfo masterDataWarehouseBaseInfo)
     {
+        masterDataWarehouseBaseInfo.setBizVersion(1L);
+        masterDataWarehouseBaseInfo.setCreateTime(DateUtils.getNowDate());
+        masterDataWarehouseBaseInfo.setUpdateTime(DateUtils.getNowDate());
+        masterDataWarehouseBaseInfo.setCreateBy(SecurityUtils.getUsername());
+        masterDataWarehouseBaseInfo.setUpdateBy(SecurityUtils.getUsername());
+        System.out.println("------新增业务报表大数据：" + masterDataWarehouseBaseInfo);
         return toAjax(masterDataWarehouseBaseInfoService.insertMasterDataWarehouseBaseInfo(masterDataWarehouseBaseInfo));
     }
 
@@ -97,7 +106,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:remove')")
     @Log(title = "仓库管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{warehouseIds}")
-    public AjaxResult remove(@PathVariable Long[] warehouseIds)
+    public AjaxResult remove(@PathVariable String[] warehouseIds)
     {
         return toAjax(masterDataWarehouseBaseInfoService.deleteMasterDataWarehouseBaseInfoByWarehouseIds(warehouseIds));
     }

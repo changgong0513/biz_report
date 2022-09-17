@@ -1,15 +1,25 @@
 import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
 
-// 查询供应商/客户列表
-export function listClient(query) {
-  // console.log("@@@@@@" + query.recordFlag);
+// 查询仓库列表
+export function listWarehouse(query) {
   return request({
-    url: '/md/client/list',
+    url: '/md/warehouse/list',
     method: 'get',
     params: query
   })
 }
+
+// 新增仓库数据
+export function addWarehouse(data) {
+  console.log("新增仓库数据");
+  return request({
+    url: '/md/warehouse',
+    method: 'post',
+    data: data
+  })
+}
+
 
 // 查询供应商/客户详细
 export function getClient(baseId) {
@@ -20,15 +30,7 @@ export function getClient(baseId) {
   })
 }
 
-// 新增客户
-export function addClient(data) {
-  console.log("新增客户类型：" + data.recordFlag);
-  return request({
-    url: '/md/client',
-    method: 'post',
-    data: data
-  })
-}
+
 
 // 修改客户
 export function updateClient(data) {

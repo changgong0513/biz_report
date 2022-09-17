@@ -17,7 +17,7 @@ public class MasterDataWarehouseBaseInfo extends BaseEntity
 
     /** 仓库ID */
     @Excel(name = "仓库ID")
-    private Long warehouseId;
+    private String warehouseId;
 
     /** 仓库编码 */
     @Excel(name = "仓库编码")
@@ -79,12 +79,12 @@ public class MasterDataWarehouseBaseInfo extends BaseEntity
     @Excel(name = "版本号")
     private Long bizVersion;
 
-    public void setWarehouseId(Long warehouseId)
+    public void setWarehouseId(String warehouseId)
     {
         this.warehouseId = warehouseId;
     }
 
-    public Long getWarehouseId()
+    public String getWarehouseId()
     {
         return warehouseId;
     }
