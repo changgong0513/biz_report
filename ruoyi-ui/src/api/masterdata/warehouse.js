@@ -10,6 +10,15 @@ export function listWarehouse(query) {
   })
 }
 
+// 查询仓库详细
+export function getWarehouse(warehouseId) {
+  console.log("仓库编号：" + warehouseId);
+  return request({
+    url: '/md/warehouse/' + parseStrEmpty(warehouseId),
+    method: 'get'
+  })
+}
+
 // 新增仓库数据
 export function addWarehouse(data) {
   console.log("新增仓库数据");
@@ -20,31 +29,19 @@ export function addWarehouse(data) {
   })
 }
 
-
-// 查询供应商/客户详细
-export function getClient(baseId) {
-  console.log("供应商编号：" + baseId);
+// 修改仓库数据
+export function updateWarehous(data) {
   return request({
-    url: '/md/client/' + parseStrEmpty(baseId),
-    method: 'get'
-  })
-}
-
-
-
-// 修改客户
-export function updateClient(data) {
-  return request({
-    url: '/md/client',
+    url: '/md/warehouse',
     method: 'put',
     data: data
   })
 }
 
 // 删除客户
-export function delClient(userId) {
+export function delWarehous(warehouseId) {
   return request({
-    url: '/md/client/' + userId,
+    url: '/md/warehouse/' + warehouseId,
     method: 'delete'
   })
 }

@@ -298,7 +298,7 @@
 
 <script>
 import { uuid } from "@/utils/xmy";
-import { listWarehouse, addWarehouse } from "@/api/masterdata/warehouse";
+import { listWarehouse, getWarehouse, addWarehouse, updateWarehous, delWarehous } from "@/api/masterdata/warehouse";
 
 export default {
   name: "Warehouse",
@@ -415,7 +415,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map(item => item.warehouseId)
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -427,25 +427,13 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      // this.reset();
-      // const roleId = row.roleId || this.ids
-      // const roleMenu = this.getRoleMenuTreeselect(roleId);
-      // getRole(roleId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.$nextTick(() => {
-      //     roleMenu.then(res => {
-      //       let checkedKeys = res.checkedKeys
-      //       checkedKeys.forEach((v) => {
-      //           this.$nextTick(()=>{
-      //               this.$refs.menu.setChecked(v, true ,false);
-      //           })
-      //       })
-      //     });
-      //   });
-      //   this.title = "修改角色";
-      // });
-      alert("修改按钮操作");
+      this.reset();
+      const warehouseId = row.warehouseId || this.ids
+      getWarehouse(warehouseId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改仓库";
+      });
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -453,11 +441,11 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.warehouseId != undefined) {
-            // updateWarehouse(this.form).then(response => {
-            //   this.$modal.msgSuccess("修改成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
+            updateWarehous(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
           } else {
             console.log("@@@@@@提交添加");
             this.form.warehouseId = this.warehouseId;
@@ -473,14 +461,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      // const roleIds = row.roleId || this.ids;
-      // this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
-      //   return delRole(roleIds);
-      // }).then(() => {
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => {});
-      alert("删除按钮操作");
+      const warehouseId = row.warehouseId || this.ids;
+      this.$modal.confirm('是否确认删除仓库记录？').then(function() {
+        return delWarehous(warehouseId);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
