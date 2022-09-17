@@ -107,7 +107,7 @@
           v-hasPermi="['system:role:export']"
         >批量导出</el-button>
       </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getSupplierList"></right-toolbar>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
@@ -146,7 +146,7 @@
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
-      @pagination="getSupplierList"
+      @pagination="getList"
     />
 
     <!-- 添加或修改供应商数据对话框 -->
@@ -357,6 +357,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        recordFlag: 1, //供应商标志
         companyName: undefined,
         legalPerson: undefined,
         registerCity: undefined,
@@ -415,11 +416,11 @@ export default {
   },
   created() {
     // console.log("created回调------取得供应商表格数据");
-    this.getSupplierList();
+    this.getList();
   },
   methods: {
     /** 查询供应商列表 */
-    getSupplierList() {
+    getList() {
       this.loading = true;
       listClient(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.supplierList = response.rows;
@@ -440,7 +441,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.getSupplierList();
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -480,7 +481,7 @@ export default {
             updateClient(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
-              this.getSupplierList();
+              this.getList();
             });
           } else {
             // 供应商
@@ -488,7 +489,7 @@ export default {
             addClient(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              this.getSupplierList();
+              this.getList();
             });
           }
         }
@@ -500,7 +501,7 @@ export default {
       this.$modal.confirm('是否确认删除供应商记录？').then(function() {
         return delClient(baseIds);
       }).then(() => {
-        this.getSupplierList();
+        this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },

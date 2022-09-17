@@ -52,7 +52,10 @@
           v-model="dateRange"
           style="width: 240px"
           value-format="yyyy-MM-dd"
-          type="date"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -132,6 +135,8 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:role:remove']"
           >删除</el-button>
+          <!-- 供应商编号（隐藏域） -->
+          <!-- <div v-show="!scope.row.baseId">{{scope.row.baseId}}</div> -->
         </template>
       </el-table-column>
     </el-table>
@@ -144,14 +149,14 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改客户数据对话框 -->
+    <!-- 添加或修改供应商数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <h3>客户基本信息</h3>
+        <h3>供应商基本信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称" prop="companyName">
-              <el-input v-model="form.nickName" placeholder="请输入公司名称" maxlength="50" />
+              <el-input v-model="form.companyName" placeholder="请输入公司名称" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -212,19 +217,24 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="营业时间" prop="businessHours">
-              <el-input v-model="form.fixedPhone" placeholder="请输入营业时间" />
+              <el-input v-model="form.businessHours" placeholder="请输入营业时间" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="公司地址" prop="companyAdress">
+              <el-input v-model="form.companyAdress" placeholder="请输入公司地址" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="公司网址" prop="companyWebsite">
-              <el-input v-model="form.fixedPhone" placeholder="请输入公司网址" />
+              <el-input v-model="form.companyWebsite" placeholder="请输入公司网址" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
-        <h3>客户联系人信息</h3>
+        <h3>供应商联系人信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名" prop="contactsName">
@@ -245,17 +255,17 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="办公地点" prop="contactsOfficeLocation">
-              <el-input v-model="form.fixedPhone" placeholder="请输入办公地点" />
+              <el-input v-model="form.contactsOfficeLocation" placeholder="请输入办公地点" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
-        <h3>客户账户信息</h3>
+        <h3>供应商账户信息</h3>
         <el-row>
           <el-col :span="24">
             <el-form-item label="开户行" prop="depositBank">
               <el-select
-                v-model="queryParams.depositBank"
+                v-model="form.depositBank"
                 placeholder="开户行"
                 clearable
                 style="width: 240px"
@@ -291,7 +301,7 @@
           <el-col :span="12">
             <el-form-item label="发票类型" prop="invoiceType">
               <el-select
-                v-model="queryParams.invoiceType"
+                v-model="form.invoiceType"
                 placeholder="发票类型"
                 clearable
                 style="width: 240px"
@@ -316,7 +326,7 @@
 </template>
 
 <script>
-import { addRole, updateRole, dataScope } from "@/api/system/role";
+import { listClient, addClient, getClient, updateClient, delClient } from "@/api/masterdata/client";
 
 export default {
   name: "Supplier",
@@ -336,17 +346,7 @@ export default {
       // 总条数
       total: 0,
       // 供应商表格数据
-      supplierList: [
-        {
-          companyName: "广西力达农牧科技有限公司",
-          dateRange: "2021/12/20",
-          registerCity: "唐山市",
-          address: "唐山市高新区火炬路124号",
-          legalPerson: "张三",
-          registeredCapital: "23534",
-          phone: "028-89991606"
-        }
-      ],
+      supplierList: null,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -357,9 +357,11 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        roleName: undefined,
-        roleKey: undefined,
-        status: undefined
+        recordFlag: 2, //客户标志
+        companyName: undefined,
+        legalPerson: undefined,
+        registerCity: undefined,
+        registeredCapital: undefined
       },
       // 表单参数
       form: {},
@@ -369,24 +371,58 @@ export default {
       },
       // 表单校验
       rules: {
+        // 公司名称
         companyName: [
           { required: true, message: "公司名称不能为空", trigger: "blur" }
         ],
+        // 公司地址
+        companyAdress: [
+          { required: true, message: "公司地址不能为空", trigger: "blur" }
+        ],
+        // 企业法人
         legalPerson: [
           { required: true, message: "企业法人不能为空", trigger: "blur" }
+        ],
+        // 联系人姓名
+        contactsName: [
+          { required: true, message: "联系人姓名不能为空", trigger: "blur" }
+        ],
+        // 联系人手机
+        contactsMobile: [
+          { required: true, message: "联系人手机不能为空", trigger: "blur" }
+        ],
+        // 开户行
+        depositBank: [
+          { required: true, message: "开户行不能为空", trigger: "blur" }
+        ],
+        // 账号
+        accountNumber: [
+          { required: true, message: "账号不能为空", trigger: "blur" }
+        ],
+        // 税号
+        taxNumber: [
+          { required: true, message: "税号不能为空", trigger: "blur" }
+        ],
+        // 发票地址
+        invoiceAddress: [
+          { required: true, message: "发票地址不能为空", trigger: "blur" }
+        ],
+        // 发票类型
+        invoiceType: [
+          { required: true, message: "发票类型不能为空", trigger: "blur" }
         ]
       }
     };
   },
   created() {
-    //this.getList();
-    console.log("created回调------取得供应商表格数据");
+    // console.log("created回调------取得供应商表格数据");
+    this.getList();
   },
   methods: {
-    /** 查询角色列表 */
+    /** 查询供应商列表 */
     getList() {
       this.loading = true;
-      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+      listClient(this.addDateRange(this.queryParams, this.dateRange), 2).then(response => {
           this.supplierList = response.rows;
           this.total = response.total;
           this.loading = false;
@@ -404,19 +440,19 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
-      // this.getList();
-      alert("搜索按钮操作");
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.dateRange = [];
-      // this.resetForm("queryForm");
+      this.dateRange = [];
+      this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.roleId)
+      this.ids = selection.map(item => item.baseId)
+      // console.log("@@@@@@" + this.ids);
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -424,44 +460,33 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加客户";
+      this.title = "添加供应商";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      // this.reset();
-      // const roleId = row.roleId || this.ids
-      // const roleMenu = this.getRoleMenuTreeselect(roleId);
-      // getRole(roleId).then(response => {
-      //   this.form = response.data;
-      //   this.open = true;
-      //   this.$nextTick(() => {
-      //     roleMenu.then(res => {
-      //       let checkedKeys = res.checkedKeys
-      //       checkedKeys.forEach((v) => {
-      //           this.$nextTick(()=>{
-      //               this.$refs.menu.setChecked(v, true ,false);
-      //           })
-      //       })
-      //     });
-      //   });
-      //   this.title = "修改角色";
-      // });
-      alert("修改按钮操作");
+      this.reset();
+      const baseId = row.baseId || this.ids
+      getClient(baseId).then(response => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改供应商";
+      });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.roleId != undefined) {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            updateRole(this.form).then(response => {
+          if (this.form.baseId != undefined) {
+            this.form.recordFlag =2;
+            updateClient(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.form.menuIds = this.getMenuAllCheckedKeys();
-            addRole(this.form).then(response => {
+            // 客户
+            this.form.recordFlag = 2;
+            addClient(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -470,34 +495,21 @@ export default {
         }
       });
     },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function() {
-      if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
-        dataScope(this.form).then(response => {
-          this.$modal.msgSuccess("修改成功");
-          this.openDataScope = false;
-          this.getList();
-        });
-      }
-    },
     /** 删除按钮操作 */
     handleDelete(row) {
-      // const roleIds = row.roleId || this.ids;
-      // this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
-      //   return delRole(roleIds);
-      // }).then(() => {
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => {});
-      alert("删除按钮操作");
+      const baseIds = row.baseId || this.ids;
+      this.$modal.confirm('是否确认删除供应商记录？').then(function() {
+        return delClient(baseIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('system/role/export', {
-      //   ...this.queryParams
-      // }, `role_${new Date().getTime()}.xlsx`)
-      alert(导出按钮操作);
+      this.download('/md/client/export', {
+        ...this.queryParams
+      }, `主数据管理_客户列表_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     }
   }
 };

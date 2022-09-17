@@ -3,7 +3,7 @@ import { parseStrEmpty } from "@/utils/ruoyi";
 
 // 查询供应商/客户列表
 export function listClient(query) {
-  query.recordFlag = 1;
+  // console.log("@@@@@@" + query.recordFlag);
   return request({
     url: '/md/client/list',
     method: 'get',
