@@ -422,7 +422,7 @@ export default {
     /** 查询供应商列表 */
     getList() {
       this.loading = true;
-      listClient(this.addDateRange(this.queryParams, this.dateRange), 2).then(response => {
+      listClient(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.supplierList = response.rows;
           this.total = response.total;
           this.loading = false;
