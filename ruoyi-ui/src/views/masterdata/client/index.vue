@@ -149,21 +149,26 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改供应商数据对话框 -->
+    <!-- 添加或修改客户数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <h3>供应商基本信息</h3>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <h3>客户基本信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称" prop="companyName">
-              <el-input v-model="form.companyName" placeholder="请输入公司名称" maxlength="50" />
+              <el-input 
+                v-model="form.companyName" 
+                placeholder="请输入公司名称"
+                style="width: 280px"
+                maxlength="50"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="成立日期">
               <el-date-picker
                 v-model="form.establishDate"
-                style="width: 240px"
+                style="width: 280px"
                 value-format="yyyy-MM-dd"
                 type="date"
               ></el-date-picker>
@@ -175,7 +180,7 @@
                 v-model="queryParams.registerCity"
                 placeholder="注册城市"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_register_city"
@@ -190,85 +195,136 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="注册资金" prop="registeredCapital">
-              <el-input v-model="form.registeredCapital" placeholder="请输入注册资金" />
+              <el-input 
+                v-model="form.registeredCapital" 
+                placeholder="请输入注册资金" 
+                style="width: 280px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="企业法人" prop="legalPerson">
-              <el-input v-model="form.legalPerson" placeholder="请输入企业法人" maxlength="30" />
+              <el-input 
+                v-model="form.legalPerson" 
+                placeholder="请输入企业法人"
+                style="width: 280px"
+                maxlength="50"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="固定电话" prop="fixedPhone">
-              <el-input v-model="form.fixedPhone" placeholder="请输入固定电话" />
+              <el-input 
+                v-model="form.fixedPhone" 
+                placeholder="请输入固定电话xxx-xxxxxxxx" 
+                style="width: 280px"
+                maxlength="12"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="传真号码" prop="faxNumber">
-              <el-input v-model="form.faxNumber" placeholder="请输入传真号码" />
+              <el-input 
+                v-model="form.faxNumber" 
+                placeholder="请输入传真号码xxx-xxxxxxxx" 
+                style="width: 280px"
+                maxlength="12"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="邮编" prop="zipCode">
-              <el-input v-model="form.zipCode" placeholder="请输入邮编" maxlength="6" />
+              <el-input 
+                v-model="form.zipCode" 
+                placeholder="请输入邮编" 
+                style="width: 280px" 
+                maxlength="6"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="营业时间" prop="businessHours">
-              <el-input v-model="form.businessHours" placeholder="请输入营业时间" />
+              <el-input 
+                v-model="form.businessHours" 
+                placeholder="请输入营业时间" 
+                style="width: 280px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="公司地址" prop="companyAdress">
-              <el-input v-model="form.companyAdress" placeholder="请输入公司地址" />
+              <el-input 
+                v-model="form.companyAdress" 
+                placeholder="请输入公司地址"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="公司网址" prop="companyWebsite">
-              <el-input v-model="form.companyWebsite" placeholder="请输入公司网址" />
+              <el-input 
+                v-model="form.companyWebsite" 
+                placeholder="请输入公司网址"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商联系人信息</h3>
+        <h3>客户联系人信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名" prop="contactsName">
-              <el-input v-model="form.contactsName" placeholder="请输入姓名" maxlength="10" />
+              <el-input 
+                v-model="form.contactsName" 
+                placeholder="请输入姓名" 
+                style="width: 280px" 
+                maxlength="50"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="手机" prop="contactsMobile">
-              <el-input v-model="form.contactsMobile" placeholder="请输入手机" maxlength="11" />
+              <el-input 
+                v-model="form.contactsMobile" 
+                placeholder="请输入手机" 
+                style="width: 280px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="电子邮箱" prop="contactsEmail">
-              <el-input v-model="form.contactsEmail" placeholder="请输入电子邮箱" />
+              <el-input 
+                v-model="form.contactsEmail" 
+                placeholder="请输入电子邮箱" 
+                style="width: 280px"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="办公地点" prop="contactsOfficeLocation">
-              <el-input v-model="form.contactsOfficeLocation" placeholder="请输入办公地点" />
+              <el-input 
+                v-model="form.contactsOfficeLocation" 
+                placeholder="请输入办公地点"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商账户信息</h3>
+        <h3>客户账户信息</h3>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="开户行" prop="depositBank">
               <el-select
                 v-model="form.depositBank"
                 placeholder="开户行"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_deposit_bank"
@@ -279,23 +335,26 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
             <el-form-item label="账号" prop="accountNumber">
-              <el-input v-model="form.accountNumber" placeholder="请输入账号" maxlength="32" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="税号" prop="taxNumber">
-              <el-input v-model="form.taxNumber" placeholder="请输入税号" maxlength="32" />
+              <el-input 
+                v-model="form.accountNumber" 
+                placeholder="请输入账号" 
+                style="width: 280px" 
+                maxlength="32"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="发票地址" prop="invoiceAddress">
-              <el-input v-model="form.invoiceAddress" placeholder="请输入发票地址" />
+            <el-form-item label="税号" prop="taxNumber">
+              <el-input 
+                v-model="form.taxNumber" 
+                placeholder="请输入税号" 
+                style="width: 280px" 
+                maxlength="32"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -304,7 +363,7 @@
                 v-model="form.invoiceType"
                 placeholder="发票类型"
                 clearable
-                style="width: 240px"
+                style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_invoice_type"
@@ -313,6 +372,17 @@
                   :value="dict.value"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="发票地址" prop="invoiceAddress">
+              <el-input 
+                v-model="form.invoiceAddress" 
+                placeholder="请输入发票地址" 
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -410,6 +480,13 @@ export default {
         // 发票类型
         invoiceType: [
           { required: true, message: "发票类型不能为空", trigger: "blur" }
+        ],
+        contactsMobile: [
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: "请输入正确的手机号码",
+            trigger: "blur"
+          }
         ]
       }
     };
