@@ -112,14 +112,14 @@
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="200" />
       <el-table-column label="成立日期" align="center" prop="dateRange" width="100" />
       <el-table-column label="注册城市" align="center" prop="registerCity" :show-overflow-tooltip="true" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_register_city" :value="scope.row.registerCity"/>
         </template>
       </el-table-column>
-      <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" width="200" />
       <el-table-column label="企业法人" align="center" prop="legalPerson" width="100" />
       <el-table-column label="注册资金" align="center" prop="registeredCapital"  width="100" />
       <el-table-column label="固定电话" align="center" prop="phone" width="150" />
@@ -154,7 +154,7 @@
     />
 
     <!-- 添加或修改客户数据对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <h3>客户基本信息</h3>
         <el-row>

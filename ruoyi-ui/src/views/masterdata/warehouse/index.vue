@@ -134,7 +134,7 @@
           <dict-tag :options="dict.type.masterdata_warehouse_category" :value="scope.row.warehouseCategory"/>
         </template>
       </el-table-column>
-      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="300" />
+      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="240" />
       <el-table-column label="占地面积" align="center" prop="useArea" :show-overflow-tooltip="true"  width="100" />
       <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="100">
         <template slot-scope="scope">
@@ -171,7 +171,7 @@
     />
 
     <!-- 添加或修改仓库数据对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
