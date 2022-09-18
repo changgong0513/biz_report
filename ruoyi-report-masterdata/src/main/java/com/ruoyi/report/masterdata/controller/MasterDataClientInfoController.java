@@ -34,7 +34,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 查询业务报表列表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:list')")
     @GetMapping("/list")
     public TableDataInfo list(MasterDataClientInfo masterDataClientInfo)
     {
@@ -48,7 +47,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 导出业务报表列表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:export')")
     @Log(title = "业务报表", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, MasterDataClientInfo masterDataClientInfo)
@@ -61,7 +59,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 获取业务报表详细信息
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:query')")
     @GetMapping(value = "/{baseId}")
     public AjaxResult getInfo(@PathVariable("baseId") String baseId)
     {
@@ -71,7 +68,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 新增业务报表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:add')")
     @Log(title = "业务报表", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MasterDataClientInfo masterDataClientInfo) {
@@ -90,7 +86,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 修改业务报表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:edit')")
     @Log(title = "业务报表", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody MasterDataClientInfo masterDataClientInfo)
@@ -101,7 +96,6 @@ public class MasterDataClientInfoController extends BaseController
     /**
      * 删除业务报表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:xmy-biz-api:remove')")
     @Log(title = "业务报表", businessType = BusinessType.DELETE)
     @DeleteMapping("/{baseIds}")
     public AjaxResult remove(@PathVariable String[] baseIds)
