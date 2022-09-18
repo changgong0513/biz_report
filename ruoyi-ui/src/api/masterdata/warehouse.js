@@ -12,7 +12,6 @@ export function listWarehouse(query) {
 
 // 查询仓库详细
 export function getWarehouse(warehouseId) {
-  console.log("仓库编号：" + warehouseId);
   return request({
     url: '/md/warehouse/' + parseStrEmpty(warehouseId),
     method: 'get'
@@ -21,7 +20,6 @@ export function getWarehouse(warehouseId) {
 
 // 新增仓库数据
 export function addWarehouse(data) {
-  console.log("新增仓库数据");
   return request({
     url: '/md/warehouse',
     method: 'post',
