@@ -121,15 +121,27 @@
     </el-row>
 
     <el-table v-loading="loading" :data="warehouseList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="仓库名称" prop="warehouseName" width="150" />
-      <el-table-column label="建库日期" prop="buildDate" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="区划" prop="warehouseRegion" :show-overflow-tooltip="true" width="80" />
-      <el-table-column label="仓库类别" prop="warehouseCategory" width="100" />
-      <el-table-column label="地址" prop="warehouseAddress" align="center" width="300" />
-      <el-table-column label="占地面积" prop="useArea" align="center"  width="100" />
-      <el-table-column label="管理部门" prop="managementDepartment" width="100" />
-      <el-table-column label="管理人员" prop="warehouseManager" width="100" />
+      <el-table-column type="selection" align="center" width="55" />
+      <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" width="150" />
+      <el-table-column label="建库日期" align="center" prop="buildDate" :show-overflow-tooltip="true" width="100" />
+      <el-table-column label="区划" align="center" prop="warehouseRegion" :show-overflow-tooltip="true" width="80">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.masterdata_warehouse_region" :value="scope.row.warehouseRegion"/>
+        </template>
+      </el-table-column> 
+      <el-table-column label="仓库类别" align="center" prop="warehouseCategory" :show-overflow-tooltip="true" width="100">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.masterdata_warehouse_category" :value="scope.row.warehouseCategory"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="300" />
+      <el-table-column label="占地面积" align="center" prop="useArea" :show-overflow-tooltip="true"  width="100" />
+      <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="100">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.masterdata_management_department" :value="scope.row.managementDepartment"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="管理人员" align="center" prop="warehouseManager" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
@@ -211,7 +223,7 @@
                   v-for="dict in dict.type.masterdata_warehouse_region"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>
@@ -229,18 +241,17 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="管理部门" prop="managementDepartment">
+            <el-form-item label="管理部门">
               <el-select
                 v-model="form.managementDepartment"
                 placeholder="管理部门"
-                clearable
                 style="width: 280px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_management_department"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>
@@ -281,7 +292,7 @@
                   v-for="dict in dict.type.masterdata_warehouse_category"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>
@@ -310,7 +321,7 @@
                   v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>

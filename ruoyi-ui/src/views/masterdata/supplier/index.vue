@@ -111,14 +111,18 @@
     </el-row>
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公司名称" prop="companyName" width="240" />
-      <el-table-column label="成立日期" prop="dateRange" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="注册城市" prop="registerCity" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="地址" prop="address" width="240" />
-      <el-table-column label="企业法人" prop="legalPerson" align="center" width="100" />
-      <el-table-column label="注册资金" prop="registeredCapital" align="center"  width="100" />
-      <el-table-column label="固定电话" prop="phone" width="150" />
+      <el-table-column type="selection" align="center" width="55" />
+      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="成立日期" align="center" prop="dateRange" width="100" />
+      <el-table-column label="注册城市" align="center" prop="registerCity" :show-overflow-tooltip="true" width="100">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.masterdata_register_city" :value="scope.row.registerCity"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="企业法人" align="center" prop="legalPerson" width="100" />
+      <el-table-column label="注册资金" align="center" prop="registeredCapital"  width="100" />
+      <el-table-column label="固定电话" align="center" prop="phone" width="150" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
@@ -135,8 +139,6 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:role:remove']"
           >删除</el-button>
-          <!-- 供应商编号（隐藏域） -->
-          <!-- <div v-show="!scope.row.baseId">{{scope.row.baseId}}</div> -->
         </template>
       </el-table-column>
     </el-table>
@@ -177,7 +179,7 @@
           <el-col :span="8">
             <el-form-item label="注册城市" prop="registerCity">
               <el-select
-                v-model="queryParams.registerCity"
+                v-model="form.registerCity"
                 placeholder="注册城市"
                 clearable
                 style="width: 280px"
@@ -330,7 +332,7 @@
                   v-for="dict in dict.type.masterdata_deposit_bank"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>
@@ -369,7 +371,7 @@
                   v-for="dict in dict.type.masterdata_invoice_type"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>
@@ -492,7 +494,6 @@ export default {
     };
   },
   created() {
-    // console.log("created回调------取得供应商表格数据");
     this.getList();
   },
   methods: {
@@ -529,7 +530,6 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.baseId)
-      // console.log("@@@@@@" + this.ids);
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
