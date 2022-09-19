@@ -134,9 +134,9 @@
           <dict-tag :options="dict.type.masterdata_warehouse_category" :value="scope.row.warehouseCategory"/>
         </template>
       </el-table-column>
-      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="240" />
-      <el-table-column label="占地面积" align="center" prop="useArea" :show-overflow-tooltip="true"  width="100" />
-      <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="100">
+      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="200" />
+      <el-table-column label="占地面积" align="center" prop="useArea" :show-overflow-tooltip="true"  width="80" />
+      <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_management_department" :value="scope.row.managementDepartment"/>
         </template>
@@ -144,6 +144,12 @@
       <el-table-column label="管理人员" align="center" prop="warehouseManager" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleView(scope.row,scope.index)"
+          >详细</el-button>
           <el-button
             size="mini"
             type="text"
@@ -339,6 +345,91 @@
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 仓库数据详细 -->
+    <el-dialog title="仓库数据详细" :visible.sync="open" width="90%" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="仓库ID">{{form.warehouseId}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="仓库编码">{{form.warehouseCode}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="仓库名称">{{form.warehouseName}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="成立日期">{{form.buildDate}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="区划">
+              <template>
+                <dict-tag :options="dict.type.masterdata_warehouse_region" :value="form.warehouseRegion"/>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="仓库地址">{{form.warehouseAddress}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="管理部门">
+              <template>
+                <dict-tag :options="dict.type.masterdata_management_department" :value="form.managementDepartment"/>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <!-- 管理人员 -->
+            <el-form-item label="管理人员">{{form.warehouseManager}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="联系方式1">{{form.contactMobile1}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="联系方式2">{{form.contactMobile2}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <!-- 仓库类别 -->
+            <el-form-item label="仓库类别">
+              <template>
+                <dict-tag :options="dict.type.masterdata_warehouse_category" :value="form.warehouseCategory"/>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="占地面积">{{form.useArea}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="最大容量">{{form.maximumCapacity}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="计量单位">
+              <template>
+                <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="form.measurementUnit"/>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8"></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注">{{form.warehouseRemarks}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="open = false">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -537,6 +628,10 @@ export default {
       this.download('/md/warehouse/export', {
         ...this.queryParams
       }, `主数据管理_仓库列表_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
+    },
+    handleView(row) {
+      this.open = true;
+      this.form = row;
     }
   }
 };

@@ -112,7 +112,7 @@
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="200" />
+      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="180" />
       <el-table-column label="成立日期" align="center" prop="dateRange" width="100" />
       <el-table-column label="注册城市" align="center" prop="registerCity" :show-overflow-tooltip="true" width="100">
         <template slot-scope="scope">
@@ -122,9 +122,15 @@
       <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" width="200" />
       <el-table-column label="企业法人" align="center" prop="legalPerson" width="100" />
       <el-table-column label="注册资金" align="center" prop="registeredCapital"  width="100" />
-      <el-table-column label="固定电话" align="center" prop="phone" width="150" />
+      <el-table-column label="固定电话" align="center" prop="phone" width="100" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleView(scope.row,scope.index)"
+          >详细</el-button>
           <el-button
             size="mini"
             type="text"
@@ -394,6 +400,110 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 供应商数据详细 -->
+    <el-dialog title="供应商数据详细" :visible.sync="open" width="90%" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <h3>供应商基本信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="公司名称">{{form.companyName}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="成立日期">{{form.establishDate}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="注册城市">
+              <template>
+                <dict-tag :options="dict.type.masterdata_register_city" :value="form.registerCity"/>
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="注册资金">{{form.registeredCapital}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="企业法人">form.legalPerson</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="固定电话">{{form.fixedPhone}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="传真号码">{{form.faxNumber}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮编">{{form.zipCode}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="营业时间">{{form.businessHours}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="公司地址">{{form.companyAdress}}</el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="公司网址">{{form.companyWebsite}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>供应商联系人信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名">{{form.contactsName}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="手机">{{form.contactsMobile}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电子邮箱">{{form.contactsEmail}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="办公地点">{{form.contactsOfficeLocation}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>供应商账户信息</h3>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="开户行">
+              <template>
+                <dict-tag :options="dict.type.masterdata_deposit_bank" :value="form.depositBank"/>
+              </template>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="账号">{{form.accountNumber}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="税号">{{form.taxNumber}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发票类型">
+              <template>
+                <dict-tag :options="dict.type.masterdata_invoice_type" :value="form.invoiceType"/>
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="发票地址">{{form.invoiceAddress}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="open = false">关 闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -587,6 +697,11 @@ export default {
       this.download('/md/client/export', {
         ...this.queryParams
       }, `主数据管理_供应商列表_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
+    },
+    /** 详细按钮操作 */
+    handleView(row) {
+      this.open = true;
+      this.form = row;
     }
   }
 };
