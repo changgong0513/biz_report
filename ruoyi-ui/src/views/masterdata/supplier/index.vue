@@ -402,70 +402,70 @@
     </el-dialog>
 
     <!-- 供应商数据详细 -->
-    <el-dialog title="供应商数据详细" :visible.sync="open" width="90%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-dialog title="供应商数据详细" :visible.sync="openDetail" width="90%" append-to-body>
+      <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <h3>供应商基本信息</h3>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="公司名称">{{form.companyName}}</el-form-item>
+            <el-form-item label="公司名称">{{formDetail.companyName}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成立日期">{{form.establishDate}}</el-form-item>
+            <el-form-item label="成立日期">{{formDetail.establishDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="注册城市">
               <template>
-                <dict-tag :options="dict.type.masterdata_register_city" :value="form.registerCity"/>
+                <dict-tag :options="dict.type.masterdata_register_city" :value="formDetail.registerCity"/>
               </template>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="注册资金">{{form.registeredCapital}}</el-form-item>
+            <el-form-item label="注册资金">{{formDetail.registeredCapital}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="企业法人">form.legalPerson</el-form-item>
+            <el-form-item label="企业法人">{{formDetail.legalPerson}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="固定电话">{{form.fixedPhone}}</el-form-item>
+            <el-form-item label="固定电话">{{formDetail.fixedPhone}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="传真号码">{{form.faxNumber}}</el-form-item>
+            <el-form-item label="传真号码">{{formDetail.faxNumber}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="邮编">{{form.zipCode}}</el-form-item>
+            <el-form-item label="邮编">{{formDetail.zipCode}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="营业时间">{{form.businessHours}}</el-form-item>
+            <el-form-item label="营业时间">{{formDetail.businessHours}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="公司地址">{{form.companyAdress}}</el-form-item>
+            <el-form-item label="公司地址">{{formDetail.companyAdress}}</el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="公司网址">{{form.companyWebsite}}</el-form-item>
+            <el-form-item label="公司网址">{{formDetail.companyWebsite}}</el-form-item>
           </el-col>
         </el-row>
         <el-divider />
         <h3>供应商联系人信息</h3>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="姓名">{{form.contactsName}}</el-form-item>
+            <el-form-item label="姓名">{{formDetail.contactsName}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="手机">{{form.contactsMobile}}</el-form-item>
+            <el-form-item label="手机">{{formDetail.contactsMobile}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="电子邮箱">{{form.contactsEmail}}</el-form-item>
+            <el-form-item label="电子邮箱">{{formDetail.contactsEmail}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="办公地点">{{form.contactsOfficeLocation}}</el-form-item>
+            <el-form-item label="办公地点">{{formDetail.contactsOfficeLocation}}</el-form-item>
           </el-col>
         </el-row>
         <el-divider />
@@ -474,34 +474,34 @@
           <el-col :span="12">
             <el-form-item label="开户行">
               <template>
-                <dict-tag :options="dict.type.masterdata_deposit_bank" :value="form.depositBank"/>
+                <dict-tag :options="dict.type.masterdata_deposit_bank" :value="formDetail.depositBank"/>
               </template>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="账号">{{form.accountNumber}}</el-form-item>
+            <el-form-item label="账号">{{formDetail.accountNumber}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="税号">{{form.taxNumber}}</el-form-item>
+            <el-form-item label="税号">{{formDetail.taxNumber}}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票类型">
               <template>
-                <dict-tag :options="dict.type.masterdata_invoice_type" :value="form.invoiceType"/>
+                <dict-tag :options="dict.type.masterdata_invoice_type" :value="formDetail.invoiceType"/>
               </template>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="发票地址">{{form.invoiceAddress}}</el-form-item>
+            <el-form-item label="发票地址">{{formDetail.invoiceAddress}}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="open = false">关 闭</el-button>
+        <el-button @click="openDetail = false">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -533,6 +533,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 
+      openDetail: false,
       // 日期范围
       dateRange: [],
       // 查询参数
@@ -547,6 +549,7 @@ export default {
       },
       // 表单参数
       form: {},
+      formDetail: {},
       defaultProps: {
         children: "children",
         label: "label"
@@ -700,8 +703,8 @@ export default {
     },
     /** 详细按钮操作 */
     handleView(row) {
-      this.open = true;
-      this.form = row;
+      this.openDetail = true;
+      this.formDetail = row;
     }
   }
 };
