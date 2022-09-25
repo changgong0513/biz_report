@@ -427,7 +427,7 @@
             <el-form-item label="注册资金">{{formDetail.registeredCapital}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="企业法人">formDetail.legalPerson</el-form-item>
+            <el-form-item label="企业法人">{{formDetail.legalPerson}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="固定电话">{{formDetail.fixedPhone}}</el-form-item>
