@@ -513,7 +513,7 @@ export default {
   },
   created() {
     // this.getList();
-    console.log("created回调查询采购收货销售发货管理列表");
+    console.log("created回调查询销售管理列表");
   },
   methods: {
     /** 查询采购收货销售发货管理列表 */
