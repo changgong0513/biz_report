@@ -91,7 +91,29 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['contract:contract:add']"
-        >合同模板下载</el-button>
+        >新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['contract:contract:edit']"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['contract:contract:remove']"
+        >删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -101,7 +123,7 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['contract:contract:export']"
-        >合同同步</el-button>
+        >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
@@ -119,16 +141,14 @@
       <el-table-column label="合同总价" align="center" prop="contractTotal" width="80" />
       <el-table-column label="审批状态" align="center" prop="approvalStatus" width="80" />
       <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">
-        <template>
-          <el-upload 
-            ref="field101" 
-            :file-list="field101fileList" 
-            :action="field101Action" 
-            :auto-upload="false"
-            multiple 
-            :before-upload="field101BeforeUpload">
-            <el-button size="mini" type="text" icon="el-icon-upload">上传</el-button>
-          </el-upload>
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['contract:contract:edit']"
+          >上传</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -143,107 +163,114 @@
 
     <!-- 添加或修改合同管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <h3>合同内容详细</h3>
         <el-row>
-          <el-col :span="8"><el-form-item label="货物名称">{{form.goodsName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同类型">{{form.contractType}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同名称">{{form.contractName}}</el-form-item></el-col>
+            <el-col :span="8">
+              <el-form-item label="货物名称" prop="goodsName">
+          <el-input v-model="form.goodsName" placeholder="请输入货物名称" />
+        </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              
+            </el-col>
+            <el-col :span="8">
+              
+            </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同编号">{{form.contractId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="签约日期">{{form.signDate}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="交货日期">{{form.deliveryDate}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="我方单位名称">{{form.ourCompanyName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="我方负责人">{{form.ourPrincipal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="对方单位名称">{{form.oppositeCompanyName}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="对方负责人">{{form.oppositePrincipal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同数量">{{form.contractQuantity}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同单价">{{form.contractPrice}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同总价">{{form.contractTotal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="账期">{{form.accountingPeriod}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="交货方式">{{form.deliveryMethod}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="港口到厂运费">{{form.portToFactoryFare}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="港口到港口运费">{{form.portToPortFare}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="其他">{{form.contractOther}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24"><el-form-item label="代理或合作方">{{form.contractAgent}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24"><el-form-item label="备注">{{form.contractRemark}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="图片">
-              <div class="demo-image__preview">
-                <el-image 
-                  style="width: 100px; height: 100px"
-                  :src="url" 
-                  :preview-src-list="srcList">
-                </el-image>
-              </div>
-            </el-form-item>
+        
+        <el-form-item label="合同名称" prop="contractName">
+          <el-input v-model="form.contractName" placeholder="请输入合同名称" />
+        </el-form-item>
+        <el-form-item label="合同编号" prop="contractId">
+          <el-input v-model="form.contractId" placeholder="请输入合同编号" />
+        </el-form-item>
+        <el-form-item label="签约日期" prop="signDate">
+          <el-date-picker clearable
+            v-model="form.signDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择签约日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="交货日期" prop="deliveryDate">
+          <el-date-picker clearable
+            v-model="form.deliveryDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择交货日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="我方单位名称" prop="ourCompanyName">
+          <el-input v-model="form.ourCompanyName" placeholder="请输入我方单位名称" />
+        </el-form-item>
+        <el-form-item label="我方负责人" prop="ourPrincipal">
+          <el-input v-model="form.ourPrincipal" placeholder="请输入我方负责人" />
+        </el-form-item>
+        <el-form-item label="对方单位名称" prop="oppositeCompanyName">
+          <el-input v-model="form.oppositeCompanyName" placeholder="请输入对方单位名称" />
+        </el-form-item>
+        <el-form-item label="对方负责人" prop="oppositePrincipal">
+          <el-input v-model="form.oppositePrincipal" placeholder="请输入对方负责人" />
+        </el-form-item>
+        <el-form-item label="合同数量" prop="contractQuantity">
+          <el-input v-model="form.contractQuantity" placeholder="请输入合同数量" />
+        </el-form-item>
+        <el-form-item label="合同单价" prop="contractPrice">
+          <el-input v-model="form.contractPrice" placeholder="请输入合同单价" />
+        </el-form-item>
+        <el-form-item label="合同总价" prop="contractTotal">
+          <el-input v-model="form.contractTotal" placeholder="请输入合同总价" />
+        </el-form-item>
+        <el-form-item label="账期" prop="accountingPeriod">
+          <el-input v-model="form.accountingPeriod" placeholder="请输入账期" />
+        </el-form-item>
+        <el-form-item label="港口到厂运费" prop="portToFactoryFare">
+          <el-input v-model="form.portToFactoryFare" placeholder="请输入港口到厂运费" />
+        </el-form-item>
+        <el-form-item label="港口到港口运费" prop="portToPortFare">
+          <el-input v-model="form.portToPortFare" placeholder="请输入港口到港口运费" />
+        </el-form-item>
+        <el-form-item label="其他" prop="contractOther">
+          <el-input v-model="form.contractOther" placeholder="请输入其他" />
+        </el-form-item>
+        <el-form-item label="代理或合作方" prop="contractAgent">
+          <el-input v-model="form.contractAgent" placeholder="请输入代理或合作方" />
+        </el-form-item>
+        <el-form-item label="合同备注" prop="contractRemark">
+          <el-input v-model="form.contractRemark" placeholder="请输入合同备注" />
+        </el-form-item>
+        <el-form-item label="版本号" prop="bizVersion">
+          <el-input v-model="form.bizVersion" placeholder="请输入版本号" />
+        </el-form-item>
+        <el-divider content-position="center">${subTable.functionName}信息</el-divider>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddContractAdditionalInfo">添加</el-button>
           </el-col>
-          <el-col :span="12"><el-form-item label="附件"></el-form-item></el-col>
-        </el-row>
-      </el-form>
-      <el-divider />
-
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="12">
-          <h3 style="display:inline; margin-right: 15px">合同审批信息</h3>
-          <el-switch
-            v-model="showApproval"
-            active-color="#13ce66">
-          </el-switch>
-        </el-col>
-      </el-row>
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px" v-show="showApproval">
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同ID">{{form.contractId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批编号">{{form.approvalId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="标题">{{form.approvalTitle}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="审批状态">{{form.approvalStatus}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批结果">{{form.approvalResult}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起时间">{{form.launchTime}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="完成时间">{{form.completeTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="耗时">{{form.takeupTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人工号">{{form.launchJobId}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="发起人ID">{{form.launchId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人姓名">{{form.launchName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人部门">{{form.launchDepartment}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="审批人姓名">{{form.approvalName}}</el-form-item></el-col>
-          <el-col :span="16"><el-form-item label="当前处理人姓名">{{form.processorName}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="审批记录">
-              <el-input
-                type="textarea"
-                :rows="6"
-                v-model="form.approvalRecords">
-              </el-input>
-            </el-form-item>
+          <el-col :span="1.5">
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteContractAdditionalInfo">删除</el-button>
           </el-col>
         </el-row>
+        <el-table :data="contractAdditionalInfoList" :row-class-name="rowContractAdditionalInfoIndex" @selection-change="handleContractAdditionalInfoSelectionChange" ref="contractAdditionalInfo">
+          <el-table-column type="selection" width="50" align="center" />
+          <el-table-column label="序号" align="center" prop="index" width="50"/>
+          <el-table-column label="上传图片路径" prop="uploadImagePath" width="150">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.uploadImagePath" placeholder="请输入上传图片路径" />
+            </template>
+          </el-table-column>
+          <el-table-column label="上传文件路径" prop="uplloadFilePath" width="150">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.uplloadFilePath" placeholder="请输入上传文件路径" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -267,8 +294,6 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
-      // 显示审批详细
-      showApproval: true,
       // 总条数
       total: 1,
       // 合同管理表格数据
@@ -317,12 +342,7 @@ export default {
         contractId: [
           { required: true, message: "合同编号不能为空", trigger: "blur" }
         ],
-      },
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      srcList: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ]
+      }
     };
   },
   created() {
