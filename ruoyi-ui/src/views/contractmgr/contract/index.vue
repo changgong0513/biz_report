@@ -114,8 +114,8 @@
           <span>{{ parseTime(scope.row.signDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="合同名称" align="center" prop="contractName" width="350" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="oppositeCompanyName" width="350" :show-overflow-tooltip="true" />
+      <el-table-column label="合同名称" align="center" prop="contractName" width="280" :show-overflow-tooltip="true" />
+      <el-table-column label="客户名称" align="center" prop="oppositeCompanyName" width="280" :show-overflow-tooltip="true" />
       <el-table-column label="合同总价" align="center" prop="contractTotal" width="80" />
       <el-table-column label="审批状态" align="center" prop="approvalStatus" width="80" />
       <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">

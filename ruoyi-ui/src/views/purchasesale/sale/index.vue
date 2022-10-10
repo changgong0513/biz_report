@@ -131,7 +131,7 @@
       </el-table-column>
       <el-table-column label="所属部门" align="center" prop="belongDept" width="80" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
+      <el-table-column label="客户名称" align="center" prop="supplierName" width="190" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="80" />
       <el-table-column label="物料名称" align="center" prop="materialName" width="100" />
       <el-table-column label="核算金额" align="center" prop="checkMoney" width="100" />
