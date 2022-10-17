@@ -23,7 +23,7 @@ public class MasterDataClientInfo extends BaseEntity
     private String companyName;
 
     /** 注册城市 */
-    @Excel(name = "注册城市")
+    @Excel(name = "注册城市", dictType = "masterdata_register_city")
     private String registerCity;
 
     /** 地址 */
@@ -71,7 +71,7 @@ public class MasterDataClientInfo extends BaseEntity
     private String contactsOfficeLocation;
 
     /** 开户行 */
-    @Excel(name = "开户行")
+    @Excel(name = "开户行", dictType = "masterdata_deposit_bank")
     private Long depositBank;
 
     /** 账号 */
@@ -87,7 +87,7 @@ public class MasterDataClientInfo extends BaseEntity
     private String invoiceAddress;
 
     /** 发票类型 */
-    @Excel(name = "发票类型")
+    @Excel(name = "发票类型", dictType = "masterdata_invoice_type")
     private Long invoiceType;
 
     /** 收件人姓名 */
@@ -103,7 +103,6 @@ public class MasterDataClientInfo extends BaseEntity
     private String sjrdz;
 
     /** 版本号 */
-    @Excel(name = "版本号")
     private Long bizVersion;
 
     public void setBaseId(String baseId) 
