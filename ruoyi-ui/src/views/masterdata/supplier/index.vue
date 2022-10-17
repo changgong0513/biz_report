@@ -11,52 +11,25 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 企业法人 -->
-      <el-form-item label="企业法人" prop="legalPerson">
+      <!-- 联系人姓名 -->
+      <el-form-item label="联系人姓名" prop="lxrxm">
         <el-input
-          v-model="queryParams.legalPerson"
-          placeholder="请输入企业法人"
+          v-model="queryParams.lxrxm"
+          placeholder="请输入联系人姓名"
           clearable
           style="width: 240px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 注册城市 -->
-      <el-form-item label="注册城市" prop="registerCity">
-        <el-select
-          v-model="queryParams.registerCity"
-          placeholder="注册城市"
-          clearable
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.masterdata_register_city"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- 注册资金 -->
-      <el-form-item label="注册资金" prop="registeredCapital">
+      <!-- 收件人姓名 -->
+      <el-form-item label="收件人姓名" prop="sjrxm">
         <el-input
-          v-model="queryParams.registeredCapital"
-          placeholder="请输入注册资金"
+          v-model="queryParams.sjrName"
+          placeholder="请输入收件人姓名"
           clearable
           style="width: 240px"
+          @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <!-- 成立日期 -->
-      <el-form-item label="成立日期">
-        <el-date-picker
-          v-model="dateRange"
-          style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -110,43 +83,23 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
+    <el-table 
+      v-loading="loading" 
+      :data="supplierList" 
+      @selection-change="handleSelectionChange"
+      @row-dblclick="handleView">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="180" />
-      <el-table-column label="成立日期" align="center" prop="dateRange" width="100" />
-      <el-table-column label="注册城市" align="center" prop="registerCity" :show-overflow-tooltip="true" width="100">
+      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="联系人姓名" align="center" prop="lxrxm" width="150" />
+      <el-table-column label="联系人电话" align="center" prop="lxrdh"  width="150" />
+      <el-table-column label="发票类型" align="center" prop="invoiceType" width="150">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.masterdata_register_city" :value="scope.row.registerCity"/>
+          <dict-tag :options="dict.type.masterdata_invoice_type" :value="scope.row.invoiceType"/>
         </template>
       </el-table-column>
-      <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" width="200" />
-      <el-table-column label="企业法人" align="center" prop="legalPerson" width="100" />
-      <el-table-column label="注册资金" align="center" prop="registeredCapital"  width="100" />
-      <el-table-column label="固定电话" align="center" prop="phone" width="100" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope" v-if="scope.row.roleId !== 1">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-view"
-            @click="handleView(scope.row,scope.index)"
-          >详细</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:role:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column label="收件人姓名" align="center" prop="sjrxm" width="140" />
+      <el-table-column label="收件人电话" align="center" prop="sjrdh"  width="140" />
+      <el-table-column label="收件人地址" align="center" prop="sjrdz" :show-overflow-tooltip="true" width="240" />
     </el-table>
 
     <pagination
@@ -160,7 +113,7 @@
     <!-- 添加或修改供应商数据对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <h3>供应商基本信息</h3>
+        <h3>基本信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称" prop="companyName">
@@ -170,16 +123,6 @@
                 style="width: 280px"
                 maxlength="50"
                 show-word-limit />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成立日期">
-              <el-date-picker
-                v-model="form.establishDate"
-                style="width: 280px"
-                value-format="yyyy-MM-dd"
-                type="date"
-              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -199,8 +142,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="注册资金" prop="registeredCapital">
               <el-input 
@@ -209,6 +150,9 @@
                 style="width: 280px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          
           <el-col :span="8">
             <el-form-item label="企业法人" prop="legalPerson">
               <el-input 
@@ -219,18 +163,6 @@
                 show-word-limit />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="固定电话" prop="fixedPhone">
-              <el-input 
-                v-model="form.fixedPhone" 
-                placeholder="请输入固定电话xxx-xxxxxxxx" 
-                style="width: 280px"
-                maxlength="12"
-                show-word-limit />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="传真号码" prop="faxNumber">
               <el-input 
@@ -249,14 +181,6 @@
                 style="width: 280px" 
                 maxlength="6"
                 show-word-limit />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="营业时间" prop="businessHours">
-              <el-input 
-                v-model="form.businessHours" 
-                placeholder="请输入营业时间" 
-                style="width: 280px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -281,7 +205,7 @@
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商联系人信息</h3>
+        <h3>联系人信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名" prop="contactsName">
@@ -324,7 +248,39 @@
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商账户信息</h3>
+        <h3>收件人信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名" prop="sjrxm">
+              <el-input 
+                v-model="form.sjrxm" 
+                placeholder="请输入姓名" 
+                style="width: 280px" 
+                maxlength="50"
+                show-word-limit />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电话" prop="sjrdh">
+              <el-input 
+                v-model="form.sjrdh" 
+                placeholder="请输入电话" 
+                style="width: 280px" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="地址" prop="sjrdz">
+              <el-input 
+                v-model="form.sjrdz" 
+                placeholder="请输入地址" 
+                style="width: 280px"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>账户信息</h3>
         <el-row>
           <el-col :span="12">
             <el-form-item label="开户行" prop="depositBank">
@@ -404,13 +360,10 @@
     <!-- 供应商数据详细 -->
     <el-dialog title="供应商数据详细" :visible.sync="openDetail" width="90%" append-to-body>
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
-        <h3>供应商基本信息</h3>
+        <h3>基本信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称">{{formDetail.companyName}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成立日期">{{formDetail.establishDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="注册城市">
@@ -419,27 +372,19 @@
               </template>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="注册资金">{{formDetail.registeredCapital}}</el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="企业法人">{{formDetail.legalPerson}}</el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="固定电话">{{formDetail.fixedPhone}}</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="传真号码">{{formDetail.faxNumber}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="邮编">{{formDetail.zipCode}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="营业时间">{{formDetail.businessHours}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -451,7 +396,7 @@
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商联系人信息</h3>
+        <h3>联系人信息</h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名">{{formDetail.contactsName}}</el-form-item>
@@ -469,7 +414,20 @@
           </el-col>
         </el-row>
         <el-divider />
-        <h3>供应商账户信息</h3>
+        <h3>收件人信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名">{{formDetail.sjrxm}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电话">{{formDetail.sjrdh}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="地址">{{formDetail.sjrdz}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>账户信息</h3>
         <el-row>
           <el-col :span="12">
             <el-form-item label="开户行">
@@ -543,9 +501,8 @@ export default {
         pageSize: 10,
         recordFlag: 1, //供应商标志
         companyName: undefined,
-        legalPerson: undefined,
-        registerCity: undefined,
-        registeredCapital: undefined
+        lxrxm: undefined,
+        sjrxm: undefined
       },
       // 表单参数
       form: {},
