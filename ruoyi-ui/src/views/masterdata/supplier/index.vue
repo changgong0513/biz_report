@@ -12,9 +12,9 @@
         />
       </el-form-item>
       <!-- 联系人姓名 -->
-      <el-form-item label="联系人姓名" prop="lxrxm">
+      <el-form-item label="联系人姓名" prop="contactsName">
         <el-input
-          v-model="queryParams.lxrxm"
+          v-model="queryParams.contactsName"
           placeholder="请输入联系人姓名"
           clearable
           style="width: 240px"
@@ -24,7 +24,7 @@
       <!-- 收件人姓名 -->
       <el-form-item label="收件人姓名" prop="sjrxm">
         <el-input
-          v-model="queryParams.sjrName"
+          v-model="queryParams.sjrxm"
           placeholder="请输入收件人姓名"
           clearable
           style="width: 240px"
@@ -90,8 +90,8 @@
       @row-dblclick="handleView">
       <el-table-column type="selection" align="center" width="55" />
       <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
-      <el-table-column label="联系人姓名" align="center" prop="lxrxm" width="150" />
-      <el-table-column label="联系人电话" align="center" prop="lxrdh"  width="150" />
+      <el-table-column label="联系人姓名" align="center" prop="contactsName" width="150" />
+      <el-table-column label="联系人电话" align="center" prop="contactsMobile"  width="150" />
       <el-table-column label="发票类型" align="center" prop="invoiceType" width="150">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_invoice_type" :value="scope.row.invoiceType"/>
@@ -501,7 +501,7 @@ export default {
         pageSize: 10,
         recordFlag: 1, //供应商标志
         companyName: undefined,
-        lxrxm: undefined,
+        contactsName: undefined,
         sjrxm: undefined
       },
       // 表单参数

@@ -12,7 +12,6 @@ import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
 import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +31,7 @@ public class MasterDataClientInfoController extends BaseController
     private IMasterDataClientInfoService masterDataClientInfoService;
 
     /**
-     * 查询业务报表列表
+     * 查询主数据管理列表
      */
     @GetMapping("/list")
     public TableDataInfo list(MasterDataClientInfo masterDataClientInfo)
@@ -45,19 +44,19 @@ public class MasterDataClientInfoController extends BaseController
     }
 
     /**
-     * 导出业务报表列表
+     * 导出主数据管理列表
      */
-    @Log(title = "业务报表", businessType = BusinessType.EXPORT)
+    @Log(title = "主数据管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, MasterDataClientInfo masterDataClientInfo)
     {
         List<MasterDataClientInfo> list = masterDataClientInfoService.selectMasterDataClientInfoList(masterDataClientInfo);
         ExcelUtil<MasterDataClientInfo> util = new ExcelUtil<MasterDataClientInfo>(MasterDataClientInfo.class);
-        util.exportExcel(response, list, "业务报表数据");
+        util.exportExcel(response, list, "主数据管理");
     }
 
     /**
-     * 获取业务报表详细信息
+     * 获取主数据管理详细信息
      */
     @GetMapping(value = "/{baseId}")
     public AjaxResult getInfo(@PathVariable("baseId") String baseId)
@@ -66,9 +65,9 @@ public class MasterDataClientInfoController extends BaseController
     }
 
     /**
-     * 新增业务报表
+     * 新增主数据管理数据
      */
-    @Log(title = "业务报表", businessType = BusinessType.INSERT)
+    @Log(title = "主数据管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MasterDataClientInfo masterDataClientInfo) {
 
@@ -84,9 +83,9 @@ public class MasterDataClientInfoController extends BaseController
     }
 
     /**
-     * 修改业务报表
+     * 修改主数据管理数据
      */
-    @Log(title = "业务报表", businessType = BusinessType.UPDATE)
+    @Log(title = "主数据管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody MasterDataClientInfo masterDataClientInfo)
     {
@@ -94,9 +93,9 @@ public class MasterDataClientInfoController extends BaseController
     }
 
     /**
-     * 删除业务报表
+     * 删除主数据管理数据
      */
-    @Log(title = "业务报表", businessType = BusinessType.DELETE)
+    @Log(title = "主数据管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{baseIds}")
     public AjaxResult remove(@PathVariable String[] baseIds)
     {

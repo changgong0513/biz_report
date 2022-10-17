@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper">
-    
+
     <resultMap type="MasterDataClientInfo" id="MasterDataClientInfoResult">
         <result property="baseId"    column="base_id"    />
         <result property="companyName"    column="company_name"    />
-        <result property="establishDate"    column="establish_date"    />
         <result property="registerCity"    column="register_city"    />
         <result property="companyAdress"    column="company_adress"    />
         <result property="zipCode"    column="zip_code"    />
         <result property="legalPerson"    column="legal_person"    />
         <result property="registeredCapital"    column="registered_capital"    />
-        <result property="fixedPhone"    column="fixed_phone"    />
         <result property="faxNumber"    column="fax_number"    />
-        <result property="businessHours"    column="business_hours"    />
         <result property="companyWebsite"    column="company_website"    />
         <result property="recordFlag"    column="record_flag"    />
         <result property="contactsName"    column="contacts_name"    />
@@ -27,6 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="taxNumber"    column="tax_number"    />
         <result property="invoiceAddress"    column="invoice_address"    />
         <result property="invoiceType"    column="invoice_type"    />
+        <result property="sjrxm"    column="sjrxm"    />
+        <result property="sjrdh"    column="sjrdh"    />
+        <result property="sjrdz"    column="sjrdz"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -35,22 +35,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMasterDataClientInfoVo">
-        select base_id, company_name, establish_date, register_city, company_adress, zip_code, legal_person, registered_capital, fixed_phone, fax_number, business_hours, company_website, record_flag, contacts_name, contacts_mobile, contacts_email, contacts_office_location, deposit_bank, account_number, tax_number, invoice_address, invoice_type, create_by, create_time, update_by, update_time, biz_version from master_data_client_info
+        select base_id, company_name, register_city, company_adress, zip_code, legal_person, registered_capital, fax_number, company_website, record_flag, contacts_name, contacts_mobile, contacts_email, contacts_office_location, deposit_bank, account_number, tax_number, invoice_address, invoice_type, sjrxm, sjrdh, sjrdz, create_by, create_time, update_by, update_time, biz_version from master_data_client_info
     </sql>
 
     <select id="selectMasterDataClientInfoList" parameterType="MasterDataClientInfo" resultMap="MasterDataClientInfoResult">
         <include refid="selectMasterDataClientInfoVo"/>
-        <where>  
+        <where>
             <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
-            <if test="establishDate != null  and establishDate != ''"> and establish_date = #{establishDate}</if>
             <if test="registerCity != null  and registerCity != ''"> and register_city = #{registerCity}</if>
             <if test="companyAdress != null  and companyAdress != ''"> and company_adress = #{companyAdress}</if>
             <if test="zipCode != null  and zipCode != ''"> and zip_code = #{zipCode}</if>
             <if test="legalPerson != null  and legalPerson != ''"> and legal_person = #{legalPerson}</if>
             <if test="registeredCapital != null "> and registered_capital = #{registeredCapital}</if>
-            <if test="fixedPhone != null  and fixedPhone != ''"> and fixed_phone = #{fixedPhone}</if>
             <if test="faxNumber != null  and faxNumber != ''"> and fax_number = #{faxNumber}</if>
-            <if test="businessHours != null  and businessHours != ''"> and business_hours = #{businessHours}</if>
             <if test="companyWebsite != null  and companyWebsite != ''"> and company_website = #{companyWebsite}</if>
             <if test="recordFlag != null "> and record_flag = #{recordFlag}</if>
             <if test="contactsName != null  and contactsName != ''"> and contacts_name like concat('%', #{contactsName}, '%')</if>
@@ -62,28 +59,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxNumber != null  and taxNumber != ''"> and tax_number = #{taxNumber}</if>
             <if test="invoiceAddress != null  and invoiceAddress != ''"> and invoice_address = #{invoiceAddress}</if>
             <if test="invoiceType != null "> and invoice_type = #{invoiceType}</if>
+            <if test="sjrxm != null  and sjrxm != ''"> and sjrxm = #{sjrxm}</if>
+            <if test="sjrdh != null  and sjrdh != ''"> and sjrdh = #{sjrdh}</if>
+            <if test="sjrdz != null  and sjrdz != ''"> and sjrdz = #{sjrdz}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
         </where>
     </select>
-    
+
     <select id="selectMasterDataClientInfoByBaseId" parameterType="String" resultMap="MasterDataClientInfoResult">
         <include refid="selectMasterDataClientInfoVo"/>
         where base_id = #{baseId}
     </select>
-        
+
     <insert id="insertMasterDataClientInfo" parameterType="MasterDataClientInfo">
         insert into master_data_client_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="baseId != null">base_id,</if>
             <if test="companyName != null and companyName != ''">company_name,</if>
-            <if test="establishDate != null">establish_date,</if>
             <if test="registerCity != null">register_city,</if>
             <if test="companyAdress != null and companyAdress != ''">company_adress,</if>
             <if test="zipCode != null">zip_code,</if>
             <if test="legalPerson != null and legalPerson != ''">legal_person,</if>
             <if test="registeredCapital != null">registered_capital,</if>
-            <if test="fixedPhone != null">fixed_phone,</if>
             <if test="faxNumber != null">fax_number,</if>
-            <if test="businessHours != null">business_hours,</if>
             <if test="companyWebsite != null">company_website,</if>
             <if test="recordFlag != null">record_flag,</if>
             <if test="contactsName != null and contactsName != ''">contacts_name,</if>
@@ -95,24 +93,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxNumber != null and taxNumber != ''">tax_number,</if>
             <if test="invoiceAddress != null and invoiceAddress != ''">invoice_address,</if>
             <if test="invoiceType != null">invoice_type,</if>
+            <if test="sjrxm != null">sjrxm,</if>
+            <if test="sjrdh != null">sjrdh,</if>
+            <if test="sjrdz != null">sjrdz,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="bizVersion != null">biz_version,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="baseId != null">#{baseId},</if>
             <if test="companyName != null and companyName != ''">#{companyName},</if>
-            <if test="establishDate != null">#{establishDate},</if>
             <if test="registerCity != null">#{registerCity},</if>
             <if test="companyAdress != null and companyAdress != ''">#{companyAdress},</if>
             <if test="zipCode != null">#{zipCode},</if>
             <if test="legalPerson != null and legalPerson != ''">#{legalPerson},</if>
             <if test="registeredCapital != null">#{registeredCapital},</if>
-            <if test="fixedPhone != null">#{fixedPhone},</if>
             <if test="faxNumber != null">#{faxNumber},</if>
-            <if test="businessHours != null">#{businessHours},</if>
             <if test="companyWebsite != null">#{companyWebsite},</if>
             <if test="recordFlag != null">#{recordFlag},</if>
             <if test="contactsName != null and contactsName != ''">#{contactsName},</if>
@@ -124,27 +122,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxNumber != null and taxNumber != ''">#{taxNumber},</if>
             <if test="invoiceAddress != null and invoiceAddress != ''">#{invoiceAddress},</if>
             <if test="invoiceType != null">#{invoiceType},</if>
+            <if test="sjrxm != null">#{sjrxm},</if>
+            <if test="sjrdh != null">#{sjrdh},</if>
+            <if test="sjrdz != null">#{sjrdz},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="bizVersion != null">#{bizVersion},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateMasterDataClientInfo" parameterType="MasterDataClientInfo">
         update master_data_client_info
         <trim prefix="SET" suffixOverrides=",">
             <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
-            <if test="establishDate != null">establish_date = #{establishDate},</if>
             <if test="registerCity != null">register_city = #{registerCity},</if>
             <if test="companyAdress != null and companyAdress != ''">company_adress = #{companyAdress},</if>
             <if test="zipCode != null">zip_code = #{zipCode},</if>
             <if test="legalPerson != null and legalPerson != ''">legal_person = #{legalPerson},</if>
             <if test="registeredCapital != null">registered_capital = #{registeredCapital},</if>
-            <if test="fixedPhone != null">fixed_phone = #{fixedPhone},</if>
             <if test="faxNumber != null">fax_number = #{faxNumber},</if>
-            <if test="businessHours != null">business_hours = #{businessHours},</if>
             <if test="companyWebsite != null">company_website = #{companyWebsite},</if>
             <if test="recordFlag != null">record_flag = #{recordFlag},</if>
             <if test="contactsName != null and contactsName != ''">contacts_name = #{contactsName},</if>
@@ -156,6 +154,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxNumber != null and taxNumber != ''">tax_number = #{taxNumber},</if>
             <if test="invoiceAddress != null and invoiceAddress != ''">invoice_address = #{invoiceAddress},</if>
             <if test="invoiceType != null">invoice_type = #{invoiceType},</if>
+            <if test="sjrxm != null">sjrxm = #{sjrxm},</if>
+            <if test="sjrdh != null">sjrdh = #{sjrdh},</if>
+            <if test="sjrdz != null">sjrdz = #{sjrdz},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
@@ -170,7 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteMasterDataClientInfoByBaseIds" parameterType="String">
-        delete from master_data_client_info where base_id in 
+        delete from master_data_client_info where base_id in
         <foreach item="baseId" collection="array" open="(" separator="," close=")">
             #{baseId}
         </foreach>

@@ -1,31 +1,30 @@
 package com.ruoyi.report.masterdata.service.impl;
 
+import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
-import com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper;
-import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 
 /**
- * 业务报表Service业务层处理
- *
- * @author ruoyi
- * @date 2022-09-16
+ * 主数据管理Service业务层处理
+ * 
+ * @author changgong0513
+ * @date 2022-10-18
  */
 @Service
-public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoService
+public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoService 
 {
     @Autowired
     private MasterDataClientInfoMapper masterDataClientInfoMapper;
 
     /**
-     * 查询业务报表
-     *
-     * @param baseId 业务报表主键
-     * @return 业务报表
+     * 查询主数据管理
+     * 
+     * @param baseId 主数据管理主键
+     * @return 主数据管理
      */
     @Override
     public MasterDataClientInfo selectMasterDataClientInfoByBaseId(String baseId)
@@ -34,10 +33,10 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
-     * 查询业务报表列表
-     *
-     * @param masterDataClientInfo 业务报表
-     * @return 业务报表
+     * 查询主数据管理列表
+     * 
+     * @param masterDataClientInfo 主数据管理
+     * @return 主数据管理
      */
     @Override
     public List<MasterDataClientInfo> selectMasterDataClientInfoList(MasterDataClientInfo masterDataClientInfo)
@@ -46,9 +45,9 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
-     * 新增业务报表
-     *
-     * @param masterDataClientInfo 业务报表
+     * 新增主数据管理
+     * 
+     * @param masterDataClientInfo 主数据管理
      * @return 结果
      */
     @Override
@@ -59,9 +58,9 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
-     * 修改业务报表
-     *
-     * @param masterDataClientInfo 业务报表
+     * 修改主数据管理
+     * 
+     * @param masterDataClientInfo 主数据管理
      * @return 结果
      */
     @Override
@@ -72,9 +71,9 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
-     * 批量删除业务报表
-     *
-     * @param baseIds 需要删除的业务报表主键
+     * 批量删除主数据管理
+     * 
+     * @param baseIds 需要删除的主数据管理主键
      * @return 结果
      */
     @Override
@@ -84,9 +83,9 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
-     * 删除业务报表信息
-     *
-     * @param baseId 业务报表主键
+     * 删除主数据管理信息
+     * 
+     * @param baseId 主数据管理主键
      * @return 结果
      */
     @Override
@@ -95,4 +94,3 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
         return masterDataClientInfoMapper.deleteMasterDataClientInfoByBaseId(baseId);
     }
 }
-

@@ -12,9 +12,9 @@
         />
       </el-form-item>
       <!-- 联系人姓名 -->
-      <el-form-item label="联系人姓名" prop="lxrxm">
+      <el-form-item label="联系人姓名" prop="contactsName">
         <el-input
-          v-model="queryParams.lxrxm"
+          v-model="queryParams.contactsName"
           placeholder="请输入联系人姓名"
           clearable
           style="width: 240px"
@@ -24,7 +24,7 @@
       <!-- 收件人姓名 -->
       <el-form-item label="收件人姓名" prop="sjrxm">
         <el-input
-          v-model="queryParams.sjrName"
+          v-model="queryParams.sjrxm"
           placeholder="请输入收件人姓名"
           clearable
           style="width: 240px"
@@ -90,8 +90,8 @@
       @row-dblclick="handleView">
       <el-table-column type="selection" align="center" width="55" />
       <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
-      <el-table-column label="联系人姓名" align="center" prop="lxrxm" width="150" />
-      <el-table-column label="联系人电话" align="center" prop="lxrdh"  width="150" />
+      <el-table-column label="联系人姓名" align="center" prop="contactsName" width="150" />
+      <el-table-column label="联系人电话" align="center" prop="contactsMobile"  width="150" />
       <el-table-column label="发票类型" align="center" prop="invoiceType" width="150">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_invoice_type" :value="scope.row.invoiceType"/>
@@ -413,6 +413,19 @@
           </el-col>
         </el-row>
         <el-divider />
+        <h3>收件人信息</h3>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="姓名">{{formDetail.sjrxm}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电话">{{formDetail.sjrdh}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="地址">{{formDetail.sjrdz}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
         <h3>账户信息</h3>
         <el-row>
           <el-col :span="12">
@@ -489,9 +502,8 @@ export default {
         pageSize: 10,
         recordFlag: 2, //客户标志
         companyName: undefined,
-        legalPerson: undefined,
-        registerCity: undefined,
-        registeredCapital: undefined
+        contactsName: undefined,
+        sjrxm: undefined
       },
       // 表单参数
       form: {},
@@ -599,7 +611,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加供应商";
+      this.title = "添加客户";
       this.showDetail = false;
     },
     /** 修改按钮操作 */
@@ -609,7 +621,7 @@ export default {
       getClient(baseId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改供应商";
+        this.title = "修改客户";
         this.showDetail = false;
       });
     },
