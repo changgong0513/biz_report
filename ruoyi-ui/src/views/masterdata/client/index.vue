@@ -111,7 +111,12 @@
     />
 
     <!-- 添加或修改客户数据对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
+    <el-dialog 
+      :title="title" 
+      :visible.sync="open" 
+      width="90%" 
+      append-to-body
+      :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <h3>基本信息</h3>
         <el-row>
@@ -357,7 +362,12 @@
     </el-dialog>
 
     <!-- 客户数据详细 -->
-    <el-dialog title="客户数据详细" :visible.sync="openDetail" width="90%" append-to-body v-show="showDetail">
+    <el-dialog title="客户数据详细" 
+      :visible.sync="openDetail" 
+      width="90%" 
+      append-to-body 
+      v-show="showDetail" 
+      :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <h3>基本信息</h3>
         <el-row>

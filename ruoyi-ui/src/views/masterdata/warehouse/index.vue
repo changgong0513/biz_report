@@ -1,13 +1,23 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch">
+      <!-- 仓库编码 -->
+      <el-form-item label="仓库编码" prop="warehouseCode">
+        <el-input
+          v-model="queryParams.warehouseCode"
+          placeholder="请输入仓库编码"
+          clearable
+          style="width: 200px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <!-- 仓库名称 -->
       <el-form-item label="仓库名称" prop="warehouseName">
         <el-input
           v-model="queryParams.warehouseName"
           placeholder="请输入仓库名称"
           clearable
-          style="width: 240px"
+          style="width: 200px"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -17,26 +27,10 @@
           v-model="queryParams.warehouseRegion"
           placeholder="区划"
           clearable
-          style="width: 240px"
+          style="width: 200px"
         >
           <el-option
             v-for="dict in dict.type.masterdata_warehouse_region"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!-- 仓库类别 -->
-      <el-form-item label="仓库类别" prop="warehouseCategory">
-        <el-select
-          v-model="queryParams.warehouseCategory"
-          placeholder="仓库类别"
-          clearable
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.masterdata_warehouse_category"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -49,7 +43,7 @@
           v-model="queryParams.managementDepartment"
           placeholder="管理部门"
           clearable
-          style="width: 240px"
+          style="width: 200px"
         >
           <el-option
             v-for="dict in dict.type.masterdata_management_department"
@@ -58,15 +52,6 @@
             :value="dict.value"
           />
         </el-select>
-      </el-form-item>
-      <!-- 管理人员 -->
-      <el-form-item label="管理人员" prop="warehouseManager">
-        <el-input
-          v-model="queryParams.warehouseManager"
-          placeholder="请输入管理人员"
-          clearable
-          style="width: 240px"
-        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -122,26 +107,18 @@
 
     <el-table v-loading="loading" :data="warehouseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="建库日期" align="center" prop="buildDate" :show-overflow-tooltip="true" width="100" />
-      <el-table-column label="区划" align="center" prop="warehouseRegion" :show-overflow-tooltip="true" width="80">
+      <el-table-column label="仓库编码" align="center" prop="warehouseCode" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="区划" align="center" prop="warehouseRegion" :show-overflow-tooltip="true" width="240">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_warehouse_region" :value="scope.row.warehouseRegion"/>
         </template>
       </el-table-column> 
-      <el-table-column label="仓库类别" align="center" prop="warehouseCategory" :show-overflow-tooltip="true" width="100">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.masterdata_warehouse_category" :value="scope.row.warehouseCategory"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="地址" align="center" prop="warehouseAddress" :show-overflow-tooltip="true" width="200" />
-      <el-table-column label="占地面积" align="center" prop="useArea" :show-overflow-tooltip="true"  width="80" />
-      <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="80">
+      <el-table-column label="管理部门" align="center" prop="managementDepartment" :show-overflow-tooltip="true" width="240">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.masterdata_management_department" :value="scope.row.managementDepartment"/>
         </template>
       </el-table-column>
-      <el-table-column label="管理人员" align="center" prop="warehouseManager" :show-overflow-tooltip="true" width="100" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
           <el-button
@@ -177,14 +154,9 @@
     />
 
     <!-- 添加或修改仓库数据对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="仓库ID">
-              <el-input v-model="warehouseId" :disabled="true" style="width: 280px" />
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="仓库编码" prop="warehouseCode">
               <el-input 
@@ -207,16 +179,6 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="成立日期">
-              <el-date-picker
-                v-model="form.buildDate"
-                style="width: 280px"
-                value-format="yyyy-MM-dd"
-                type="date"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="区划" prop="warehouseRegion">
               <el-select
@@ -247,7 +209,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="管理部门">
+            <el-form-item label="管理部门" prop="managementDepartment">
               <el-select
                 v-model="form.managementDepartment"
                 placeholder="管理部门"
@@ -468,20 +430,24 @@ export default {
       open: false,
       //
       openDetail: false,
+      // 隐藏仓库ID
+      hidden: true,
       // 日期范围
       dateRange: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        warehouseCode: undefined,
         warehouseName: undefined,
         warehouseRegion: undefined,
-        warehouseCategory: undefined,
-        managementDepartment: undefined,
-        warehouseManager: undefined
+        managementDepartment: undefined
       },
       // 表单参数
-      form: {},
+      form: {
+        warehouseCategory: 5,
+        measurementUnit: 3
+      },
       //
       formDetail: {},
       defaultProps: {
@@ -510,9 +476,6 @@ export default {
         ],
         contactMobile1: [
           { required: true, message: "联系方式1不能为空", trigger: "blur" }
-        ],
-        warehouseCategory: [
-          { required: true, message: "仓库类别不能为空", trigger: "blur" }
         ],
         useArea: [
           { required: true, message: "占地面积不能为空", trigger: "blur" }

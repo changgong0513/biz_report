@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.masterdata.mapper.MasterDataMaterialInfoMapper">
+    
+    <resultMap type="MasterDataMaterialInfo" id="MasterDataMaterialInfoResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="billingAlias"    column="billing_alias"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectMasterDataMaterialInfoVo">
+        select material_id, material_name, material_unit, billing_alias, create_by, create_time, update_by, update_time, biz_version from master_data_material_info
+    </sql>
+
+    <select id="selectMasterDataMaterialInfoList" parameterType="MasterDataMaterialInfo" resultMap="MasterDataMaterialInfoResult">
+        <include refid="selectMasterDataMaterialInfoVo"/>
+        <where>  
+            <if test="materialId != null  and materialId != ''"> and material_id = #{materialId}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialUnit != null "> and material_unit = #{materialUnit}</if>
+            <if test="billingAlias != null  and billingAlias != ''"> and billing_alias like concat('%', #{billingAlias}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMasterDataMaterialInfoByMaterialId" parameterType="String" resultMap="MasterDataMaterialInfoResult">
+        <include refid="selectMasterDataMaterialInfoVo"/>
+        where material_id = #{materialId}
+    </select>
+        
+    <insert id="insertMasterDataMaterialInfo" parameterType="MasterDataMaterialInfo">
+        insert into master_data_material_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialId != null and materialId != ''">material_id,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="materialUnit != null">material_unit,</if>
+            <if test="billingAlias != null">billing_alias,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialId != null and materialId != ''">#{materialId},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="materialUnit != null">#{materialUnit},</if>
+            <if test="billingAlias != null">#{billingAlias},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMasterDataMaterialInfo" parameterType="MasterDataMaterialInfo">
+        update master_data_material_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialUnit != null">material_unit = #{materialUnit},</if>
+            <if test="billingAlias != null">billing_alias = #{billingAlias},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteMasterDataMaterialInfoByMaterialId" parameterType="String">
+        delete from master_data_material_info where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteMasterDataMaterialInfoByMaterialIds" parameterType="String">
+        delete from master_data_material_info where material_id in 
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+</mapper>
