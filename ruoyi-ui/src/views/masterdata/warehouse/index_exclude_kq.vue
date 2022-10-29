@@ -105,7 +105,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="warehouseList" @selection-change="handleSelectionChange" @row-dblclick="handleView">
+    <el-table v-loading="loading" :data="warehouseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" align="center" width="55" />
       <el-table-column label="仓库编码" align="center" prop="warehouseCode" :show-overflow-tooltip="true" width="240" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" width="240" />
@@ -125,8 +125,22 @@
             size="mini"
             type="text"
             icon="el-icon-view"
-            @click="toKq()"
-          >库区维护</el-button>
+            @click="handleView(scope.row,scope.index)"
+          >详细</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:role:edit']"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['system:role:remove']"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -297,7 +311,7 @@
     </el-dialog>
 
     <!-- 仓库数据详细 -->
-    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="90%" append-to-body>
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
@@ -585,9 +599,6 @@ export default {
     handleView(row) {
       this.openDetail = true;
       this.formDetail = row;
-    },
-    toKq() {
-      this.$router.push("/warehouse/kq");
     }
   }
 };

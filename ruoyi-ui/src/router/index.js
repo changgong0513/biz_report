@@ -87,7 +87,27 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
-  }
+  },
+  // {
+  //   path: '/warehouse/kq',
+  //   name: "Warehousekq",
+  //   component: () => import('@/views/masterdata/warehouse/kq/index'),
+  //   meta: { title: '库区维护', icon: 'user', affix: true }
+  // },
+  {
+    path: '/warehouse',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'kq',
+        component: () => import('@/views/masterdata/warehouse/kq/index'),
+        name: 'kuqu',
+        meta: { title: '库区维护' }
+      }
+    ]
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载
