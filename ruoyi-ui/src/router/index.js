@@ -88,12 +88,6 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/warehouse/kq',
-  //   name: "Warehousekq",
-  //   component: () => import('@/views/masterdata/warehouse/kq/index'),
-  //   meta: { title: '库区维护', icon: 'user', affix: true }
-  // },
   {
     path: '/warehouse',
     component: Layout,
@@ -105,6 +99,20 @@ export const constantRoutes = [
         component: () => import('@/views/masterdata/warehouse/kq/index'),
         name: 'kuqu',
         meta: { title: '库区维护' }
+      }
+    ]
+  },
+  {
+    path: '/to',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'ckgl',
+        component: () => import('@/views/masterdata/warehouse/index'),
+        name: 'tockgl',
+        meta: { title: '仓库管理' }
       }
     ]
   },

@@ -125,7 +125,7 @@
             size="mini"
             type="text"
             icon="el-icon-view"
-            @click="toKq()"
+            @click="toKq(scope.row)"
           >库区维护</el-button>
         </template>
       </el-table-column>
@@ -586,8 +586,10 @@ export default {
       this.openDetail = true;
       this.formDetail = row;
     },
-    toKq() {
-      this.$router.push("/warehouse/kq");
+    // 库区维护
+    toKq(row) {
+      // console.log("选择的仓库数据: " + JSON.stringify(row));
+      this.$router.push({ path: "/warehouse/kq", query: { selWarehouseRow: row } });
     }
   }
 };

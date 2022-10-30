@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.masterdata.mapper.MasterDataKqInfoMapper">
+    
+    <resultMap type="MasterDataKqInfo" id="MasterDataKqInfoResult">
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="kqCode"    column="kq_code"    />
+        <result property="kqName"    column="kq_name"    />
+        <result property="warehouseRegion"    column="warehouse_region"    />
+        <result property="warehouseAddress"    column="warehouse_address"    />
+        <result property="managementDepartment"    column="management_department"    />
+        <result property="warehouseManager"    column="warehouse_manager"    />
+        <result property="contactMobile1"    column="contact_mobile1"    />
+        <result property="contactMobile2"    column="contact_mobile2"    />
+        <result property="warehouseCategory"    column="warehouse_category"    />
+        <result property="kqRemarks"    column="kq_remarks"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectMasterDataKqInfoVo">
+        select warehouse_id, kq_code, kq_name, warehouse_region, warehouse_address, management_department, warehouse_manager, contact_mobile1, contact_mobile2, warehouse_category, kq_remarks, create_by, create_time, update_by, update_time, biz_version from master_data_kq_info
+    </sql>
+
+    <select id="selectMasterDataKqInfoList" parameterType="MasterDataKqInfo" resultMap="MasterDataKqInfoResult">
+        <include refid="selectMasterDataKqInfoVo"/>
+        <where>  
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="kqName != null  and kqName != ''"> and kq_name like concat('%', #{kqName}, '%')</if>
+            <if test="warehouseRegion != null "> and warehouse_region = #{warehouseRegion}</if>
+            <if test="warehouseAddress != null  and warehouseAddress != ''"> and warehouse_address = #{warehouseAddress}</if>
+            <if test="managementDepartment != null  and managementDepartment != ''"> and management_department = #{managementDepartment}</if>
+            <if test="warehouseManager != null  and warehouseManager != ''"> and warehouse_manager = #{warehouseManager}</if>
+            <if test="contactMobile1 != null  and contactMobile1 != ''"> and contact_mobile1 = #{contactMobile1}</if>
+            <if test="contactMobile2 != null  and contactMobile2 != ''"> and contact_mobile2 = #{contactMobile2}</if>
+            <if test="warehouseCategory != null  and warehouseCategory != ''"> and warehouse_category = #{warehouseCategory}</if>
+            <if test="kqRemarks != null  and kqRemarks != ''"> and kq_remarks = #{kqRemarks}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
+        </where>
+    </select>
+    
+    <select id="selectMasterDataKqInfoByKqCode" parameterType="String" resultMap="MasterDataKqInfoResult">
+        <include refid="selectMasterDataKqInfoVo"/>
+        where kq_code = #{kqCode}
+    </select>
+        
+    <insert id="insertMasterDataKqInfo" parameterType="MasterDataKqInfo">
+        insert into master_data_kq_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id,</if>
+            <if test="kqCode != null">kq_code,</if>
+            <if test="kqName != null and kqName != ''">kq_name,</if>
+            <if test="warehouseRegion != null">warehouse_region,</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">warehouse_address,</if>
+            <if test="managementDepartment != null and managementDepartment != ''">management_department,</if>
+            <if test="warehouseManager != null and warehouseManager != ''">warehouse_manager,</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">contact_mobile1,</if>
+            <if test="contactMobile2 != null and contactMobile2 != ''">contact_mobile2,</if>
+            <if test="warehouseCategory != null and warehouseCategory != ''">warehouse_category,</if>
+            <if test="kqRemarks != null">kq_remarks,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">#{warehouseId},</if>
+            <if test="kqCode != null">#{kqCode},</if>
+            <if test="kqName != null and kqName != ''">#{kqName},</if>
+            <if test="warehouseRegion != null">#{warehouseRegion},</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">#{warehouseAddress},</if>
+            <if test="managementDepartment != null and managementDepartment != ''">#{managementDepartment},</if>
+            <if test="warehouseManager != null and warehouseManager != ''">#{warehouseManager},</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">#{contactMobile1},</if>
+            <if test="contactMobile2 != null and contactMobile2 != ''">#{contactMobile2},</if>
+            <if test="warehouseCategory != null and warehouseCategory != ''">#{warehouseCategory},</if>
+            <if test="kqRemarks != null">#{kqRemarks},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMasterDataKqInfo" parameterType="MasterDataKqInfo">
+        update master_data_kq_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="warehouseId != null and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="kqCode != null and kqCode != ''">kq_code = #{kqCode},</if>
+            <if test="kqName != null and kqName != ''">kq_name = #{kqName},</if>
+            <if test="warehouseRegion != null">warehouse_region = #{warehouseRegion},</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">warehouse_address = #{warehouseAddress},</if>
+            <if test="managementDepartment != null and managementDepartment != ''">management_department = #{managementDepartment},</if>
+            <if test="warehouseManager != null and warehouseManager != ''">warehouse_manager = #{warehouseManager},</if>
+            <if test="contactMobile1 != null and contactMobile1 != ''">contact_mobile1 = #{contactMobile1},</if>
+            <if test="contactMobile2 != null and contactMobile2 != ''">contact_mobile2 = #{contactMobile2},</if>
+            <if test="warehouseCategory != null and warehouseCategory != ''">warehouse_category = #{warehouseCategory},</if>
+            <if test="kqRemarks != null">kq_remarks = #{kqRemarks},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where warehouse_id = #{warehouseId}
+    </update>
+
+    <delete id="deleteMasterDataKqInfoByKqCode" parameterType="String">
+        delete from master_data_kq_info where kq_code = #{kqCode}
+    </delete>
+
+    <delete id="deleteMasterDataKqInfoByKqCodes" parameterType="String">
+        delete from master_data_kq_info where kq_code in 
+        <foreach item="kqCode" collection="array" open="(" separator="," close=")">
+            #{kqCode}
+        </foreach>
+    </delete>
+</mapper>

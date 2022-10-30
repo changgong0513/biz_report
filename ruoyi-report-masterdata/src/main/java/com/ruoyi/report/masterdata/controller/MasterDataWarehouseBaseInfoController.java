@@ -85,7 +85,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
         masterDataWarehouseBaseInfo.setUpdateTime(DateUtils.getNowDate());
         masterDataWarehouseBaseInfo.setCreateBy(SecurityUtils.getUsername());
         masterDataWarehouseBaseInfo.setUpdateBy(SecurityUtils.getUsername());
-        System.out.println("------新增业务报表大数据：" + masterDataWarehouseBaseInfo);
+        System.out.println("------新增仓库管理：" + masterDataWarehouseBaseInfo);
         return toAjax(masterDataWarehouseBaseInfoService.insertMasterDataWarehouseBaseInfo(masterDataWarehouseBaseInfo));
     }
 
