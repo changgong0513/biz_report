@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.contract.mapper.ContractContentInfoMapper">
+    
+    <resultMap type="ContractContentInfo" id="ContractContentInfoResult">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="contractName"    column="contract_name"    />
+        <result property="contractId"    column="contract_id"    />
+        <result property="signDate"    column="sign_date"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="ourCompanyName"    column="our_company_name"    />
+        <result property="ourPrincipal"    column="our_principal"    />
+        <result property="oppositeCompanyName"    column="opposite_company_name"    />
+        <result property="oppositePrincipal"    column="opposite__principal"    />
+        <result property="contractQuantity"    column="contract_quantity"    />
+        <result property="contractPrice"    column="contract_price"    />
+        <result property="contractTotal"    column="contract_total"    />
+        <result property="accountingPeriod"    column="accounting_period"    />
+        <result property="deliveryMethod"    column="delivery_method"    />
+        <result property="portToFactoryFare"    column="port_to_factory_fare"    />
+        <result property="portToPortFare"    column="port_to_port_fare"    />
+        <result property="contractOther"    column="contract_other"    />
+        <result property="contractAgent"    column="contract_agent"    />
+        <result property="contractRemark"    column="contract_remark"    />
+        <result property="contractStatus"    column="contract_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectContractContentInfoVo">
+        select goods_id, goods_name, contract_type, contract_name, contract_id, sign_date, delivery_date, our_company_name, our_principal, opposite_company_name, opposite__principal, contract_quantity, contract_price, contract_total, accounting_period, delivery_method, port_to_factory_fare, port_to_port_fare, contract_other, contract_agent, contract_remark, contract_status, create_by, create_time, update_by, update_time, biz_version from contract_content_info
+    </sql>
+
+    <select id="selectContractContentInfoList" parameterType="ContractContentInfo" resultMap="ContractContentInfoResult">
+        <include refid="selectContractContentInfoVo"/>
+        <where>  
+            <if test="contractName != null  and contractName != ''"> and contract_name like concat('%', #{contractName}, '%')</if>
+            <if test="contractId != null  and contractId != ''"> and contract_id = #{contractId}</if>
+            <if test="signDate != null "> and sign_date = #{signDate}</if>
+            <if test="params.beginContractTotal != null and params.beginContractTotal != '' and params.endContractTotal != null and params.endContractTotal != ''"> and contract_total between #{params.beginContractTotal} and #{params.endContractTotal}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractContentInfoByGoodsId" parameterType="String" resultMap="ContractContentInfoResult">
+        <include refid="selectContractContentInfoVo"/>
+        where goods_id = #{goodsId}
+    </select>
+        
+    <insert id="insertContractContentInfo" parameterType="ContractContentInfo">
+        insert into contract_content_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null and goodsId != ''">goods_id,</if>
+            <if test="goodsName != null and goodsName != ''">goods_name,</if>
+            <if test="contractType != null and contractType != ''">contract_type,</if>
+            <if test="contractName != null and contractName != ''">contract_name,</if>
+            <if test="contractId != null">contract_id,</if>
+            <if test="signDate != null">sign_date,</if>
+            <if test="deliveryDate != null">delivery_date,</if>
+            <if test="ourCompanyName != null">our_company_name,</if>
+            <if test="ourPrincipal != null">our_principal,</if>
+            <if test="oppositeCompanyName != null">opposite_company_name,</if>
+            <if test="oppositePrincipal != null">opposite__principal,</if>
+            <if test="contractQuantity != null">contract_quantity,</if>
+            <if test="contractPrice != null">contract_price,</if>
+            <if test="contractTotal != null">contract_total,</if>
+            <if test="accountingPeriod != null">accounting_period,</if>
+            <if test="deliveryMethod != null">delivery_method,</if>
+            <if test="portToFactoryFare != null">port_to_factory_fare,</if>
+            <if test="portToPortFare != null">port_to_port_fare,</if>
+            <if test="contractOther != null">contract_other,</if>
+            <if test="contractAgent != null">contract_agent,</if>
+            <if test="contractRemark != null">contract_remark,</if>
+            <if test="contractStatus != null and contractStatus != ''">contract_status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null and goodsId != ''">#{goodsId},</if>
+            <if test="goodsName != null and goodsName != ''">#{goodsName},</if>
+            <if test="contractType != null and contractType != ''">#{contractType},</if>
+            <if test="contractName != null and contractName != ''">#{contractName},</if>
+            <if test="contractId != null">#{contractId},</if>
+            <if test="signDate != null">#{signDate},</if>
+            <if test="deliveryDate != null">#{deliveryDate},</if>
+            <if test="ourCompanyName != null">#{ourCompanyName},</if>
+            <if test="ourPrincipal != null">#{ourPrincipal},</if>
+            <if test="oppositeCompanyName != null">#{oppositeCompanyName},</if>
+            <if test="oppositePrincipal != null">#{oppositePrincipal},</if>
+            <if test="contractQuantity != null">#{contractQuantity},</if>
+            <if test="contractPrice != null">#{contractPrice},</if>
+            <if test="contractTotal != null">#{contractTotal},</if>
+            <if test="accountingPeriod != null">#{accountingPeriod},</if>
+            <if test="deliveryMethod != null">#{deliveryMethod},</if>
+            <if test="portToFactoryFare != null">#{portToFactoryFare},</if>
+            <if test="portToPortFare != null">#{portToPortFare},</if>
+            <if test="contractOther != null">#{contractOther},</if>
+            <if test="contractAgent != null">#{contractAgent},</if>
+            <if test="contractRemark != null">#{contractRemark},</if>
+            <if test="contractStatus != null and contractStatus != ''">#{contractStatus},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractContentInfo" parameterType="ContractContentInfo">
+        update contract_content_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsName != null and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="contractType != null and contractType != ''">contract_type = #{contractType},</if>
+            <if test="contractName != null and contractName != ''">contract_name = #{contractName},</if>
+            <if test="contractId != null">contract_id = #{contractId},</if>
+            <if test="signDate != null">sign_date = #{signDate},</if>
+            <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
+            <if test="ourCompanyName != null">our_company_name = #{ourCompanyName},</if>
+            <if test="ourPrincipal != null">our_principal = #{ourPrincipal},</if>
+            <if test="oppositeCompanyName != null">opposite_company_name = #{oppositeCompanyName},</if>
+            <if test="oppositePrincipal != null">opposite__principal = #{oppositePrincipal},</if>
+            <if test="contractQuantity != null">contract_quantity = #{contractQuantity},</if>
+            <if test="contractPrice != null">contract_price = #{contractPrice},</if>
+            <if test="contractTotal != null">contract_total = #{contractTotal},</if>
+            <if test="accountingPeriod != null">accounting_period = #{accountingPeriod},</if>
+            <if test="deliveryMethod != null">delivery_method = #{deliveryMethod},</if>
+            <if test="portToFactoryFare != null">port_to_factory_fare = #{portToFactoryFare},</if>
+            <if test="portToPortFare != null">port_to_port_fare = #{portToPortFare},</if>
+            <if test="contractOther != null">contract_other = #{contractOther},</if>
+            <if test="contractAgent != null">contract_agent = #{contractAgent},</if>
+            <if test="contractRemark != null">contract_remark = #{contractRemark},</if>
+            <if test="contractStatus != null and contractStatus != ''">contract_status = #{contractStatus},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteContractContentInfoByGoodsId" parameterType="String">
+        delete from contract_content_info where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteContractContentInfoByGoodsIds" parameterType="String">
+        delete from contract_content_info where goods_id in 
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+</mapper>

@@ -65,6 +65,11 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>report.masterdata</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.contract.manager</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

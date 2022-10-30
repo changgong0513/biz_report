@@ -191,6 +191,12 @@
                 <artifactId>report.masterdata</artifactId>
                 <version>${ruoyi.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>report.contract.manager</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -202,6 +208,7 @@
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <module>ruoyi-report-masterdata</module>
+        <module>ruoyi-report-contract-manager</module>
     </modules>
     <packaging>pom</packaging>
 

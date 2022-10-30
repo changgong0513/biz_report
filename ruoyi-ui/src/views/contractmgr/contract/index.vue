@@ -42,9 +42,9 @@
         <!-- 合同总价 -->
         <el-col :span="16">
           <!-- 合同总价min -->
-          <el-form-item label="核算金额" prop="contractTotal">
+          <el-form-item label="合同总价" prop="contractTotal">
             <el-input
-              v-model="queryParams.checkMoney"
+              v-model="queryParams.contractTotal"
               clearable
               @keyup.enter.native="handleQuery"
             />
@@ -52,7 +52,7 @@
           <!-- 合同总价max -->
           <el-form-item label="~" prop="contractTotal" label-width="15px">
             <el-input
-              v-model="queryParams.checkMoney"
+              v-model="queryParams.contractTotal"
               clearable
               @keyup.enter.native="handleQuery"
             />
@@ -97,10 +97,9 @@
         <el-button
           type="warning"
           plain
-          icon="el-icon-download"
+          icon="el-icon-refresh"
           size="mini"
-          @click="handleExport"
-          v-hasPermi="['contract:contract:export']"
+          @click="handleContractSync"
         >合同同步</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -250,6 +249,7 @@
 
 <script>
 // import { listContract, getContract, delContract, addContract, updateContract } from "@/api/contract/contract";
+import { syncContract } from "@/api/contract/contract";
 
 export default {
   name: "Contract",
@@ -474,6 +474,14 @@ export default {
       this.download('contract/contract/export', {
         ...this.queryParams
       }, `contract_${new Date().getTime()}.xlsx`)
+    },
+    /** 同步合同 */
+    handleContractSync() {
+      this.loading = true;
+      syncContract(this.queryParams).then(response => {
+        this.$modal.msgSuccess("同步合同成功");
+        this.loading = false;
+      });
     }
   }
 };
