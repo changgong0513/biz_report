@@ -151,7 +151,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             }
         }
 
-        return 0;
+        return 1;
     }
 
     private static com.aliyun.dingtalkworkflow_1_0.Client createClient() throws Exception {
@@ -275,9 +275,11 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
         try {
             GetProcessInstanceResponse resp = client.getProcessInstanceWithOptions(getProcessInstanceRequest, getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
-            List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> list = resp.getBody().getResult().formComponentValues;
             System.out.println("合同状态------" + resp.getBody().getResult().status);
-            System.out.println("合同项总数------" + list.size());
+            contract.setContractStatus(resp.getBody().getResult().status);
+
+            List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> list = resp.getBody().getResult().formComponentValues;
+            System.out.println("------合同项总数------" + list.size());
             System.out.println("------以下为合同项内容------");
             for (int i = 0; i < list.size(); i++) {
                 GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues item = list.get(i);

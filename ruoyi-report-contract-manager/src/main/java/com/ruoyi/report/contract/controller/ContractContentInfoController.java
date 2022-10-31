@@ -37,7 +37,6 @@ public class ContractContentInfoController extends BaseController
     /**
      * 查询合同管理列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:list')")
     @GetMapping("/list")
     public TableDataInfo list(ContractContentInfo contractContentInfo)
     {

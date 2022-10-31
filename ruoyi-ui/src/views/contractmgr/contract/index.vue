@@ -116,7 +116,11 @@
       <el-table-column label="合同名称" align="center" prop="contractName" width="280" :show-overflow-tooltip="true" />
       <el-table-column label="客户名称" align="center" prop="oppositeCompanyName" width="280" :show-overflow-tooltip="true" />
       <el-table-column label="合同总价" align="center" prop="contractTotal" width="80" />
-      <el-table-column label="审批状态" align="center" prop="approvalStatus" width="80" />
+      <el-table-column label="审批状态" align="center" prop="contractStatus" width="80">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.contractmgr_contract_approval_status" :value="scope.row.contractStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">
         <template>
           <!-- <el-upload 
@@ -248,10 +252,11 @@
 
 <script>
 // import { listContract, getContract, delContract, addContract, updateContract } from "@/api/contract/contract";
-import { syncContract } from "@/api/contract/contract";
+import { listContract, syncContract } from "@/api/contract/contract";
 
 export default {
   name: "Contract",
+  dicts: ['contractmgr_contract_approval_status'],
   data() {
     return {
       // 遮罩层
@@ -271,16 +276,7 @@ export default {
       // 总条数
       total: 1,
       // 合同管理表格数据
-      contractList: [
-        {
-            contractId: "yw1202112221355",
-            signDate: "2021/12/20",
-            contractName: "辽宁盘锦正邦养殖有限公司饲料分公司",
-            oppositeCompanyName: "辽宁盘锦正邦养殖有限公司饲料分公司",
-            contractTotal: "23534",
-            approvalStatus: "未完成"
-        }
-      ],
+      contractList: [],
       // ${subTable.functionName}表格数据
       contractAdditionalInfoList: [],
       // 弹出层标题
@@ -326,18 +322,16 @@ export default {
   },
   created() {
     this.getList();
-    console.log("created回调查询合同列表");
   },
   methods: {
     /** 查询合同管理列表 */
     getList() {
-    //   this.loading = true;
-    //   listContract(this.queryParams).then(response => {
-    //     this.contractList = response.rows;
-    //     this.total = response.total;
-    //     this.loading = false;
-    //   });
+      this.loading = true;
+      listContract(this.queryParams).then(response => {
+        this.contractList = response.rows;
+        this.total = response.total;
         this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
@@ -480,6 +474,7 @@ export default {
       syncContract(this.queryParams).then(response => {
         this.$modal.msgSuccess("同步合同成功");
         this.loading = false;
+        this.getList();
       });
     }
   }

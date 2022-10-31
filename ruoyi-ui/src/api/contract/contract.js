@@ -2,8 +2,9 @@ import request from '@/utils/request'
 
 // 查询合同管理列表
 export function listContract(query) {
+  console.log("查询合同管理列表(contract.js)");
   return request({
-    url: '/contract/contract/list',
+    url: '/contract/mgr/list',
     method: 'get',
     params: query
   })
