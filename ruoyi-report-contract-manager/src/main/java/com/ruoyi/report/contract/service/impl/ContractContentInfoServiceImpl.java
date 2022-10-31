@@ -48,13 +48,13 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     /**
      * 查询合同管理
      *
-     * @param goodsId 合同管理主键
+     * @param contactId 合同管理主键
      * @return 合同管理
      */
     @Override
-    public ContractContentInfo selectContractContentInfoByContractId(String goodsId)
+    public ContractContentInfo selectContractContentInfoByContractId(String contactId)
     {
-        return contractContentInfoMapper.selectContractContentInfoByContractId(goodsId);
+        return contractContentInfoMapper.selectContractContentInfoByContractId(contactId);
     }
 
     /**
@@ -102,9 +102,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      * @return 结果
      */
     @Override
-    public int deleteContractContentInfoByContractIds(String[] goodsIds)
+    public int deleteContractContentInfoByContractIds(String[] contractId)
     {
-        return contractContentInfoMapper.deleteContractContentInfoByContractIds(goodsIds);
+        return contractContentInfoMapper.deleteContractContentInfoByContractIds(contractId);
     }
 
     /**
@@ -147,7 +147,14 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 contract.setCreateBy(SecurityUtils.getUsername());
                 contract.setUpdateBy(SecurityUtils.getUsername());
                 System.out.println("------从钉钉同步合同数据：" + contract);
-                contractContentInfoMapper.insertContractContentInfo(contract);
+
+                ContractContentInfo selectContract = null;
+                selectContract = contractContentInfoMapper.selectContractContentInfoByContractId(contract.getContractId());
+                if (selectContract == null) {
+                    contractContentInfoMapper.insertContractContentInfo(contract);
+                } else {
+                    System.out.println("------从钉钉同步的合同编号为：" + selectContract.getContractId() + "已经同步完成");
+                }
             }
         }
 

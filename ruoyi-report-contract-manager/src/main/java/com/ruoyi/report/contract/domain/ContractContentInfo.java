@@ -41,6 +41,8 @@ public class ContractContentInfo extends BaseEntity
     private Date signDate;
 
     /** 交货日期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "交货日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date deliveryDate;
 
     /** 我方单位名称 */

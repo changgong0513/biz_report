@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-// 查询合同管理列表
+// 查询合同数据列表
 export function listContract(query) {
-  console.log("查询合同管理列表(contract.js)");
+  console.log("查询合同数据列表(contract.js)");
   return request({
     url: '/contract/mgr/list',
     method: 'get',
@@ -10,36 +10,40 @@ export function listContract(query) {
   })
 }
 
-// 查询合同管理详细
-export function getContract(goodsId) {
+// 查询合同数据详细
+export function getContract(contractId) {
+  console.log("查询合同数据详细(contract.js)：" + contractId);
   return request({
-    url: '/contract/contract/' + goodsId,
+    url: '/contract/mgr/' + contractId,
     method: 'get'
   })
 }
 
-// 新增合同管理
+// 新增合同数据
 export function addContract(data) {
+  console.log("新增合同数据(contract.js)：" + JSON.stringify(data));
   return request({
-    url: '/contract/contract',
+    url: '/contract/mgr',
     method: 'post',
     data: data
   })
 }
 
-// 修改合同管理
+// 修改合同数据
 export function updateContract(data) {
+  console.log("修改合同数据(contract.js)：" + JSON.stringify(data));
   return request({
-    url: '/contract/contract',
+    url: '/contract/mgr',
     method: 'put',
     data: data
   })
 }
 
 // 删除合同管理
-export function delContract(goodsId) {
+export function delContract(contractId) {
+  console.log("删除合同管理(contract.js)：" + contractId);
   return request({
-    url: '/contract/contract/' + goodsId,
+    url: '/contract/mgr/' + contractId,
     method: 'delete'
   })
 }

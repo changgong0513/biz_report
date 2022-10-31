@@ -2,6 +2,10 @@ package com.ruoyi.report.contract.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.uuid.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +42,7 @@ public class ContractContentInfoController extends BaseController
      * 查询合同管理列表
      */
     @GetMapping("/list")
-    public TableDataInfo list(ContractContentInfo contractContentInfo)
-    {
+    public TableDataInfo list(ContractContentInfo contractContentInfo) {
         startPage();
         List<ContractContentInfo> list = contractContentInfoService.selectContractContentInfoList(contractContentInfo);
         return getDataTable(list);
@@ -48,7 +51,6 @@ public class ContractContentInfoController extends BaseController
     /**
      * 导出合同管理列表
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:export')")
     @Log(title = "合同管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ContractContentInfo contractContentInfo)
@@ -61,44 +63,42 @@ public class ContractContentInfoController extends BaseController
     /**
      * 获取合同管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:query')")
-    @GetMapping(value = "/{goodsId}")
-    public AjaxResult getInfo(@PathVariable("goodsId") String goodsId)
-    {
-        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(goodsId));
+    @GetMapping(value = "/{contractId}")
+    public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
+        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(contractId));
     }
 
     /**
      * 新增合同管理
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:add')")
     @Log(title = "合同管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody ContractContentInfo contractContentInfo)
-    {
+    public AjaxResult add(@RequestBody ContractContentInfo contractContentInfo) {
+        contractContentInfo.setGoodsId(UUID.randomUUID().toString().replace("-", ""));
+        contractContentInfo.setBizVersion(1L);
+        contractContentInfo.setCreateTime(DateUtils.getNowDate());
+        contractContentInfo.setUpdateTime(DateUtils.getNowDate());
+        contractContentInfo.setCreateBy(SecurityUtils.getUsername());
+        contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(contractContentInfoService.insertContractContentInfo(contractContentInfo));
     }
 
     /**
      * 修改合同管理
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:edit')")
     @Log(title = "合同管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody ContractContentInfo contractContentInfo)
-    {
+    public AjaxResult edit(@RequestBody ContractContentInfo contractContentInfo) {
         return toAjax(contractContentInfoService.updateContractContentInfo(contractContentInfo));
     }
 
     /**
      * 删除合同管理
      */
-    @PreAuthorize("@ss.hasPermi('contract:contract:remove')")
     @Log(title = "合同管理", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{goodsIds}")
-    public AjaxResult remove(@PathVariable String[] goodsIds)
-    {
-        return toAjax(contractContentInfoService.deleteContractContentInfoByContractIds(goodsIds));
+	@DeleteMapping("/{contractId}")
+    public AjaxResult remove(@PathVariable String[] contractId) {
+        return toAjax(contractContentInfoService.deleteContractContentInfoByContractIds(contractId));
     }
 
     /**
