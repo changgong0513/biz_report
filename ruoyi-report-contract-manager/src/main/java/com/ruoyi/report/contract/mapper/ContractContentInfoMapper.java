@@ -7,17 +7,17 @@ import com.ruoyi.report.contract.domain.ContractContentInfo;
  * 合同管理Mapper接口
  * 
  * @author changgong
- * @date 2022-10-30
+ * @date 2022-10-31
  */
 public interface ContractContentInfoMapper 
 {
     /**
      * 查询合同管理
      * 
-     * @param goodsId 合同管理主键
+     * @param contractId 合同管理主键
      * @return 合同管理
      */
-    public ContractContentInfo selectContractContentInfoByGoodsId(String goodsId);
+    public ContractContentInfo selectContractContentInfoByContractId(String contractId);
 
     /**
      * 查询合同管理列表
@@ -46,16 +46,16 @@ public interface ContractContentInfoMapper
     /**
      * 删除合同管理
      * 
-     * @param goodsId 合同管理主键
+     * @param contractId 合同管理主键
      * @return 结果
      */
-    public int deleteContractContentInfoByGoodsId(String goodsId);
+    public int deleteContractContentInfoByContractId(String contractId);
 
     /**
      * 批量删除合同管理
      * 
-     * @param goodsIds 需要删除的数据主键集合
+     * @param contractIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteContractContentInfoByGoodsIds(String[] goodsIds);
+    public int deleteContractContentInfoByContractIds(String[] contractIds);
 }

@@ -66,7 +66,7 @@ public class ContractContentInfoController extends BaseController
     @GetMapping(value = "/{goodsId}")
     public AjaxResult getInfo(@PathVariable("goodsId") String goodsId)
     {
-        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByGoodsId(goodsId));
+        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(goodsId));
     }
 
     /**
@@ -99,7 +99,7 @@ public class ContractContentInfoController extends BaseController
 	@DeleteMapping("/{goodsIds}")
     public AjaxResult remove(@PathVariable String[] goodsIds)
     {
-        return toAjax(contractContentInfoService.deleteContractContentInfoByGoodsIds(goodsIds));
+        return toAjax(contractContentInfoService.deleteContractContentInfoByContractIds(goodsIds));
     }
 
     /**

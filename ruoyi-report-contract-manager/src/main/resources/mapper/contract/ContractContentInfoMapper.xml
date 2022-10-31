@@ -41,16 +41,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectContractContentInfoList" parameterType="ContractContentInfo" resultMap="ContractContentInfoResult">
         <include refid="selectContractContentInfoVo"/>
         <where>  
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="contractType != null  and contractType != ''"> and contract_type = #{contractType}</if>
             <if test="contractName != null  and contractName != ''"> and contract_name like concat('%', #{contractName}, '%')</if>
-            <if test="contractId != null  and contractId != ''"> and contract_id = #{contractId}</if>
             <if test="signDate != null "> and sign_date = #{signDate}</if>
-            <if test="params.beginContractTotal != null and params.beginContractTotal != '' and params.endContractTotal != null and params.endContractTotal != ''"> and contract_total between #{params.beginContractTotal} and #{params.endContractTotal}</if>
+            <if test="deliveryDate != null "> and delivery_date = #{deliveryDate}</if>
+            <if test="ourCompanyName != null  and ourCompanyName != ''"> and our_company_name like concat('%', #{ourCompanyName}, '%')</if>
+            <if test="ourPrincipal != null  and ourPrincipal != ''"> and our_principal = #{ourPrincipal}</if>
+            <if test="oppositeCompanyName != null  and oppositeCompanyName != ''"> and opposite_company_name like concat('%', #{oppositeCompanyName}, '%')</if>
+            <if test="oppositePrincipal != null  and oppositePrincipal != ''"> and opposite__principal = #{oppositePrincipal}</if>
+            <if test="contractQuantity != null  and contractQuantity != ''"> and contract_quantity = #{contractQuantity}</if>
+            <if test="contractPrice != null "> and contract_price = #{contractPrice}</if>
+            <if test="contractTotal != null "> and contract_total = #{contractTotal}</if>
+            <if test="accountingPeriod != null  and accountingPeriod != ''"> and accounting_period = #{accountingPeriod}</if>
+            <if test="deliveryMethod != null  and deliveryMethod != ''"> and delivery_method = #{deliveryMethod}</if>
+            <if test="portToFactoryFare != null "> and port_to_factory_fare = #{portToFactoryFare}</if>
+            <if test="portToPortFare != null "> and port_to_port_fare = #{portToPortFare}</if>
+            <if test="contractOther != null  and contractOther != ''"> and contract_other = #{contractOther}</if>
+            <if test="contractAgent != null  and contractAgent != ''"> and contract_agent = #{contractAgent}</if>
+            <if test="contractRemark != null  and contractRemark != ''"> and contract_remark = #{contractRemark}</if>
+            <if test="contractStatus != null  and contractStatus != ''"> and contract_status = #{contractStatus}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
         </where>
     </select>
     
-    <select id="selectContractContentInfoByGoodsId" parameterType="String" resultMap="ContractContentInfoResult">
+    <select id="selectContractContentInfoByContractId" parameterType="String" resultMap="ContractContentInfoResult">
         <include refid="selectContractContentInfoVo"/>
-        where goods_id = #{goodsId}
+        where contract_id = #{contractId}
     </select>
         
     <insert id="insertContractContentInfo" parameterType="ContractContentInfo">
@@ -118,10 +136,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateContractContentInfo" parameterType="ContractContentInfo">
         update contract_content_info
         <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsId != null and goodsId != ''">goods_id = #{goodsId},</if>
             <if test="goodsName != null and goodsName != ''">goods_name = #{goodsName},</if>
             <if test="contractType != null and contractType != ''">contract_type = #{contractType},</if>
             <if test="contractName != null and contractName != ''">contract_name = #{contractName},</if>
-            <if test="contractId != null">contract_id = #{contractId},</if>
             <if test="signDate != null">sign_date = #{signDate},</if>
             <if test="deliveryDate != null">delivery_date = #{deliveryDate},</if>
             <if test="ourCompanyName != null">our_company_name = #{ourCompanyName},</if>
@@ -145,17 +163,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="bizVersion != null">biz_version = #{bizVersion},</if>
         </trim>
-        where goods_id = #{goodsId}
+        where contract_id = #{contractId}
     </update>
 
-    <delete id="deleteContractContentInfoByGoodsId" parameterType="String">
-        delete from contract_content_info where goods_id = #{goodsId}
+    <delete id="deleteContractContentInfoByContractId" parameterType="String">
+        delete from contract_content_info where contract_id = #{contractId}
     </delete>
 
-    <delete id="deleteContractContentInfoByGoodsIds" parameterType="String">
-        delete from contract_content_info where goods_id in 
-        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
-            #{goodsId}
+    <delete id="deleteContractContentInfoByContractIds" parameterType="String">
+        delete from contract_content_info where contract_id in 
+        <foreach item="contractId" collection="array" open="(" separator="," close=")">
+            #{contractId}
         </foreach>
     </delete>
 </mapper>

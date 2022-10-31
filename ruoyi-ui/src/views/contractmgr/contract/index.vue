@@ -119,15 +119,14 @@
       <el-table-column label="审批状态" align="center" prop="approvalStatus" width="80" />
       <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">
         <template>
-          <el-upload 
-            ref="field101" 
-            :file-list="field101fileList" 
-            :action="field101Action" 
+          <!-- <el-upload 
+            ref="field101"  
             :auto-upload="false"
             multiple 
-            :before-upload="field101BeforeUpload">
+            >
             <el-button size="mini" type="text" icon="el-icon-upload">上传</el-button>
-          </el-upload>
+          </el-upload> -->
+          <el-button size="mini" type="text" icon="el-icon-upload">上传</el-button>
         </template>
       </el-table-column>
     </el-table>
