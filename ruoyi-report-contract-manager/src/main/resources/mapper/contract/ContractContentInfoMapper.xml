@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="oppositePrincipal != null  and oppositePrincipal != ''"> and opposite__principal = #{oppositePrincipal}</if>
             <if test="contractQuantity != null  and contractQuantity != ''"> and contract_quantity = #{contractQuantity}</if>
             <if test="contractPrice != null "> and contract_price = #{contractPrice}</if>
-            <if test="contractTotal != null "> and contract_total = #{contractTotal}</if>
+            <if test="leftContractTotal != null and rightContractTotal != null"> and contract_total between #{leftContractTotal} and #{rightContractTotal} </if>
             <if test="accountingPeriod != null  and accountingPeriod != ''"> and accounting_period = #{accountingPeriod}</if>
             <if test="deliveryMethod != null  and deliveryMethod != ''"> and delivery_method = #{deliveryMethod}</if>
             <if test="portToFactoryFare != null "> and port_to_factory_fare = #{portToFactoryFare}</if>

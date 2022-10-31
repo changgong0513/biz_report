@@ -66,6 +66,12 @@ public class ContractContentInfo extends BaseEntity
     @Excel(name = "合同总价")
     private BigDecimal contractTotal;
 
+    /** 合同总价（范围查询左值） */
+    private BigDecimal leftContractTotal;
+
+    /** 合同总价（范围查询右值） */
+    private BigDecimal rightContractTotal;
+
     /** 账期 */
     private String accountingPeriod;
 
@@ -205,20 +211,38 @@ public class ContractContentInfo extends BaseEntity
     {
         this.contractPrice = contractPrice;
     }
-
     public BigDecimal getContractPrice() 
     {
         return contractPrice;
     }
+
     public void setContractTotal(BigDecimal contractTotal) 
     {
         this.contractTotal = contractTotal;
     }
-
-    public BigDecimal getContractTotal() 
+    public BigDecimal getContractTotal()
     {
         return contractTotal;
     }
+
+    public void setLeftContractTotal(BigDecimal leftContractTotal)
+    {
+        this.leftContractTotal = leftContractTotal;
+    }
+    public BigDecimal getLeftContractTotal()
+    {
+        return leftContractTotal;
+    }
+
+    public void setRightContractTotal(BigDecimal rightContractTotal)
+    {
+        this.rightContractTotal = rightContractTotal;
+    }
+    public BigDecimal getRightContractTotal()
+    {
+        return rightContractTotal;
+    }
+
     public void setAccountingPeriod(String accountingPeriod) 
     {
         this.accountingPeriod = accountingPeriod;

@@ -42,17 +42,17 @@
         <!-- 合同总价 -->
         <el-col :span="16">
           <!-- 合同总价min -->
-          <el-form-item label="合同总价" prop="contractTotal">
+          <el-form-item label="合同总价" prop="leftContractTotal">
             <el-input
-              v-model="queryParams.contractTotal"
+              v-model="queryParams.leftContractTotal"
               clearable
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
           <!-- 合同总价max -->
-          <el-form-item label="~" prop="contractTotal" label-width="15px">
+          <el-form-item label="~" prop="rightContractTotal" label-width="15px">
             <el-input
-              v-model="queryParams.contractTotal"
+              v-model="queryParams.rightContractTotal"
               clearable
               @keyup.enter.native="handleQuery"
             />
@@ -291,7 +291,8 @@ export default {
         contractId: null,
         signDate: null,
         oppositeCompanyName: null,
-        contractTotal: null,
+        leftContractTotal: null,
+        rightContractTotal: null
       },
       // 表单参数
       form: {},
@@ -361,12 +362,7 @@ export default {
         portToPortFare: null,
         contractOther: null,
         contractAgent: null,
-        contractRemark: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        bizVersion: null
+        contractRemark: null
       };
       this.contractAdditionalInfoList = [];
       this.resetForm("form");
