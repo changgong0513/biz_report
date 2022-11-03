@@ -134,7 +134,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange"
-    @row-dblclick="handleView">
+      @row-dblclick="handleView">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="合同编号" align="center" prop="contractId" width="150" />
       <el-table-column label="签约日期" align="center" prop="signDate" width="100">
@@ -151,15 +151,18 @@
         </template>
       </el-table-column>
       <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">
-        <template>
-          <!-- <el-upload 
-            ref="field101"  
+        <template slot-scope="scope">
+          <el-upload
+            ref="uploadRef"
+            action=""
+            accept=".xlsx, .xls, .docx, .doc, jpeg, png"
             :auto-upload="false"
-            multiple 
-            >
-            <el-button size="mini" type="text" icon="el-icon-upload">上传</el-button>
-          </el-upload> -->
-          <el-button size="mini" type="text" icon="el-icon-upload">上传</el-button>
+            :on-change="(file, fileList) => { handleChange(file, fileList, scope.row.contractId) }"
+            :show-file-list="false"
+            :before-upload="beforeUpload"
+          >
+            <el-button type="text" size="mini">上传</el-button>
+          </el-upload>
         </template>
       </el-table-column>
     </el-table>
@@ -316,13 +319,13 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="cancel(1)">取 消</el-button>
       </div>
     </el-dialog>
 
     <!-- 查看合同内容详细对话框 -->
     <el-dialog :title="title" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
-      <el-form ref="formDetail" :model="formDetail" label-width="110px">
+      <el-form ref="formDetail" :model="formDetail" label-width="110px" @opened="getContractAdditional" >
         <h3>合同内容详细</h3>
         <el-row>
           <el-col :span="8"><el-form-item label="货物名称">{{formDetail.goodsName}}</el-form-item></el-col>
@@ -372,7 +375,11 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="12"><el-form-item label="附件"></el-form-item></el-col>
+          <el-col :span="12">
+            <el-form-item label="附件">
+              <a v-for="(item, index) in contractAdditionalList" :key="index" :href="item.uplloadFilePath" >{{item.uplloadFilePath}}</a>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <el-divider />
@@ -423,13 +430,17 @@
           </el-col>
         </el-row>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel(2)">关 闭</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-// import { ,  } from "@/api/contract/contract";
-import { listContract, getContract, addContract, delContract, updateContract, syncContract } from "@/api/contract/contract";
+import { listContract, getContract, addContract, delContract, updateContract, 
+  syncContract, uploadFile, getContractAdditional } from "@/api/contract/contract";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "Contract",
@@ -498,11 +509,14 @@ export default {
         'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
         'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
       ],
-      isUpdate: false
+      isUpdate: false,
+      // 合同附件列表
+      contractAdditionalList: []
     };
   },
   created() {
     this.getList();
+    console.log(process.env.VUE_APP_BASE_API);
   },
   methods: {
     /** 查询合同管理列表 */
@@ -515,8 +529,13 @@ export default {
       });
     },
     // 取消按钮
-    cancel() {
-      this.open = false;
+    cancel(dialogType) {
+      if (dialogType === 1) {
+        this.open = false;
+      } else {
+        this.openDetail = false;
+      }
+      
       this.reset();
     },
     // 表单重置
@@ -627,9 +646,46 @@ export default {
     },
     /** 查看合同数据 */ 
     handleView(row) {
-      this.openDetail = true;
       this.formDetail = row;
+      this.openDetail = true;
+      // getContractAdditional(row.contractId)
+      
     },
+    /** 文件上传 */
+    handleChange(file, fileList, uploadContractId) {
+      console.log("文件上传" + uploadContractId);
+      if(file != null){
+        let formData = new FormData();
+        formData.append('file', file.raw)
+        formData.append('uploadContractId', uploadContractId)
+        uploadFile(formData).then(response => {
+          console.log(response)
+          this.$modal.msgSuccess("上传成功！");
+        });
+      }
+    },
+    // 上传预处理
+    beforeUpload(file) {
+      console.log("上传预处理file：" + file);
+      if (file.type.indexOf("image/") == -1) {
+        this.$modal.msgError("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
+      } else if (file.type.indexOf(".xlsx") == -1 || file.type.indexOf(".xls") == -1) {
+        this.$modal.msgError("文件格式错误，请上传图片类型,如：.xlsx，.xls后缀的文件。");
+      } else if (ile.type.indexOf(".docx") == -1 || file.type.indexOf(".doc") == -1) {
+        this.$modal.msgError("文件格式错误，请上传图片类型,如：.docx，.doc后缀的文件。");
+      }
+    },
+    getContractAdditional(contractForm) {
+      console.log(contractForm);
+      this.loading = true;
+      getContractAdditional(contractId).then(response => {
+        console.log("JSON.stringify(response.rows)");
+        this.contractAdditionalList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+        
+      });
+    }
   }
 };
 </script>

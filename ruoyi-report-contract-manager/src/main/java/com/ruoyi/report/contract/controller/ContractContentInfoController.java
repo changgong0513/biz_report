@@ -1,21 +1,25 @@
 package com.ruoyi.report.contract.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
+import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.common.utils.uuid.UUID;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.ruoyi.framework.config.ServerConfig;
+import com.ruoyi.report.contract.domain.ContractAdditionalInfo;
+import com.ruoyi.report.contract.domain.UploadData;
+import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -24,6 +28,7 @@ import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.ruoyi.report.contract.service.IContractContentInfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 合同管理Controller
@@ -37,6 +42,9 @@ public class ContractContentInfoController extends BaseController
 {
     @Autowired
     private IContractContentInfoService contractContentInfoService;
+
+    @Autowired
+    private IContractAdditionalInfoService contractAdditionalInfoService;
 
     /**
      * 查询合同管理列表
@@ -107,5 +115,72 @@ public class ContractContentInfoController extends BaseController
     @PostMapping("/sync")
     public AjaxResult sync(ContractContentInfo contractContentInfo) throws Exception {
         return toAjax(contractContentInfoService.syncContractContentInfo());
+    }
+
+    /**
+     * 文件上传
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping("/upload")
+    public AjaxResult uploadFile(@RequestParam("file") MultipartFile file, UploadData uploadData)
+            throws InvalidExtensionException, IOException {
+
+        String filePath = RuoYiConfig.getUploadPath();
+        String fileName =  file.getOriginalFilename();
+        File file_dir= new File(filePath);
+        if(!file_dir.exists()) {
+            file_dir.mkdirs();
+        }
+
+        int fileNamelength = file.getOriginalFilename().length();
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
+            throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
+        }
+
+        FileUploadUtils.assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+        File desc = createAbsoluteFile(filePath, fileName);
+        file.transferTo(desc);
+
+        ContractAdditionalInfo contractAdditionalInfo = new ContractAdditionalInfo();
+        contractAdditionalInfo.setBizVersion(1L);
+        contractAdditionalInfo.setCreateTime(DateUtils.getNowDate());
+        contractAdditionalInfo.setUpdateTime(DateUtils.getNowDate());
+        contractAdditionalInfo.setCreateBy(SecurityUtils.getUsername());
+        contractAdditionalInfo.setUpdateBy(SecurityUtils.getUsername());
+        contractAdditionalInfo.setContractId(uploadData.getUploadContractId());
+        contractAdditionalInfo.setUplloadFilePath(filePath + File.separator + fileName);
+        contractAdditionalInfoService.insertContractAdditionalInfo(contractAdditionalInfo);
+
+        return AjaxResult.success();
+    }
+
+    /**
+     * 获取合同附件列表
+     */
+    @GetMapping(value = "/additional/{contractId}")
+    public String getContractAdditional(@PathVariable("contractId") String contractId) {
+//        startPage();
+//        List<ContractAdditionalInfo> list = contractAdditionalInfoService.selectContractAdditionalInfoByContractId(contractId);
+//        return getDataTable(list);
+        return "1";
+    }
+
+
+
+    private static final File createAbsoluteFile(String uploadDir, String fileName)
+            throws IOException {
+
+        File desc = new File(uploadDir + File.separator + fileName);
+        if (!desc.getParentFile().exists()) {
+            desc.getParentFile().mkdirs();
+        }
+
+        if (!desc.exists()) {
+            desc.createNewFile();
+        }
+
+        return desc;
     }
 }

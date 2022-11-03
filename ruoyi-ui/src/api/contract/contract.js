@@ -56,3 +56,22 @@ export function syncContract(query) {
     method: 'post'
   })
 }
+
+// 合同管理文件上传
+export function uploadFile(data) {
+  console.log("合同管理文件上传");
+  return request({
+    url: '/contract/mgr/upload',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询合同附件
+export function getContractAdditional(contractId) {
+  console.log("查询合同附件");
+  return request({
+    url: '/contract/mgr/additional/' + contractId,
+    method: 'get'
+  })
+}
