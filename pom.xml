@@ -209,6 +209,7 @@
         <module>ruoyi-common</module>
         <module>ruoyi-report-masterdata</module>
         <module>ruoyi-report-contract-manager</module>
+        <module>ruoyi-report-purchasesale</module>
     </modules>
     <packaging>pom</packaging>
 

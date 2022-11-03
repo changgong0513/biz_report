@@ -3,9 +3,9 @@
     <!-- 查询表单 -->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <!-- 订单编号 -->
-      <el-form-item label="订单编号" prop="orderId">
+      <el-form-item label="订单编号" prop="contractId">
         <el-input
-          v-model="queryParams.orderId"
+          v-model="queryParams.contractId"
           placeholder="请输入订单编号"
           clearable
           @keyup.enter.native="handleQuery"
@@ -389,6 +389,7 @@
 <script>
 import { uuid } from "@/utils/xmy";
 // import { listPurchasesale, getPurchasesale, delPurchasesale, addPurchasesale, updatePurchasesale } from "@/api/purchasesale/purchasesale";
+import { listPurchase } from "@/api/purchasesale/purchasesale";
 
 export default {
   name: "Purchase",
@@ -410,20 +411,7 @@ export default {
       // 总条数
       total: 1,
       // 采购收货销售发货管理表格数据
-      // purchaseList: [],
-      purchaseList: [
-        {
-          orderId: "yw1202112221355",
-          businessDate: "2021/12/20",
-          belongDept: "业务三部",
-          handledBy: "李四",
-          supplierName: "丹棱正邦饲料有限公司",
-          orderStatus: "执行中",
-          materialName: "土豆",
-          checkMoney: "2357656",
-          completeRate: "89%"
-        }
-      ],
+      purchaseList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -530,19 +518,17 @@ export default {
     };
   },
   created() {
-    // this.getList();
-    console.log("created回调查询采购收货销售发货管理列表");
+    this.getList();
   },
   methods: {
     /** 查询采购收货销售发货管理列表 */
     getList() {
-      // this.loading = true;
-      // listPurchasesale(this.queryParams).then(response => {
-      //   this.purchasesaleList = response.rows;
-      //   this.total = response.total;
-      //   this.loading = false;
-      // });
-      console.log("查询采购收货销售发货管理列表")
+      this.loading = true;
+      listPurchase(this.queryParams).then(response => {
+        this.purchaseList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
@@ -576,15 +562,13 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      // this.queryParams.pageNum = 1;
-      // this.getList();
-      alert("搜索按钮操作");
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      // this.resetForm("queryForm");
-      // this.handleQuery();
-      alert("重置按钮操作");
+      this.resetForm("queryForm");
+      this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {

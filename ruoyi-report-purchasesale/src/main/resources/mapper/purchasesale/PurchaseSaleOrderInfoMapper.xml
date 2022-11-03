@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper">
+    
+    <resultMap type="PurchaseSaleOrderInfo" id="PurchaseSaleOrderInfoResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="purchaseType"    column="purchase_type"    />
+        <result property="contractId"    column="contract_id"    />
+        <result property="handledBy"    column="handled_by"    />
+        <result property="belongDept"    column="belong_dept"    />
+        <result property="businessDate"    column="business_date"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="purchaseQuantity"    column="purchase_quantity"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="meteringUnit"    column="metering_unit"    />
+        <result property="arrivalDate"    column="arrival_date"    />
+        <result property="requiredDeliveryDate"    column="required_delivery_date"    />
+        <result property="accountPeriod"    column="account_period"    />
+        <result property="arrivalTerms"    column="arrival_terms"    />
+        <result property="arrivalTermsValue"    column="arrival_terms_value"    />
+        <result property="settlementMethod"    column="settlement_method"    />
+        <result property="isInvoicing"    column="is_invoicing"    />
+        <result property="orderRemark"    column="order_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectPurchaseSaleOrderInfoVo">
+        select order_id, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
+    </sql>
+
+    <select id="selectPurchaseSaleOrderInfoList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
+        <include refid="selectPurchaseSaleOrderInfoVo"/>
+        <where>  
+            <if test="contractId != null  and contractId != ''"> and contract_id like concat('%', #{contractId}, '%')</if>
+            <if test="handledBy != null  and handledBy != ''"> and handled_by = #{handledBy}</if>
+            <if test="belongDept != null  and belongDept != ''"> and belong_dept = #{belongDept}</if>
+            <if test="businessDate != null "> and business_date = #{businessDate}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseSaleOrderInfoByContractId" parameterType="String" resultMap="PurchaseSaleOrderInfoResult">
+        <include refid="selectPurchaseSaleOrderInfoVo"/>
+        where contract_id = #{contractId}
+    </select>
+        
+    <insert id="insertPurchaseSaleOrderInfo" parameterType="PurchaseSaleOrderInfo">
+        insert into purchase_sale_order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="purchaseType != null and purchaseType != ''">purchase_type,</if>
+            <if test="contractId != null and contractId != ''">contract_id,</if>
+            <if test="handledBy != null and handledBy != ''">handled_by,</if>
+            <if test="belongDept != null and belongDept != ''">belong_dept,</if>
+            <if test="businessDate != null">business_date,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="purchaseQuantity != null">purchase_quantity,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="meteringUnit != null and meteringUnit != ''">metering_unit,</if>
+            <if test="arrivalDate != null">arrival_date,</if>
+            <if test="requiredDeliveryDate != null">required_delivery_date,</if>
+            <if test="accountPeriod != null">account_period,</if>
+            <if test="arrivalTerms != null and arrivalTerms != ''">arrival_terms,</if>
+            <if test="arrivalTermsValue != null">arrival_terms_value,</if>
+            <if test="settlementMethod != null and settlementMethod != ''">settlement_method,</if>
+            <if test="isInvoicing != null">is_invoicing,</if>
+            <if test="orderRemark != null">order_remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="purchaseType != null and purchaseType != ''">#{purchaseType},</if>
+            <if test="contractId != null and contractId != ''">#{contractId},</if>
+            <if test="handledBy != null and handledBy != ''">#{handledBy},</if>
+            <if test="belongDept != null and belongDept != ''">#{belongDept},</if>
+            <if test="businessDate != null">#{businessDate},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="purchaseQuantity != null">#{purchaseQuantity},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="meteringUnit != null and meteringUnit != ''">#{meteringUnit},</if>
+            <if test="arrivalDate != null">#{arrivalDate},</if>
+            <if test="requiredDeliveryDate != null">#{requiredDeliveryDate},</if>
+            <if test="accountPeriod != null">#{accountPeriod},</if>
+            <if test="arrivalTerms != null and arrivalTerms != ''">#{arrivalTerms},</if>
+            <if test="arrivalTermsValue != null">#{arrivalTermsValue},</if>
+            <if test="settlementMethod != null and settlementMethod != ''">#{settlementMethod},</if>
+            <if test="isInvoicing != null">#{isInvoicing},</if>
+            <if test="orderRemark != null">#{orderRemark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseSaleOrderInfo" parameterType="PurchaseSaleOrderInfo">
+        update purchase_sale_order_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchaseType != null and purchaseType != ''">purchase_type = #{purchaseType},</if>
+            <if test="contractId != null and contractId != ''">contract_id = #{contractId},</if>
+            <if test="handledBy != null and handledBy != ''">handled_by = #{handledBy},</if>
+            <if test="belongDept != null and belongDept != ''">belong_dept = #{belongDept},</if>
+            <if test="businessDate != null">business_date = #{businessDate},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="purchaseQuantity != null">purchase_quantity = #{purchaseQuantity},</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="meteringUnit != null and meteringUnit != ''">metering_unit = #{meteringUnit},</if>
+            <if test="arrivalDate != null">arrival_date = #{arrivalDate},</if>
+            <if test="requiredDeliveryDate != null">required_delivery_date = #{requiredDeliveryDate},</if>
+            <if test="accountPeriod != null">account_period = #{accountPeriod},</if>
+            <if test="arrivalTerms != null and arrivalTerms != ''">arrival_terms = #{arrivalTerms},</if>
+            <if test="arrivalTermsValue != null">arrival_terms_value = #{arrivalTermsValue},</if>
+            <if test="settlementMethod != null and settlementMethod != ''">settlement_method = #{settlementMethod},</if>
+            <if test="isInvoicing != null">is_invoicing = #{isInvoicing},</if>
+            <if test="orderRemark != null">order_remark = #{orderRemark},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deletePurchaseSaleOrderInfoByOrderId" parameterType="String">
+        delete from purchase_sale_order_info where order_id = #{orderId}
+    </delete>
+
+    <delete id="deletePurchaseSaleOrderInfoByOrderIds" parameterType="String">
+        delete from purchase_sale_order_info where order_id in 
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+</mapper>

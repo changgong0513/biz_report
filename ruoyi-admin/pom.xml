@@ -70,6 +70,17 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>report.contract.manager</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.purchase.sale</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.purchase.sale</artifactId>
+            <version>3.8.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

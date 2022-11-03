@@ -2,6 +2,8 @@ package com.ruoyi.report.contract.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.dingtalkworkflow_1_0.models.*;
@@ -16,6 +18,8 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
+import com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper;
 import com.taobao.api.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +38,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 {
     @Autowired
     private ContractContentInfoMapper contractContentInfoMapper;
+
+    @Autowired
+    private PurchaseSaleOrderInfoMapper purchaseSaleOrderInfoMapper;
 
     private static com.aliyun.dingtalkworkflow_1_0.Client client = null;
 
@@ -98,7 +105,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     /**
      * 批量删除合同管理
      *
-     * @param goodsIds 需要删除的合同管理主键
+     * @param contractId 需要删除的合同管理主键
      * @return 结果
      */
     @Override
@@ -132,7 +139,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         // 获取当前企业所有可管理的表单
         // getCurrentEnterpriseAllMgrForm(accessToken);
 
-        // 获取审批实例ID列表(测试用)
+        // 获取审批实例ID列表(测试数据用)
         List<String> ids = getContractForDemo(accessToken);
         int size = ids.size();
         for (int i = 0; i < size; i++) {
@@ -155,6 +162,27 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 } else {
                     System.out.println("------从钉钉同步的合同编号为：" + selectContract.getContractId() + "已经同步完成");
                 }
+
+                PurchaseSaleOrderInfo purchaseInfo = purchaseSaleOrderInfoMapper
+                        .selectPurchaseSaleOrderInfoByContractId(contract.getContractId());
+                if (purchaseInfo == null) {
+                    purchaseInfo = new PurchaseSaleOrderInfo();
+                    purchaseInfo.setOrderId(contract.getContractId());
+                    purchaseInfo.setBizVersion(1L);
+                    purchaseInfo.setCreateTime(DateUtils.getNowDate());
+                    purchaseInfo.setUpdateTime(DateUtils.getNowDate());
+                    purchaseInfo.setCreateBy(SecurityUtils.getUsername());
+                    purchaseInfo.setUpdateBy(SecurityUtils.getUsername());
+
+                    fillPurchaseInfoFromContract(contract, purchaseInfo);
+
+                    purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseInfo);
+                } else {
+                    fillPurchaseInfoFromContract(contract, purchaseInfo);
+                    purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
+                }
+
+
             }
         }
 
@@ -400,5 +428,55 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         }
 
         return null;
+    }
+
+    private void fillPurchaseInfoFromContract(ContractContentInfo contractInfo,
+                                              PurchaseSaleOrderInfo purchaseInfo) {
+        // 采购类型 -> 收购合同对应企业采购
+        purchaseInfo.setPurchaseType(contractInfo.getContractType());
+        // 合同编号 -> 合同编号
+        purchaseInfo.setContractId(contractInfo.getContractId());
+        // 经办人 -> 我方负责人
+        purchaseInfo.setHandledBy(contractInfo.getOurPrincipal());
+        // 所属部门 -> 经办人所属部门
+        purchaseInfo.setBelongDept("1");
+        // 业务日期 -> 签约日期
+        purchaseInfo.setBusinessDate(contractInfo.getSignDate());
+        // 物料名称 -> 货物名称
+        purchaseInfo.setMaterialName(contractInfo.getGoodsName());
+        // 采购数量 -> 合同数量
+        if (StringUtils.isNotBlank(contractInfo.getContractQuantity())) {
+            purchaseInfo.setPurchaseQuantity(Long.parseLong(contractInfo.getContractQuantity()));
+        } else {
+            purchaseInfo.setPurchaseQuantity(0L);
+        }
+        // 供应商名称 -> 对方单位名称
+        purchaseInfo.setSupplierName(contractInfo.getOppositeCompanyName());
+        // 单价 -> 合同单价
+        purchaseInfo.setUnitPrice(contractInfo.getContractPrice());
+        // 计量单位 -> 平方米
+        purchaseInfo.setMeteringUnit("3");
+        // 预期到货日期 -> 交货日期
+        purchaseInfo.setArrivalDate(contractInfo.getDeliveryDate());
+        // 要求交货期 —> 交货日期
+        purchaseInfo.setRequiredDeliveryDate(contractInfo.getDeliveryDate());
+        // 账期 —> 账期期限中的数字部分
+        String regEx = "[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(contractInfo.getAccountingPeriod());
+        String result = m.replaceAll("").trim();
+        if (StringUtils.isNotBlank(result)) {
+            purchaseInfo.setPurchaseQuantity(Long.parseLong(result));
+        } else {
+            purchaseInfo.setAccountPeriod(0L);
+        }
+        // 到账条件 —>  账期期限
+        purchaseInfo.setArrivalTerms(contractInfo.getAccountingPeriod());
+        // 结算方式 -> 发货 = 发货数量结算
+        if (StringUtils.contains(contractInfo.getAccountingPeriod(), "卸货")) {
+            purchaseInfo.setSettlementMethod("1");
+        } else if (StringUtils.contains(contractInfo.getAccountingPeriod(), "发货")) {
+            purchaseInfo.setSettlementMethod("2");
+        }
     }
 }
