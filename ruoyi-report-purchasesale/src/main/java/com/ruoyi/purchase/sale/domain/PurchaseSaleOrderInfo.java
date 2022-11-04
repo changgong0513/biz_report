@@ -22,6 +22,10 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     @Excel(name = "订单编号")
     private String orderId;
 
+    /** 订单状态 */
+    @Excel(name = "订单状态")
+    private String orderStatus;
+
     /** 采购类型 */
     private String purchaseType;
 
@@ -59,9 +63,11 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     private String meteringUnit;
 
     /** 预计到货期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date arrivalDate;
 
     /** 要求交货期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date requiredDeliveryDate;
 
     /** 账期 */
@@ -85,15 +91,12 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setOrderId(String orderId) 
-    {
-        this.orderId = orderId;
-    }
+    public void setOrderId(String orderId) { this.orderId = orderId; }
+    public String getOrderId() { return orderId; }
 
-    public String getOrderId() 
-    {
-        return orderId;
-    }
+    public void setOrderStatus(String orderStatus) { this.orderStatus = orderStatus; }
+    public String getOrderStatus() { return orderStatus; }
+
     public void setPurchaseType(String purchaseType) 
     {
         this.purchaseType = purchaseType;
@@ -269,7 +272,8 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("orderId", getOrderId())
+                .append("orderId", getOrderId())
+                .append("orderStatus", getOrderStatus())
             .append("purchaseType", getPurchaseType())
             .append("contractId", getContractId())
             .append("handledBy", getHandledBy())

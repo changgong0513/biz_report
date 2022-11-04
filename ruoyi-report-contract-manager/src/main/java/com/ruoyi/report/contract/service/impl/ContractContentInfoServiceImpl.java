@@ -478,5 +478,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         } else if (StringUtils.contains(contractInfo.getAccountingPeriod(), "发货")) {
             purchaseInfo.setSettlementMethod("2");
         }
+
+        purchaseInfo.setOrderStatus(contractInfo.getContractStatus());
     }
 }

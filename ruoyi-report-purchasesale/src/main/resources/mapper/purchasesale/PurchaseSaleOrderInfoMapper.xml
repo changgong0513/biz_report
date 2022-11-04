@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <resultMap type="PurchaseSaleOrderInfo" id="PurchaseSaleOrderInfoResult">
         <result property="orderId"    column="order_id"    />
+        <result property="orderStatus"    column="order_status"    />
         <result property="purchaseType"    column="purchase_type"    />
         <result property="contractId"    column="contract_id"    />
         <result property="handledBy"    column="handled_by"    />
@@ -32,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPurchaseSaleOrderInfoVo">
-        select order_id, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
+        select order_id, order_status, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
     </sql>
 
     <select id="selectPurchaseSaleOrderInfoList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
@@ -55,6 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into purchase_sale_order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderId != null">order_id,</if>
+            <if test="orderStatus != null">order_status,</if>
             <if test="purchaseType != null and purchaseType != ''">purchase_type,</if>
             <if test="contractId != null and contractId != ''">contract_id,</if>
             <if test="handledBy != null and handledBy != ''">handled_by,</if>
@@ -81,6 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null">#{orderId},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
             <if test="purchaseType != null and purchaseType != ''">#{purchaseType},</if>
             <if test="contractId != null and contractId != ''">#{contractId},</if>
             <if test="handledBy != null and handledBy != ''">#{handledBy},</if>
@@ -138,11 +141,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deletePurchaseSaleOrderInfoByOrderId" parameterType="String">
-        delete from purchase_sale_order_info where order_id = #{orderId}
+        delete from purchase_sale_order_info where contract_id = #{orderId}
     </delete>
 
     <delete id="deletePurchaseSaleOrderInfoByOrderIds" parameterType="String">
-        delete from purchase_sale_order_info where order_id in 
+        delete from purchase_sale_order_info where contract_id in
         <foreach item="orderId" collection="array" open="(" separator="," close=")">
             #{orderId}
         </foreach>

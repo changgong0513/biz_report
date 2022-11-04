@@ -2,7 +2,10 @@ package com.ruoyi.web.controller.purchasesale;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
 import com.ruoyi.purchase.sale.service.IPurchaseSaleOrderInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,8 +44,7 @@ public class PurchaseSaleOrderInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
     @GetMapping("/list")
-    public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         startPage();
         List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
         return getDataTable(list);
@@ -76,8 +78,12 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public AjaxResult add(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+        purchaseSaleOrderInfo.setBizVersion(1L);
+        purchaseSaleOrderInfo.setCreateTime(DateUtils.getNowDate());
+        purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
+        purchaseSaleOrderInfo.setCreateBy(SecurityUtils.getUsername());
+        purchaseSaleOrderInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(purchaseSaleOrderInfoService.insertPurchaseSaleOrderInfo(purchaseSaleOrderInfo));
     }
 
