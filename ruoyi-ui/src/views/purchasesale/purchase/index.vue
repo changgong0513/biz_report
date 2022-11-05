@@ -491,6 +491,9 @@
           </el-col>
         </el-row>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelDetail">关 闭</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -633,6 +636,11 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+    // 取消按钮
+    cancelDetail() {
+    this.openDetail = false;
+    this.reset();
     },
     // 表单重置
     reset() {

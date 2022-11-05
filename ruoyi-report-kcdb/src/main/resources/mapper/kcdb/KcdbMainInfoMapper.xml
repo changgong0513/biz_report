@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.kcdb.mapper.KcdbMainInfoMapper">
+    
+    <resultMap type="KcdbMainInfo" id="KcdbMainInfoResult">
+        <result property="dh"    column="dh"    />
+        <result property="lx"    column="lx"    />
+        <result property="fhck"    column="fhck"    />
+        <result property="shck"    column="shck"    />
+        <result property="fhbm"    column="fhbm"    />
+        <result property="shbm"    column="shbm"    />
+        <result property="wlmc"    column="wlmc"    />
+        <result property="dbsl"    column="dbsl"    />
+        <result property="ysfs"    column="ysfs"    />
+        <result property="jsfs"    column="jsfs"    />
+        <result property="jsdj"    column="jsdj"    />
+        <result property="xhsl"    column="xhsl"    />
+        <result property="dbrq"    column="dbrq"    />
+        <result property="bz"    column="bz"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectKcdbMainInfoVo">
+        select dh, lx, fhck, shck, fhbm, shbm, wlmc, dbsl, ysfs, jsfs, jsdj, xhsl, dbrq, bz, create_by, create_time, update_by, update_time, biz_version from kcdb_main_info
+    </sql>
+
+    <select id="selectKcdbMainInfoList" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
+        <include refid="selectKcdbMainInfoVo"/>
+        <where>  
+            <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
+            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
+            <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
+            <if test="shbm != null  and shbm != ''"> and shbm = #{shbm}</if>
+            <if test="dbrq != null "> and dbrq = #{dbrq}</if>
+        </where>
+    </select>
+    
+    <select id="selectKcdbMainInfoByDh" parameterType="String" resultMap="KcdbMainInfoResult">
+        <include refid="selectKcdbMainInfoVo"/>
+        where dh = #{dh}
+    </select>
+        
+    <insert id="insertKcdbMainInfo" parameterType="KcdbMainInfo">
+        insert into kcdb_main_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dh != null">dh,</if>
+            <if test="lx != null">lx,</if>
+            <if test="fhck != null">fhck,</if>
+            <if test="shck != null">shck,</if>
+            <if test="fhbm != null">fhbm,</if>
+            <if test="shbm != null">shbm,</if>
+            <if test="wlmc != null">wlmc,</if>
+            <if test="dbsl != null">dbsl,</if>
+            <if test="ysfs != null">ysfs,</if>
+            <if test="jsfs != null">jsfs,</if>
+            <if test="jsdj != null">jsdj,</if>
+            <if test="xhsl != null">xhsl,</if>
+            <if test="dbrq != null">dbrq,</if>
+            <if test="bz != null">bz,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dh != null">#{dh},</if>
+            <if test="lx != null">#{lx},</if>
+            <if test="fhck != null">#{fhck},</if>
+            <if test="shck != null">#{shck},</if>
+            <if test="fhbm != null">#{fhbm},</if>
+            <if test="shbm != null">#{shbm},</if>
+            <if test="wlmc != null">#{wlmc},</if>
+            <if test="dbsl != null">#{dbsl},</if>
+            <if test="ysfs != null">#{ysfs},</if>
+            <if test="jsfs != null">#{jsfs},</if>
+            <if test="jsdj != null">#{jsdj},</if>
+            <if test="xhsl != null">#{xhsl},</if>
+            <if test="dbrq != null">#{dbrq},</if>
+            <if test="bz != null">#{bz},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKcdbMainInfo" parameterType="KcdbMainInfo">
+        update kcdb_main_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="lx != null">lx = #{lx},</if>
+            <if test="fhck != null">fhck = #{fhck},</if>
+            <if test="shck != null">shck = #{shck},</if>
+            <if test="fhbm != null">fhbm = #{fhbm},</if>
+            <if test="shbm != null">shbm = #{shbm},</if>
+            <if test="wlmc != null">wlmc = #{wlmc},</if>
+            <if test="dbsl != null">dbsl = #{dbsl},</if>
+            <if test="ysfs != null">ysfs = #{ysfs},</if>
+            <if test="jsfs != null">jsfs = #{jsfs},</if>
+            <if test="jsdj != null">jsdj = #{jsdj},</if>
+            <if test="xhsl != null">xhsl = #{xhsl},</if>
+            <if test="dbrq != null">dbrq = #{dbrq},</if>
+            <if test="bz != null">bz = #{bz},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where dh = #{dh}
+    </update>
+
+    <delete id="deleteKcdbMainInfoByDh" parameterType="String">
+        delete from kcdb_main_info where dh = #{dh}
+    </delete>
+
+    <delete id="deleteKcdbMainInfoByDhs" parameterType="String">
+        delete from kcdb_main_info where dh in 
+        <foreach item="dh" collection="array" open="(" separator="," close=")">
+            #{dh}
+        </foreach>
+    </delete>
+</mapper>

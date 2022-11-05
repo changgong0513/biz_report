@@ -34,10 +34,7 @@ public class MasterDataClientInfoController extends BaseController
      * 查询主数据管理列表
      */
     @GetMapping("/list")
-    public TableDataInfo list(MasterDataClientInfo masterDataClientInfo)
-    {
-        System.out.println("------新增业务报表大数据：" + masterDataClientInfo);
-
+    public TableDataInfo list(MasterDataClientInfo masterDataClientInfo) {
         startPage();
         List<MasterDataClientInfo> list = masterDataClientInfoService.selectMasterDataClientInfoList(masterDataClientInfo);
         return getDataTable(list);

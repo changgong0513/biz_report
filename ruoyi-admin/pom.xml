@@ -81,6 +81,12 @@
             <version>3.8.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.report.kcdb</artifactId>
+            <version>3.8.3</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
