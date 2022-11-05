@@ -40,9 +40,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPurchaseSaleOrderInfoVo"/>
         <where>  
             <if test="contractId != null  and contractId != ''"> and contract_id like concat('%', #{contractId}, '%')</if>
-            <if test="handledBy != null  and handledBy != ''"> and handled_by = #{handledBy}</if>
+            <if test="handledBy != null  and handledBy != ''"> and handled_by like concat('%', #{handledBy}, '%')</if>
             <if test="belongDept != null  and belongDept != ''"> and belong_dept = #{belongDept}</if>
-            <if test="businessDate != null "> and business_date = #{businessDate}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(business_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(business_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
             <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
         </where>
     </select>

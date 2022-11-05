@@ -13,12 +13,19 @@
       </el-form-item>
       <!-- 所属部门 -->
       <el-form-item label="所属部门" prop="belongDept">
-        <el-input
+        <el-select
           v-model="queryParams.belongDept"
           placeholder="请输入所属部门"
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+          style="width: 200px"
+        >
+          <el-option
+            v-for="dict in dict.type.purchasesale_belong_dept"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <!-- 经办人 -->
       <el-form-item label="经办人" prop="handledBy">
@@ -130,7 +137,11 @@
           <span>{{ parseTime(scope.row.businessDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" align="center" prop="belongDept" width="100" />
+      <el-table-column label="所属部门" align="center" prop="belongDept" width="100">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.purchasesale_belong_dept" :value="scope.row.belongDept"/>
+        </template>
+      </el-table-column>
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="供应商名称" align="center" prop="supplierName" width="260" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
@@ -519,25 +530,12 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        purchaseType: null,
-        contractId: null,
-        handledBy: null,
+        orderId: null,
         belongDept: null,
-        businessDate: null,
+        handledBy: null,
         materialName: null,
-        purchaseQuantity: null,
-        supplierName: null,
-        unitPrice: null,
-        meteringUnit: null,
-        arrivalDate: null,
-        requiredDeliveryDate: null,
-        accountPeriod: null,
-        arrivalTerms: null,
-        arrivalTermsValue: null,
-        settlementMethod: null,
-        isInvoicing: null,
-        orderRemark: null,
-        bizVersion: null
+        startBusinessDate: null,
+        endbusinessDate: null
       },
       // 表单参数
       form: {},
@@ -623,7 +621,9 @@ export default {
     /** 查询采购收货销售发货管理列表 */
     getList() {
       this.loading = true;
-      listPurchase(this.queryParams).then(response => {
+      // listPurchase(this.queryParams).then(response => {
+      listPurchase(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        
         this.purchaseList = response.rows;
         this.total = response.total;
         this.loading = false;

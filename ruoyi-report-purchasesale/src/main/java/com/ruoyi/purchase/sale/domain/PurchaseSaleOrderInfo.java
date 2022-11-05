@@ -142,6 +142,7 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         return businessDate;
     }
+
     public void setMaterialName(String materialName) 
     {
         this.materialName = materialName;
