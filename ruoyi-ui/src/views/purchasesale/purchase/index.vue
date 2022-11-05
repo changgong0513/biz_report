@@ -734,7 +734,7 @@ export default {
      handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
-    },
+    }
   }
 };
 </script>

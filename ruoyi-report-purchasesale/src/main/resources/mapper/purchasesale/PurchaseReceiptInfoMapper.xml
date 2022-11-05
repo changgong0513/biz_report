@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.purchase.sale.mapper.PurchaseReceiptInfoMapper">
+    
+    <resultMap type="PurchaseReceiptInfo" id="PurchaseReceiptInfoResult">
+        <result property="receiptId"    column="receipt_id"    />
+        <result property="purchaseOrderId"    column="purchase_order_id"    />
+        <result property="purchaseContractId"    column="purchase_contract_id"    />
+        <result property="handledBy"    column="handled_by"    />
+        <result property="receiptDate"    column="receipt_date"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="warehouseCode"    column="warehouse_code"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="batchNo"    column="batch_no"    />
+        <result property="transportMode"    column="transport_mode"    />
+        <result property="transportNumber"    column="transport_number"    />
+        <result property="expectReceiptQuantity"    column="expect_receipt_quantity"    />
+        <result property="checkQuantity"    column="check_quantity"    />
+        <result property="checkPrice"    column="check_price"    />
+        <result property="checkMoney"    column="check_money"    />
+        <result property="cargoDamageQuantity"    column="cargo_damage_quantity"    />
+        <result property="cargoDamageMoney"    column="cargo_damage_money"    />
+        <result property="receiptRemark"    column="receipt_remark"    />
+        <result property="dryCalWaterValue"    column="dry_cal_water_value"    />
+        <result property="dryCalDryingRate"    column="dry_cal_drying_rate"    />
+        <result property="dryCalScaleRange"    column="dry_cal_scale_range"    />
+        <result property="dryCalResult"    column="dry_cal_result"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectPurchaseReceiptInfoVo">
+        select receipt_id, purchase_order_id, purchase_contract_id, handled_by, receipt_date, supplier_name, material_name, warehouse_code, warehouse_name, batch_no, transport_mode, transport_number, expect_receipt_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, receipt_remark, dry_cal_water_value, dry_cal_drying_rate, dry_cal_scale_range, dry_cal_result, create_by, create_time, update_by, update_time, biz_version from purchase_receipt_info
+    </sql>
+
+    <select id="selectPurchaseReceiptInfoList" parameterType="PurchaseReceiptInfo" resultMap="PurchaseReceiptInfoResult">
+        <include refid="selectPurchaseReceiptInfoVo"/>
+        <where>  
+            <if test="receiptId != null  and receiptId != ''"> and receipt_id like concat('%', #{receiptId}, '%')</if>
+            <if test="purchaseOrderId != null  and purchaseOrderId != ''"> and purchase_order_id like concat('%', #{purchaseOrderId}, '%')</if>
+            <if test="handledBy != null  and handledBy != ''"> and handled_by like concat('%', #{handledBy}, '%')</if>
+            <if test="receiptDate != null "> and receipt_date = #{receiptDate}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseReceiptInfoByReceiptId" parameterType="String" resultMap="PurchaseReceiptInfoResult">
+        <include refid="selectPurchaseReceiptInfoVo"/>
+        where receipt_id = #{receiptId}
+    </select>
+        
+    <insert id="insertPurchaseReceiptInfo" parameterType="PurchaseReceiptInfo">
+        insert into purchase_receipt_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="receiptId != null">receipt_id,</if>
+            <if test="purchaseOrderId != null">purchase_order_id,</if>
+            <if test="purchaseContractId != null">purchase_contract_id,</if>
+            <if test="handledBy != null">handled_by,</if>
+            <if test="receiptDate != null">receipt_date,</if>
+            <if test="supplierName != null">supplier_name,</if>
+            <if test="materialName != null">material_name,</if>
+            <if test="warehouseCode != null">warehouse_code,</if>
+            <if test="warehouseName != null">warehouse_name,</if>
+            <if test="batchNo != null">batch_no,</if>
+            <if test="transportMode != null">transport_mode,</if>
+            <if test="transportNumber != null">transport_number,</if>
+            <if test="expectReceiptQuantity != null">expect_receipt_quantity,</if>
+            <if test="checkQuantity != null">check_quantity,</if>
+            <if test="checkPrice != null">check_price,</if>
+            <if test="checkMoney != null">check_money,</if>
+            <if test="cargoDamageQuantity != null">cargo_damage_quantity,</if>
+            <if test="cargoDamageMoney != null">cargo_damage_money,</if>
+            <if test="receiptRemark != null">receipt_remark,</if>
+            <if test="dryCalWaterValue != null">dry_cal_water_value,</if>
+            <if test="dryCalDryingRate != null">dry_cal_drying_rate,</if>
+            <if test="dryCalScaleRange != null">dry_cal_scale_range,</if>
+            <if test="dryCalResult != null">dry_cal_result,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="receiptId != null">#{receiptId},</if>
+            <if test="purchaseOrderId != null">#{purchaseOrderId},</if>
+            <if test="purchaseContractId != null">#{purchaseContractId},</if>
+            <if test="handledBy != null">#{handledBy},</if>
+            <if test="receiptDate != null">#{receiptDate},</if>
+            <if test="supplierName != null">#{supplierName},</if>
+            <if test="materialName != null">#{materialName},</if>
+            <if test="warehouseCode != null">#{warehouseCode},</if>
+            <if test="warehouseName != null">#{warehouseName},</if>
+            <if test="batchNo != null">#{batchNo},</if>
+            <if test="transportMode != null">#{transportMode},</if>
+            <if test="transportNumber != null">#{transportNumber},</if>
+            <if test="expectReceiptQuantity != null">#{expectReceiptQuantity},</if>
+            <if test="checkQuantity != null">#{checkQuantity},</if>
+            <if test="checkPrice != null">#{checkPrice},</if>
+            <if test="checkMoney != null">#{checkMoney},</if>
+            <if test="cargoDamageQuantity != null">#{cargoDamageQuantity},</if>
+            <if test="cargoDamageMoney != null">#{cargoDamageMoney},</if>
+            <if test="receiptRemark != null">#{receiptRemark},</if>
+            <if test="dryCalWaterValue != null">#{dryCalWaterValue},</if>
+            <if test="dryCalDryingRate != null">#{dryCalDryingRate},</if>
+            <if test="dryCalScaleRange != null">#{dryCalScaleRange},</if>
+            <if test="dryCalResult != null">#{dryCalResult},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseReceiptInfo" parameterType="PurchaseReceiptInfo">
+        update purchase_receipt_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchaseOrderId != null">purchase_order_id = #{purchaseOrderId},</if>
+            <if test="purchaseContractId != null">purchase_contract_id = #{purchaseContractId},</if>
+            <if test="handledBy != null">handled_by = #{handledBy},</if>
+            <if test="receiptDate != null">receipt_date = #{receiptDate},</if>
+            <if test="supplierName != null">supplier_name = #{supplierName},</if>
+            <if test="materialName != null">material_name = #{materialName},</if>
+            <if test="warehouseCode != null">warehouse_code = #{warehouseCode},</if>
+            <if test="warehouseName != null">warehouse_name = #{warehouseName},</if>
+            <if test="batchNo != null">batch_no = #{batchNo},</if>
+            <if test="transportMode != null">transport_mode = #{transportMode},</if>
+            <if test="transportNumber != null">transport_number = #{transportNumber},</if>
+            <if test="expectReceiptQuantity != null">expect_receipt_quantity = #{expectReceiptQuantity},</if>
+            <if test="checkQuantity != null">check_quantity = #{checkQuantity},</if>
+            <if test="checkPrice != null">check_price = #{checkPrice},</if>
+            <if test="checkMoney != null">check_money = #{checkMoney},</if>
+            <if test="cargoDamageQuantity != null">cargo_damage_quantity = #{cargoDamageQuantity},</if>
+            <if test="cargoDamageMoney != null">cargo_damage_money = #{cargoDamageMoney},</if>
+            <if test="receiptRemark != null">receipt_remark = #{receiptRemark},</if>
+            <if test="dryCalWaterValue != null">dry_cal_water_value = #{dryCalWaterValue},</if>
+            <if test="dryCalDryingRate != null">dry_cal_drying_rate = #{dryCalDryingRate},</if>
+            <if test="dryCalScaleRange != null">dry_cal_scale_range = #{dryCalScaleRange},</if>
+            <if test="dryCalResult != null">dry_cal_result = #{dryCalResult},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where receipt_id = #{receiptId}
+    </update>
+
+    <delete id="deletePurchaseReceiptInfoByReceiptId" parameterType="String">
+        delete from purchase_receipt_info where receipt_id = #{receiptId}
+    </delete>
+
+    <delete id="deletePurchaseReceiptInfoByReceiptIds" parameterType="String">
+        delete from purchase_receipt_info where receipt_id in 
+        <foreach item="receiptId" collection="array" open="(" separator="," close=")">
+            #{receiptId}
+        </foreach>
+    </delete>
+</mapper>
