@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.purchase.sale.mapper.SaleDeliverInfoMapper">
+    
+    <resultMap type="SaleDeliverInfo" id="SaleDeliverInfoResult">
+        <result property="deliverId"    column="deliver_id"    />
+        <result property="saleOrderId"    column="sale_order_id"    />
+        <result property="saleContractId"    column="sale_contract_id"    />
+        <result property="handledBy"    column="handled_by"    />
+        <result property="deliverDate"    column="deliver_date"    />
+        <result property="clientId"    column="client_id"    />
+        <result property="clientName"    column="client_name"    />
+        <result property="materialId"    column="material_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="contractPrice"    column="contract_price"    />
+        <result property="measurementUnit"    column="measurement_unit"    />
+        <result property="deliverMode"    column="deliver_mode"    />
+        <result property="warehouseCode"    column="warehouse_code"    />
+        <result property="warehouseName"    column="warehouse_name"    />
+        <result property="deliverQuantity"    column="deliver_quantity"    />
+        <result property="checkQuantity"    column="check_quantity"    />
+        <result property="checkPrice"    column="check_price"    />
+        <result property="checkMoney"    column="check_money"    />
+        <result property="cargoDamageQuantity"    column="cargo_damage_quantity"    />
+        <result property="cargoDamageMoney"    column="cargo_damage_money"    />
+        <result property="transportMode"    column="transport_mode"    />
+        <result property="transportNumber"    column="transport_number"    />
+        <result property="transportMoney"    column="transport_money"    />
+        <result property="otherMoney"    column="other_money"    />
+        <result property="expectArrivalDate"    column="expect_arrival_date"    />
+        <result property="requireArrivalDate"    column="require_arrival_date"    />
+        <result property="receiptRemark"    column="receipt_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectSaleDeliverInfoVo">
+        select deliver_id, sale_order_id, sale_contract_id, handled_by, deliver_date, client_id, client_name, material_id, material_name, contract_price, measurement_unit, deliver_mode, warehouse_code, warehouse_name, deliver_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, transport_mode, transport_number, transport_money, other_money, expect_arrival_date, require_arrival_date, receipt_remark, create_by, create_time, update_by, update_time, biz_version from sale_deliver_info
+    </sql>
+
+    <select id="selectSaleDeliverInfoList" parameterType="SaleDeliverInfo" resultMap="SaleDeliverInfoResult">
+        <include refid="selectSaleDeliverInfoVo"/>
+        <where>  
+            <if test="deliverId != null  and deliverId != ''"> and deliver_id like concat('%', #{deliverId}, '%')</if>
+            <if test="saleOrderId != null  and saleOrderId != ''"> and sale_order_id like concat('%', #{saleOrderId}, '%')</if>
+            <if test="handledBy != null  and handledBy != ''"> and handled_by like concat('%', #{handledBy}, '%')</if>
+            <if test="deliverDate != null "> and deliver_date = #{deliverDate}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSaleDeliverInfoByDeliverId" parameterType="String" resultMap="SaleDeliverInfoResult">
+        <include refid="selectSaleDeliverInfoVo"/>
+        where deliver_id = #{deliverId}
+    </select>
+        
+    <insert id="insertSaleDeliverInfo" parameterType="SaleDeliverInfo">
+        insert into sale_deliver_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deliverId != null and deliverId != ''">deliver_id,</if>
+            <if test="saleOrderId != null and saleOrderId != ''">sale_order_id,</if>
+            <if test="saleContractId != null and saleContractId != ''">sale_contract_id,</if>
+            <if test="handledBy != null and handledBy != ''">handled_by,</if>
+            <if test="deliverDate != null">deliver_date,</if>
+            <if test="clientId != null and clientId != ''">client_id,</if>
+            <if test="clientName != null and clientName != ''">client_name,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="contractPrice != null">contract_price,</if>
+            <if test="measurementUnit != null and measurementUnit != ''">measurement_unit,</if>
+            <if test="deliverMode != null and deliverMode != ''">deliver_mode,</if>
+            <if test="warehouseCode != null and warehouseCode != ''">warehouse_code,</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name,</if>
+            <if test="deliverQuantity != null">deliver_quantity,</if>
+            <if test="checkQuantity != null">check_quantity,</if>
+            <if test="checkPrice != null">check_price,</if>
+            <if test="checkMoney != null">check_money,</if>
+            <if test="cargoDamageQuantity != null">cargo_damage_quantity,</if>
+            <if test="cargoDamageMoney != null">cargo_damage_money,</if>
+            <if test="transportMode != null and transportMode != ''">transport_mode,</if>
+            <if test="transportNumber != null and transportNumber != ''">transport_number,</if>
+            <if test="transportMoney != null">transport_money,</if>
+            <if test="otherMoney != null">other_money,</if>
+            <if test="expectArrivalDate != null">expect_arrival_date,</if>
+            <if test="requireArrivalDate != null">require_arrival_date,</if>
+            <if test="receiptRemark != null">receipt_remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deliverId != null and deliverId != ''">#{deliverId},</if>
+            <if test="saleOrderId != null and saleOrderId != ''">#{saleOrderId},</if>
+            <if test="saleContractId != null and saleContractId != ''">#{saleContractId},</if>
+            <if test="handledBy != null and handledBy != ''">#{handledBy},</if>
+            <if test="deliverDate != null">#{deliverDate},</if>
+            <if test="clientId != null and clientId != ''">#{clientId},</if>
+            <if test="clientName != null and clientName != ''">#{clientName},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="contractPrice != null">#{contractPrice},</if>
+            <if test="measurementUnit != null and measurementUnit != ''">#{measurementUnit},</if>
+            <if test="deliverMode != null and deliverMode != ''">#{deliverMode},</if>
+            <if test="warehouseCode != null and warehouseCode != ''">#{warehouseCode},</if>
+            <if test="warehouseName != null and warehouseName != ''">#{warehouseName},</if>
+            <if test="deliverQuantity != null">#{deliverQuantity},</if>
+            <if test="checkQuantity != null">#{checkQuantity},</if>
+            <if test="checkPrice != null">#{checkPrice},</if>
+            <if test="checkMoney != null">#{checkMoney},</if>
+            <if test="cargoDamageQuantity != null">#{cargoDamageQuantity},</if>
+            <if test="cargoDamageMoney != null">#{cargoDamageMoney},</if>
+            <if test="transportMode != null and transportMode != ''">#{transportMode},</if>
+            <if test="transportNumber != null and transportNumber != ''">#{transportNumber},</if>
+            <if test="transportMoney != null">#{transportMoney},</if>
+            <if test="otherMoney != null">#{otherMoney},</if>
+            <if test="expectArrivalDate != null">#{expectArrivalDate},</if>
+            <if test="requireArrivalDate != null">#{requireArrivalDate},</if>
+            <if test="receiptRemark != null">#{receiptRemark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleDeliverInfo" parameterType="SaleDeliverInfo">
+        update sale_deliver_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleOrderId != null and saleOrderId != ''">sale_order_id = #{saleOrderId},</if>
+            <if test="saleContractId != null and saleContractId != ''">sale_contract_id = #{saleContractId},</if>
+            <if test="handledBy != null and handledBy != ''">handled_by = #{handledBy},</if>
+            <if test="deliverDate != null">deliver_date = #{deliverDate},</if>
+            <if test="clientId != null and clientId != ''">client_id = #{clientId},</if>
+            <if test="clientName != null and clientName != ''">client_name = #{clientName},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="contractPrice != null">contract_price = #{contractPrice},</if>
+            <if test="measurementUnit != null and measurementUnit != ''">measurement_unit = #{measurementUnit},</if>
+            <if test="deliverMode != null and deliverMode != ''">deliver_mode = #{deliverMode},</if>
+            <if test="warehouseCode != null and warehouseCode != ''">warehouse_code = #{warehouseCode},</if>
+            <if test="warehouseName != null and warehouseName != ''">warehouse_name = #{warehouseName},</if>
+            <if test="deliverQuantity != null">deliver_quantity = #{deliverQuantity},</if>
+            <if test="checkQuantity != null">check_quantity = #{checkQuantity},</if>
+            <if test="checkPrice != null">check_price = #{checkPrice},</if>
+            <if test="checkMoney != null">check_money = #{checkMoney},</if>
+            <if test="cargoDamageQuantity != null">cargo_damage_quantity = #{cargoDamageQuantity},</if>
+            <if test="cargoDamageMoney != null">cargo_damage_money = #{cargoDamageMoney},</if>
+            <if test="transportMode != null and transportMode != ''">transport_mode = #{transportMode},</if>
+            <if test="transportNumber != null and transportNumber != ''">transport_number = #{transportNumber},</if>
+            <if test="transportMoney != null">transport_money = #{transportMoney},</if>
+            <if test="otherMoney != null">other_money = #{otherMoney},</if>
+            <if test="expectArrivalDate != null">expect_arrival_date = #{expectArrivalDate},</if>
+            <if test="requireArrivalDate != null">require_arrival_date = #{requireArrivalDate},</if>
+            <if test="receiptRemark != null">receipt_remark = #{receiptRemark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where deliver_id = #{deliverId}
+    </update>
+
+    <delete id="deleteSaleDeliverInfoByDeliverId" parameterType="String">
+        delete from sale_deliver_info where deliver_id = #{deliverId}
+    </delete>
+
+    <delete id="deleteSaleDeliverInfoByDeliverIds" parameterType="String">
+        delete from sale_deliver_info where deliver_id in 
+        <foreach item="deliverId" collection="array" open="(" separator="," close=")">
+            #{deliverId}
+        </foreach>
+    </delete>
+</mapper>
