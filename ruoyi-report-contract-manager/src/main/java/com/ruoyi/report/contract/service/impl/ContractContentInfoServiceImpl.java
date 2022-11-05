@@ -181,8 +181,6 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                     fillPurchaseInfoFromContract(contract, purchaseInfo);
                     purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
                 }
-
-
             }
         }
 
@@ -327,7 +325,13 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 // 合同类型
                 if (StringUtils.equals(item.getName(), "合同类型")) {
                     if (StringUtils.contains(item.getValue(), "收购合同")) {
-                        contract.setContractType("1");
+                        contract.setContractType("P");
+                    } else if (StringUtils.contains(item.getValue(), "物流合同") ||
+                            StringUtils.contains(item.getValue(), "销售合同")) {
+                        contract.setContractType("S");
+                    } else {
+                        // 其他合同类型
+                        contract.setContractType("Q1");
                     }
                 }
                 // 合同名称
@@ -368,11 +372,15 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 合同单价
                 if (StringUtils.equals(item.getName(), "合同单价")) {
-                    contract.setContractPrice(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        contract.setContractPrice(new BigDecimal(item.getValue()));
+                    }
                 }
                 // 合同总价
                 if (StringUtils.equals(item.getName(), "合同总价")) {
-                    contract.setContractTotal(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        contract.setContractTotal(new BigDecimal(item.getValue()));
+                    }
                 }
                 // 账期方式
                 if (StringUtils.equals(item.getName(), "账期方式")) {

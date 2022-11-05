@@ -28,6 +28,14 @@ public interface IPurchaseSaleOrderInfoService
     public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
 
     /**
+     * 查询采购收货销售发货管理列表
+     *
+     * @param purchaseSaleOrderInfo 采购收货销售发货管理
+     * @return 采购收货销售发货管理集合
+     */
+    public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
+
+    /**
      * 新增采购收货销售发货管理
      * 
      * @param purchaseSaleOrderInfo 采购收货销售发货管理

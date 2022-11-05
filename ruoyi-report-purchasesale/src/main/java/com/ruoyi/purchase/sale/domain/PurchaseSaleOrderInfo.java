@@ -32,6 +32,9 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 合同编号 */
     private String contractId;
 
+    /** 合同类型 */
+    private String contractType;
+
     /** 经办人 */
     @Excel(name = "经办人")
     private String handledBy;
@@ -115,6 +118,17 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         return contractId;
     }
+
+    public void setContractType(String contractType)
+    {
+        this.contractType = contractType;
+    }
+
+    public String getContractType()
+    {
+        return contractType;
+    }
+
     public void setHandledBy(String handledBy) 
     {
         this.handledBy = handledBy;
@@ -277,6 +291,7 @@ public class PurchaseSaleOrderInfo extends BaseEntity
                 .append("orderStatus", getOrderStatus())
             .append("purchaseType", getPurchaseType())
             .append("contractId", getContractId())
+                .append("contractType", getContractType())
             .append("handledBy", getHandledBy())
             .append("belongDept", getBelongDept())
             .append("businessDate", getBusinessDate())

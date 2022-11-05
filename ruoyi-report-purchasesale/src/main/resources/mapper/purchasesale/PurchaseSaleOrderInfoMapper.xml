@@ -36,6 +36,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select order_id, order_status, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
     </sql>
 
+    <sql id="selectPurchaseSaleOrderInfoUnionVo">
+        select
+            t1.order_id, t1.order_status, t1.purchase_type, t1.contract_id,
+            t1.handled_by, t1.belong_dept, t1.business_date, t1.material_name,
+            t1.purchase_quantity, t1.supplier_name, t1.unit_price, t1.metering_unit,
+            t1.arrival_date, t1.required_delivery_date, t1.account_period, t1.arrival_terms,
+            t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark,
+            t1.create_by, t1.create_time, t1.update_by, t1.update_time,
+            t1.biz_version
+        from
+            purchase_sale_order_info t1, contract_content_info t2
+    </sql>
+
     <select id="selectPurchaseSaleOrderInfoList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
         <include refid="selectPurchaseSaleOrderInfoVo"/>
         <where>  
@@ -49,6 +62,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 and date_format(business_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
             </if>
             <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="purchaseType != null  and purchaseType != ''"> and purchase_type = #{purchaseType}</if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseSaleOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
+        <include refid="selectPurchaseSaleOrderInfoUnionVo"/>
+        <where>
+            t1.contract_id = t2.contract_id
+            and t2.contract_type = #{contractType}
+            <if test="contractId != null  and contractId != ''"> and t1.contract_id like concat('%', #{contractId}, '%')</if>
+            <if test="handledBy != null  and handledBy != ''"> and t1.handled_by like concat('%', #{handledBy}, '%')</if>
+            <if test="belongDept != null  and belongDept != ''"> and t1.belong_dept = #{belongDept}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(t1.business_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(t1.business_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="materialName != null  and materialName != ''"> and t1.material_name like concat('%', #{materialName}, '%')</if>
+            <if test="purchaseType != null  and purchaseType != ''"> and t1.purchase_type = #{purchaseType}</if>
         </where>
     </select>
     

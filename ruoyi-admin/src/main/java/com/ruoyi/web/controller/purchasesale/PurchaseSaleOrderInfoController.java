@@ -46,7 +46,7 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         startPage();
-        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoUnionList(purchaseSaleOrderInfo);
         return getDataTable(list);
     }
 
@@ -93,8 +93,12 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public AjaxResult edit(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+        purchaseSaleOrderInfo.setBizVersion(1L);
+        purchaseSaleOrderInfo.setCreateTime(DateUtils.getNowDate());
+        purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
+        purchaseSaleOrderInfo.setCreateBy(SecurityUtils.getUsername());
+        purchaseSaleOrderInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(purchaseSaleOrderInfoService.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo));
     }
 

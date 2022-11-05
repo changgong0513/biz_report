@@ -38,9 +38,20 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * @return 采购收货销售发货管理
      */
     @Override
-    public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoList(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoList(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         return purchaseSaleOrderInfoMapper.selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+    }
+
+    /**
+     * 查询采购收货销售发货管理列表
+     *
+     * @param purchaseSaleOrderInfo 采购收货销售发货管理
+     * @return 采购收货销售发货管理
+     */
+    @Override
+    public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
+    {
+        return purchaseSaleOrderInfoMapper.selectPurchaseSaleOrderInfoUnionList(purchaseSaleOrderInfo);
     }
 
     /**

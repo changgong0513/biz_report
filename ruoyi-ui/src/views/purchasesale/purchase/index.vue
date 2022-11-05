@@ -169,7 +169,7 @@
           <!-- 订单编号 -->
           <el-col :span="8">
             <el-form-item label="订单编号">
-              <el-input v-model="form.orderId" placeholder="请输入订单编号" style="width: 240px" />
+              <el-input v-model="form.orderId" placeholder="请输入订单编号" :disabled="this.isUpdate" style="width: 240px" />
             </el-form-item>
           </el-col>
           <!-- 采购类型 -->
@@ -192,7 +192,7 @@
           <!-- 合同编号 -->
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
-              <el-input v-model="form.contractId" placeholder="请输入合同编号" :disabled="this.isUpdate" style="width: 240px" />
+              <el-input v-model="form.contractId" placeholder="请输入合同编号" style="width: 240px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -621,7 +621,7 @@ export default {
     /** 查询采购收货销售发货管理列表 */
     getList() {
       this.loading = true;
-      // listPurchase(this.queryParams).then(response => {
+      this.queryParams.contractType = "P";
       listPurchase(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
         
         this.purchaseList = response.rows;
@@ -731,7 +731,7 @@ export default {
       }, `采购管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     },
      /** 查看合同数据 */ 
-     handleView(row) {
+    handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
     }
