@@ -97,13 +97,18 @@ public class SaleDeliverInfo extends BaseEntity
     private Long otherMoney;
 
     /** 预期到货日期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date expectArrivalDate;
 
     /** 要求到货日期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date requireArrivalDate;
 
+    /** 账期 */
+    private int accountPeriod;
+
     /** 备注 */
-    private String receiptRemark;
+    private String deliverRemark;
 
     /** 版本号 */
     private Long bizVersion;
@@ -342,14 +347,22 @@ public class SaleDeliverInfo extends BaseEntity
     {
         return requireArrivalDate;
     }
-    public void setReceiptRemark(String receiptRemark) 
+
+    public void setAccountPeriod(int accountPeriod) { this.accountPeriod = accountPeriod; }
+
+    public int getAccountPeriod()
     {
-        this.receiptRemark = receiptRemark;
+        return accountPeriod;
     }
 
-    public String getReceiptRemark() 
+    public void setDeliverRemark(String deliverRemark)
     {
-        return receiptRemark;
+        this.deliverRemark = deliverRemark;
+    }
+
+    public String getDeliverRemark()
+    {
+        return deliverRemark;
     }
     public void setBizVersion(Long bizVersion) 
     {
@@ -390,7 +403,8 @@ public class SaleDeliverInfo extends BaseEntity
             .append("otherMoney", getOtherMoney())
             .append("expectArrivalDate", getExpectArrivalDate())
             .append("requireArrivalDate", getRequireArrivalDate())
-            .append("receiptRemark", getReceiptRemark())
+                .append("accountPeriod", getAccountPeriod())
+            .append("receiptRemark", getDeliverRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

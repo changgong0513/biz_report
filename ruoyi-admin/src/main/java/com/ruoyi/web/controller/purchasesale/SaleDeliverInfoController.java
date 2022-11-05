@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.purchasesale;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +31,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @date 2022-11-05
  */
 @RestController
-@RequestMapping("/sale/mgr")
+@RequestMapping("/deliver/mgr")
 public class SaleDeliverInfoController extends BaseController
 {
     @Autowired
@@ -75,8 +78,12 @@ public class SaleDeliverInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
     @Log(title = "发货管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody SaleDeliverInfo saleDeliverInfo)
-    {
+    public AjaxResult add(@RequestBody SaleDeliverInfo saleDeliverInfo) {
+        saleDeliverInfo.setBizVersion(1L);
+        saleDeliverInfo.setCreateTime(DateUtils.getNowDate());
+        saleDeliverInfo.setUpdateTime(DateUtils.getNowDate());
+        saleDeliverInfo.setCreateBy(SecurityUtils.getUsername());
+        saleDeliverInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(saleDeliverInfoService.insertSaleDeliverInfo(saleDeliverInfo));
     }
 
@@ -86,8 +93,12 @@ public class SaleDeliverInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
     @Log(title = "发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody SaleDeliverInfo saleDeliverInfo)
-    {
+    public AjaxResult edit(@RequestBody SaleDeliverInfo saleDeliverInfo) {
+        saleDeliverInfo.setBizVersion(1L);
+        saleDeliverInfo.setCreateTime(DateUtils.getNowDate());
+        saleDeliverInfo.setUpdateTime(DateUtils.getNowDate());
+        saleDeliverInfo.setCreateBy(SecurityUtils.getUsername());
+        saleDeliverInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(saleDeliverInfoService.updateSaleDeliverInfo(saleDeliverInfo));
     }
 

@@ -322,8 +322,8 @@
           </el-col>
         </el-row>
         <el-row>
-           <!-- 计算结果 -->
-           <el-col :span="24">
+          <!-- 计算结果 -->
+          <el-col :span="24">
             <el-form-item label="计算结果" prop="dryCalResult">
               <el-input v-model="form.dryCalResult" placeholder="请输入计算结果" style="width: 240px; margin-right: 50px" />
               <el-button type="success" icon="el-icon-check" size="mini" @click="handleQuery">计算</el-button>
@@ -451,8 +451,8 @@
           </el-col>
         </el-row>
         <el-row>
-           <!-- 计算结果 -->
-           <el-col :span="24">
+          <!-- 计算结果 -->
+          <el-col :span="24">
             <el-form-item label="计算结果" prop="dryCalResult">{{formDetail.dryCalResult}}</el-form-item>
           </el-col>
         </el-row>

@@ -31,7 +31,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="otherMoney"    column="other_money"    />
         <result property="expectArrivalDate"    column="expect_arrival_date"    />
         <result property="requireArrivalDate"    column="require_arrival_date"    />
-        <result property="receiptRemark"    column="receipt_remark"    />
+        <result property="accountPeriod"    column="account_period"    />
+        <result property="deliverRemark"    column="deliver_remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -40,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSaleDeliverInfoVo">
-        select deliver_id, sale_order_id, sale_contract_id, handled_by, deliver_date, client_id, client_name, material_id, material_name, contract_price, measurement_unit, deliver_mode, warehouse_code, warehouse_name, deliver_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, transport_mode, transport_number, transport_money, other_money, expect_arrival_date, require_arrival_date, receipt_remark, create_by, create_time, update_by, update_time, biz_version from sale_deliver_info
+        select deliver_id, sale_order_id, sale_contract_id, handled_by, deliver_date, client_id, client_name, material_id, material_name, contract_price, measurement_unit, deliver_mode, warehouse_code, warehouse_name, deliver_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, transport_mode, transport_number, transport_money, other_money, expect_arrival_date, require_arrival_date, account_period, deliver_remark, create_by, create_time, update_by, update_time, biz_version from sale_deliver_info
     </sql>
 
     <select id="selectSaleDeliverInfoList" parameterType="SaleDeliverInfo" resultMap="SaleDeliverInfoResult">
@@ -89,7 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherMoney != null">other_money,</if>
             <if test="expectArrivalDate != null">expect_arrival_date,</if>
             <if test="requireArrivalDate != null">require_arrival_date,</if>
-            <if test="receiptRemark != null">receipt_remark,</if>
+            <if test="accountPeriod != null">account_period,</if>
+            <if test="deliverRemark != null">deliver_remark,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -123,7 +125,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherMoney != null">#{otherMoney},</if>
             <if test="expectArrivalDate != null">#{expectArrivalDate},</if>
             <if test="requireArrivalDate != null">#{requireArrivalDate},</if>
-            <if test="receiptRemark != null">#{receiptRemark},</if>
+            <if test="accountPeriod != null">#{accountPeriod},</if>
+            <if test="deliverRemark != null">#{deliverRemark},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -160,7 +163,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="otherMoney != null">other_money = #{otherMoney},</if>
             <if test="expectArrivalDate != null">expect_arrival_date = #{expectArrivalDate},</if>
             <if test="requireArrivalDate != null">require_arrival_date = #{requireArrivalDate},</if>
-            <if test="receiptRemark != null">receipt_remark = #{receiptRemark},</if>
+            <if test="accountPeriod != null">account_period = #{accountPeriod},</if>
+            <if test="deliverRemark != null">deliver_remark = #{deliverRemark},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
