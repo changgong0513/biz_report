@@ -17,10 +17,10 @@ public interface IFpglMainInfoService
     /**
      * 查询发票管理
      * 
-     * @param fpglId 发票管理主键
+     * @param fpglDdbh 发票管理订单编号
      * @return 发票管理
      */
-    public FpglMainInfo selectFpglMainInfoByFpglId(String fpglId);
+    public FpglMainInfo selectFpglMainInfoByFpglDdbh(String fpglDdbh);
 
     /**
      * 查询发票管理列表

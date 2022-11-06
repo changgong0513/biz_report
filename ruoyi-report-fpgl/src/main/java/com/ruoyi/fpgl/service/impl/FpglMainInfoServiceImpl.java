@@ -25,13 +25,13 @@ public class FpglMainInfoServiceImpl implements IFpglMainInfoService
     /**
      * 查询发票管理
      * 
-     * @param fpglId 发票管理主键
+     * @param fpglDdbh 发票管理主键
      * @return 发票管理
      */
     @Override
-    public FpglMainInfo selectFpglMainInfoByFpglId(String fpglId)
+    public FpglMainInfo selectFpglMainInfoByFpglDdbh(String fpglDdbh)
     {
-        return fpglMainInfoMapper.selectFpglMainInfoByFpglId(fpglId);
+        return fpglMainInfoMapper.selectFpglMainInfoByFpglDdbh(fpglDdbh);
     }
 
     /**

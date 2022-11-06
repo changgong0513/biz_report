@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.fpgl.domain.FpglListInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,16 +76,43 @@ public class FpglMainInfoController extends BaseController
         return getDataTable(filterList);
     }
 
+    @GetMapping("/fpmxlist/{orderId}")
+    public TableDataInfo fpmxList(@PathVariable("orderId") String orderId) {
+
+        FpglMainInfo fpglMainInfo = new FpglMainInfo();
+        fpglMainInfo.setFpglDdbh(orderId);
+
+        startPage();
+        List<FpglMainInfo> list = fpglMainInfoService.selectFpglMainInfoList(fpglMainInfo);
+        return getDataTable(list);
+    }
+
+
     /**
      * 导出发票管理列表
      */
     @PreAuthorize("@ss.hasPermi('fpgl:main:export')")
     @Log(title = "发票管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, FpglMainInfo fpglMainInfo)
-    {
-        List<FpglMainInfo> list = fpglMainInfoService.selectFpglMainInfoList(fpglMainInfo);
-        ExcelUtil<FpglMainInfo> util = new ExcelUtil<FpglMainInfo>(FpglMainInfo.class);
+    public void export(HttpServletResponse response, FpglListInfo fpglListInfo) {
+
+        List<FpglListInfo> list = fpglMainInfoService.selectFpglList(fpglListInfo);
+        for (FpglListInfo item : list) {
+            BigDecimal total = item.getContractTotal();
+            BigDecimal kpje = item.getFpglKpje();
+            if (kpje.compareTo(total) == 0) {
+                // 发票状态：已完成
+                item.setFpglFpzt("1");
+            } else if (kpje.compareTo(new BigDecimal("0")) == 0) {
+                // 发票状态：未申请
+                item.setFpglFpzt("3");
+            } else {
+                // 发票状态：开票中
+                item.setFpglFpzt("2");
+            }
+        }
+
+        ExcelUtil<FpglListInfo> util = new ExcelUtil<FpglListInfo>(FpglListInfo.class);
         util.exportExcel(response, list, "发票管理数据");
     }
 
@@ -90,10 +120,10 @@ public class FpglMainInfoController extends BaseController
      * 获取发票管理详细信息
      */
     @PreAuthorize("@ss.hasPermi('fpgl:main:query')")
-    @GetMapping(value = "/{fpglId}")
-    public AjaxResult getInfo(@PathVariable("fpglId") String fpglId)
+    @GetMapping(value = "/{fpglDdbh}")
+    public AjaxResult getInfo(@PathVariable("fpglDdbh") String fpglDdbh)
     {
-        return AjaxResult.success(fpglMainInfoService.selectFpglMainInfoByFpglId(fpglId));
+        return AjaxResult.success(fpglMainInfoService.selectFpglMainInfoByFpglDdbh(fpglDdbh));
     }
 
     /**
@@ -102,9 +132,30 @@ public class FpglMainInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('fpgl:main:add')")
     @Log(title = "发票管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody FpglMainInfo fpglMainInfo)
-    {
-        return toAjax(fpglMainInfoService.insertFpglMainInfo(fpglMainInfo));
+    public AjaxResult add(@RequestBody FpglMainInfo fpglMainInfo) {
+
+        fpglMainInfo.setFpglKprq(DateUtils.parseDate(DateUtils.getDate()));
+        fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
+        fpglMainInfo.setBizVersion(1L);
+        fpglMainInfo.setCreateTime(DateUtils.getNowDate());
+        fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+        fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
+        fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
+
+//        return toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
+
+        AjaxResult result = AjaxResult.success();
+        FpglMainInfo findFpglMainInfo = fpglMainInfoService
+                .selectFpglMainInfoByFpglDdbh(fpglMainInfo.getFpglDdbh());
+        if (findFpglMainInfo == null) {
+            fpglMainInfo.setFpglId(UUID.randomUUID().toString().replace("-", ""));
+            result = toAjax(fpglMainInfoService.insertFpglMainInfo(fpglMainInfo));
+        } else {
+            fpglMainInfo.setFpglKpje(findFpglMainInfo.getFpglKpje().add(fpglMainInfo.getFpglKpje()));
+            result = toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
+        }
+
+        return result;
     }
 
     /**
@@ -113,8 +164,12 @@ public class FpglMainInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('fpgl:main:edit')")
     @Log(title = "发票管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo)
-    {
+    public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo) {
+        fpglMainInfo.setBizVersion(1L);
+        fpglMainInfo.setCreateTime(DateUtils.getNowDate());
+        fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+        fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
+        fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
     }
 

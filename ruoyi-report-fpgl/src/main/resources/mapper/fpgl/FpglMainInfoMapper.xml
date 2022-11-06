@@ -79,9 +79,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectFpglMainInfoByFpglId" parameterType="String" resultMap="FpglMainInfoResult">
+    <select id="selectFpglMainInfoByFpglDdbh" parameterType="String" resultMap="FpglMainInfoResult">
         <include refid="selectFpglMainInfoVo"/>
-        where fpgl_id = #{fpglId}
+        where fpgl_ddbh = #{fpglDdbh}
     </select>
         
     <insert id="insertFpglMainInfo" parameterType="FpglMainInfo">
@@ -137,7 +137,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="bizVersion != null">biz_version = #{bizVersion},</if>
         </trim>
-        where fpgl_id = #{fpglId}
+        where fpgl_ddbh = #{fpglDdbh}
     </update>
 
     <delete id="deleteFpglMainInfoByFpglId" parameterType="String">

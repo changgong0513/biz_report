@@ -66,16 +66,6 @@
         <el-button
           type="primary"
           plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['purchasesale:purchasesale:add']"
-        >申请开票</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
@@ -86,7 +76,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="mainList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column label="订单编号" align="center" prop="orderId" />
       <el-table-column label="订单类型" align="center" prop="contractType" width="180">
         <template slot-scope="scope">
@@ -100,6 +90,17 @@
       <el-table-column label="发票状态" align="center" prop="fpglFpzt">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.fpgl_fp_status" :value="scope.row.fpglFpzt"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            :disabled="scope.row.fpglFpzt === '1'"
+            @click="handleAdd(scope.row)"
+          >申请开票</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,10 +118,10 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="订单编号" prop="fpglDdbh">{{form.fpglDdbh}}</el-form-item>
+            <el-form-item label="订单编号" prop="orderId">{{form.orderId}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="客户名称" prop="oppositeCompanyName">{{form.oppositeCompanyName}}</el-form-item>
+            <el-form-item label="客户名称" prop="supplierName">{{form.supplierName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="客户税号" prop="taxNumber">{{form.taxNumber}}</el-form-item>
@@ -128,7 +129,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="物料名称" prop="goodsName">{{form.goodsName}}</el-form-item>
+            <el-form-item label="物料名称" prop="materialName">{{form.materialName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同金额" prop="contractTotal">{{form.contractTotal}}</el-form-item>
@@ -141,35 +142,27 @@
         <h3>开票明细</h3>
         <el-row>
           <el-table v-loading="loading" :data="fpDetailList" @selection-change="handleSelectionChange">
-            <el-table-column label="订单编号" align="center" prop="fpglDdbh" />
-            <el-table-column label="订单类型" align="center" prop="fpglDdlx" width="180">
-              <template slot-scope="scope">
-                <dict-tag :options="dict.type.fpgl_order_type" :value="scope.row.fpglDdlx"/>
-              </template>
-            </el-table-column>
-            <el-table-column label="客户名称" align="center" prop="oppositeCompanyName" />
-            <el-table-column label="物料名称" align="center" prop="goodsName" />
-            <el-table-column label="合同金额" align="center" prop="contractTotal" />
-            <el-table-column label="已开票金额" align="center" prop="fpglKpje" />
-            <el-table-column label="发票状态" align="center" prop="fpglFpzt">
-              <template slot-scope="scope">
-                <dict-tag :options="dict.type.fpgl_fp_status" :value="scope.row.fpglFpzt"/>
-              </template>
-            </el-table-column>
+            <el-table-column label="开票日期" align="center" prop="fpglKprq" />
+            <el-table-column label="开票明细" align="center" prop="fpglKpmx" width="180" />
+            <el-table-column label="开票数量" align="center" prop="fpglKpsl" />
+            <el-table-column label="单价" align="center" prop="fpglKpdj" />
+            <el-table-column label="开票金额" align="center" prop="fpglKpje" />
+            <el-table-column label="申请人" align="center" prop="fpglSqr" />
           </el-table>
           <pagination
-            v-show="total>0"
-            :total="total"
-            :page.sync="queryParams.pageNum"
-            :limit.sync="queryParams.pageSize"
-            @pagination="getList"
+            v-show="kpmxTotal>0"
+            :total="kpmxTotal"
+            :page.sync="kpmxPageNum"
+            :limit.sync="kpmxPageSize"
+            @pagination="getKpmxList"
           />
         </el-row>
         <el-divider></el-divider>
         <el-row>
           <el-col :span="8">
             <el-form-item label="开票明细" prop="fpglKpmx">
-              <el-input v-model="form.fpglKpmx" placeholder="请输入开票明细" style="width: 240px" />
+              <!-- <el-input v-model="form.fpglKpmx" placeholder="请输入开票明细" style="width: 240px" /> -->
+              {{form.materialName}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -185,9 +178,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="开票金额" prop="fpglKpje">
-              <el-input v-model="form.fpglKpje" placeholder="请输入开票金额" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="开票金额" prop="fpglKpje">{{calKpje}}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -200,7 +191,7 @@
 </template>
 
 <script>
-import { listMain, getMain, delMain, addMain, updateMain } from "@/api/fpgl/fpgl";
+import { listMain, listFpmx, getMain, delMain, addMain, updateMain } from "@/api/fpgl/fpgl";
 
 export default {
   name: "Main",
@@ -208,7 +199,8 @@ export default {
   data() {
     return {
       // 遮罩层
-      loading: false,
+      loading: true,
+      kpmxloading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -219,10 +211,25 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      // 开票明细总条数
+      kpmxTotal: 0,
+      //
+      kpmxPageNum: 1,
+      //
+      kpmxPageSize: 10,
       // 发票管理表格数据
       mainList: [],
       // 发票明细表格数据
       fpDetailList: [],
+      // 表单校验
+      rules: {
+        fpglKpsl: [
+          { required: true, message: "开票数量不能为空", trigger: "blur" }
+        ],
+        fpglKpdj: [
+          { required: true, message: "开票单价不能为空", trigger: "blur" }
+        ]
+      },
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -235,15 +242,14 @@ export default {
         fpglKpmx: null,
         fpglKpsl: null,
         fpglKpdj: null,
-        fpglKpje: null,
         fpglSqr: null,
         fpglDdbh: null,
         bizVersion: null
       },
       // 表单参数
       form: {},
-      // 表单校验
-      rules: {}
+      isUpdate: false,
+      sqkpOrderId: null
     };
   },
   created() {
@@ -259,6 +265,15 @@ export default {
         this.loading = false;
       });
     },
+    /** 查询开票明细列表 */
+    getKpmxList() {
+      this.kpmxloading = true;
+      listFpmx(this.sqkpOrderId).then(response => {
+        this.fpDetailList = response.rows;
+        this.kpmxTotal = response.total;
+        this.kpmxloading = false;
+      });
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -266,22 +281,14 @@ export default {
     },
     // 表单重置
     reset() {
-      // this.form = {
-      //   fpglId: null,
-      //   fpglKprq: null,
-      //   fpglKpmx: null,
-      //   fpglKpsl: null,
-      //   fpglKpdj: null,
-      //   fpglKpje: null,
-      //   fpglSqr: null,
-      //   fpglDdbh: null,
-      //   createBy: null,
-      //   createTime: null,
-      //   updateBy: null,
-      //   updateTime: null,
-      //   bizVersion: null
-      // };
-      // this.resetForm("form");
+      this.form = {
+        fpglKpmx: null,
+        fpglKpsl: null,
+        fpglKpdj: null,
+        fpglKpje: null,
+        fpDetailList: [],
+      };
+      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -295,15 +302,20 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      // this.ids = selection.map(item => item.fpglId)
-      // this.single = selection.length!==1
-      // this.multiple = !selection.length
+      this.ids = selection.map(item => item.fpglId)
+      this.single = selection.length!==1
+      this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
+    /** 申请开票按钮操作 */
+    handleAdd(row) {
       this.reset();
-      this.open = true;
-      this.title = "申请开票";
+      this.sqkpOrderId = row.orderId;
+      listFpmx(row.orderId).then(response => {
+        this.open = true;
+        this.title = "申请开票";
+        this.form = row;
+        this.isUpdate = false;
+      });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -317,23 +329,26 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     if (this.form.fpglId != null) {
-      //       updateMain(this.form).then(response => {
-      //         this.$modal.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       addMain(this.form).then(response => {
-      //         this.$modal.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.isUpdate) {
+            updateMain(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            this.form.fpglDdbh = this.form.orderId;
+            this.form.fpglKpje = this.calKpje;
+            addMain(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+              this.getKpmxList();
+            });
+          }
+        }
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
@@ -347,9 +362,18 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      // this.download('fpgl/main/export', {
-      //   ...this.queryParams
-      // }, `main_${new Date().getTime()}.xlsx`)
+      this.download('fpgl/mgr/export', {
+        ...this.queryParams
+      }, `发票管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
+    }
+  },
+  computed: {
+    calKpje: function () {
+      if (this.form.fpglKpsl && this.form.fpglKpdj) {
+        return Number(this.form.fpglKpsl) * Number(this.form.fpglKpdj)
+      }
+      
+      return 0;
     }
   }
 };

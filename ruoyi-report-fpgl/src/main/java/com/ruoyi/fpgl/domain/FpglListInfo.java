@@ -48,7 +48,7 @@ public class FpglListInfo extends BaseEntity
     private String taxNumber;
 
     /** 发票状态 */
-    @Excel(name = "发票状态")
+    @Excel(name = "发票状态", dictType = "fpgl_fp_status")
     private String fpglFpzt;
 
     public String getOrderId() {
