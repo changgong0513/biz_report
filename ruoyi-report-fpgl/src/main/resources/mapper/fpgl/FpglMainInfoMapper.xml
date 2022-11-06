@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fpgl.mapper.FpglMainInfoMapper">
+    
+    <resultMap type="FpglMainInfo" id="FpglMainInfoResult">
+        <result property="fpglId"    column="fpgl_id"    />
+        <result property="fpglKprq"    column="fpgl_kprq"    />
+        <result property="fpglKpmx"    column="fpgl_kpmx"    />
+        <result property="fpglKpsl"    column="fpgl_kpsl"    />
+        <result property="fpglKpdj"    column="fpgl_kpdj"    />
+        <result property="fpglKpje"    column="fpgl_kpje"    />
+        <result property="fpglSqr"    column="fpgl_sqr"    />
+        <result property="fpglFpzt"    column="fpgl_fpzt"    />
+        <result property="fpglDdbh"    column="fpgl_ddbh"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <resultMap type="FpglListInfo" id="FpglListInfoResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="contractTotal"    column="contract_total"    />
+        <result property="fpglKpje"    column="fpgl_kpje"    />
+        <result property="taxNumber"    column="tax_number"    />
+    </resultMap>
+
+    <sql id="selectFpglMainInfoVo">
+        select fpgl_id, fpgl_kprq, fpgl_kpmx, fpgl_kpsl, fpgl_kpdj, fpgl_kpje, fpgl_sqr, fpgl_fpzt, fpgl_ddbh, create_by, create_time, update_by, update_time, biz_version from fpgl_main_info
+    </sql>
+
+    <sql id="selectFpglListVo">
+        SELECT
+            t1.order_id as order_id,
+            t1.supplier_name as supplier_name,
+            t1.material_name as material_name,
+            t2.contract_type as contract_type,
+            ifnull(t2.contract_total, 0) as contract_total,
+            ifnull(t3.fpgl_kpje, 0) as fpgl_kpje,
+            t4.tax_number as tax_number
+        FROM
+            purchase_sale_order_info t1
+        LEFT JOIN
+            contract_content_info t2 ON t1.contract_id = t2.contract_id
+        LEFT JOIN
+            fpgl_main_info t3 ON t1.order_id = t3.fpgl_ddbh
+        LEFT JOIN
+            master_data_client_info t4 on t1.supplier_name = t4.company_name
+    </sql>
+
+    <select id="selectFpglMainInfoList" parameterType="FpglMainInfo" resultMap="FpglMainInfoResult">
+        <include refid="selectFpglMainInfoVo"/>
+        <where>  
+            <if test="fpglKprq != null "> and fpgl_kprq = #{fpglKprq}</if>
+            <if test="fpglKpmx != null  and fpglKpmx != ''"> and fpgl_kpmx like concat('%', #{fpglKpmx}, '%')</if>
+            <if test="fpglKpsl != null "> and fpgl_kpsl = #{fpglKpsl}</if>
+            <if test="fpglKpdj != null "> and fpgl_kpdj = #{fpglKpdj}</if>
+            <if test="fpglKpje != null "> and fpgl_kpje = #{fpglKpje}</if>
+            <if test="fpglSqr != null  and fpglSqr != ''"> and fpgl_sqr like concat('%', #{fpglSqr}, '%')</if>
+            <if test="fpglFpzt != null  and fpglFpzt != ''"> and fpgl_fpzt = #{fpglFpzt}</if>
+            <if test="fpglDdbh != null  and fpglDdbh != ''"> and fpgl_ddbh = #{fpglDdbh}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
+        </where>
+    </select>
+
+    <select id="selectFpglList" parameterType="FpglListInfo" resultMap="FpglListInfoResult">
+        <include refid="selectFpglListVo"/>
+        <where>
+            <if test="orderId != null  and orderId != ''"> and order_id like concat('%', #{orderId}, '%')</if>
+            <if test="contractType != null "> and contract_type = #{contractType}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectFpglMainInfoByFpglId" parameterType="String" resultMap="FpglMainInfoResult">
+        <include refid="selectFpglMainInfoVo"/>
+        where fpgl_id = #{fpglId}
+    </select>
+        
+    <insert id="insertFpglMainInfo" parameterType="FpglMainInfo">
+        insert into fpgl_main_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fpglId != null">fpgl_id,</if>
+            <if test="fpglKprq != null">fpgl_kprq,</if>
+            <if test="fpglKpmx != null and fpglKpmx != ''">fpgl_kpmx,</if>
+            <if test="fpglKpsl != null">fpgl_kpsl,</if>
+            <if test="fpglKpdj != null">fpgl_kpdj,</if>
+            <if test="fpglKpje != null">fpgl_kpje,</if>
+            <if test="fpglSqr != null and fpglSqr != ''">fpgl_sqr,</if>
+            <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt,</if>
+            <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fpglId != null">#{fpglId},</if>
+            <if test="fpglKprq != null">#{fpglKprq},</if>
+            <if test="fpglKpmx != null and fpglKpmx != ''">#{fpglKpmx},</if>
+            <if test="fpglKpsl != null">#{fpglKpsl},</if>
+            <if test="fpglKpdj != null">#{fpglKpdj},</if>
+            <if test="fpglKpje != null">#{fpglKpje},</if>
+            <if test="fpglSqr != null and fpglSqr != ''">#{fpglSqr},</if>
+            <if test="fpglFpzt != null and fpglFpzt != ''">#{fpglFpzt},</if>
+            <if test="fpglDdbh != null and fpglDdbh != ''">#{fpglDdbh},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFpglMainInfo" parameterType="FpglMainInfo">
+        update fpgl_main_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fpglKprq != null">fpgl_kprq = #{fpglKprq},</if>
+            <if test="fpglKpmx != null and fpglKpmx != ''">fpgl_kpmx = #{fpglKpmx},</if>
+            <if test="fpglKpsl != null">fpgl_kpsl = #{fpglKpsl},</if>
+            <if test="fpglKpdj != null">fpgl_kpdj = #{fpglKpdj},</if>
+            <if test="fpglKpje != null">fpgl_kpje = #{fpglKpje},</if>
+            <if test="fpglSqr != null and fpglSqr != ''">fpgl_sqr = #{fpglSqr},</if>
+            <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt = #{fpglFpzt},</if>
+            <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh = #{fpglDdbh},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where fpgl_id = #{fpglId}
+    </update>
+
+    <delete id="deleteFpglMainInfoByFpglId" parameterType="String">
+        delete from fpgl_main_info where fpgl_id = #{fpglId}
+    </delete>
+
+    <delete id="deleteFpglMainInfoByFpglIds" parameterType="String">
+        delete from fpgl_main_info where fpgl_id in 
+        <foreach item="fpglId" collection="array" open="(" separator="," close=")">
+            #{fpglId}
+        </foreach>
+    </delete>
+</mapper>
