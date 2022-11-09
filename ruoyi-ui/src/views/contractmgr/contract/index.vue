@@ -155,7 +155,7 @@
           <el-upload
             ref="uploadRef"
             action=""
-            accept=".xlsx, .xls, .docx, .doc, jpeg, png"
+            accept=".xlsx, .xls, .docx, .doc, .pdf"
             :auto-upload="false"
             :on-change="(file, fileList) => { handleChange(file, fileList, scope.row.contractId) }"
             :show-file-list="false"
@@ -325,7 +325,7 @@
 
     <!-- 查看合同内容详细对话框 -->
     <el-dialog :title="title" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
-      <el-form ref="formDetail" :model="formDetail" label-width="110px" @opened="getContractAdditional" >
+      <el-form ref="formDetail" :model="formDetail" label-width="110px">
         <h3>合同内容详细</h3>
         <el-row>
           <el-col :span="8"><el-form-item label="货物名称">{{formDetail.goodsName}}</el-form-item></el-col>
@@ -364,20 +364,26 @@
           <el-col :span="24"><el-form-item label="备注">{{formDetail.contractRemark}}</el-form-item></el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <!-- 显示图片附件区域 -->
+          <!-- <el-col :span="12">
             <el-form-item label="图片">
-              <div class="demo-image__preview">
-                <el-image 
-                  style="width: 100px; height: 100px"
-                  :src="url" 
-                  :preview-src-list="srcList">
-                </el-image>
+              <div v-for="(item, index) in contractAdditionalList" :key="index">
+                <div class="demo-image__preview" v-show="!item.uploadImagePath">
+                  <el-image 
+                    style="width: 100px; height: 100px"
+                    :src="item.uploadImagePath" 
+                    :preview-src-list="[ item.uploadImagePath ]">
+                  </el-image>
+                </div>
               </div>
             </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          </el-col> -->
+          <el-col :span="24">
             <el-form-item label="附件">
-              <a v-for="(item, index) in contractAdditionalList" :key="index" :href="item.uplloadFilePath" >{{item.uplloadFilePath}}</a>
+              <div v-for="(item, index) in contractAdditionalList" :key="index">
+                <a @click="downLoadFile(item.uplloadFilePath)" style="color: blue;">{{ item.uplloadFilePath | getDownloadFileName(item.uplloadFilePath) }}</a>
+                <div @click="delteFileByAdditionalId(formDetail.contractId, item.additionalId)" style="display: inline-block; margin-left: 10px;"><i class="el-icon-delete"></i></div>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -439,8 +445,9 @@
 
 <script>
 import { listContract, getContract, addContract, delContract, updateContract, 
-  syncContract, uploadFile, getContractAdditional } from "@/api/contract/contract";
-import { getToken } from "@/utils/auth";
+  syncContract, uploadFile, getContractAdditional, delteFile } from "@/api/contract/contract";
+
+import { download } from "@/utils/request";
 
 export default {
   name: "Contract",
@@ -513,6 +520,12 @@ export default {
       // 合同附件列表
       contractAdditionalList: []
     };
+  },
+  filters:{
+    getDownloadFileName(value) {
+      let index = value.lastIndexOf("\\"); // 提交阿里云切换为Linux的路径分隔符/
+      return value.substring(index + 1, index.length);
+    }
   },
   created() {
     this.getList();
@@ -646,10 +659,13 @@ export default {
     },
     /** 查看合同数据 */ 
     handleView(row) {
-      this.formDetail = row;
-      this.openDetail = true;
-      // getContractAdditional(row.contractId)
-      
+      getContractAdditional(row.contractId).then(response => {
+          console.log(JSON.stringify(response.rows));
+          this.contractAdditionalList = response.rows;
+          this.formDetail = row;
+          this.openDetail = true;
+      });
+
     },
     /** 文件上传 */
     handleChange(file, fileList, uploadContractId) {
@@ -661,31 +677,56 @@ export default {
         uploadFile(formData).then(response => {
           console.log(response)
           this.$modal.msgSuccess("上传成功！");
+          getContractAdditional(uploadContractId).then(response => {
+          console.log(JSON.stringify(response.rows));
+          this.contractAdditionalList = response.rows;
+      });
+
         });
       }
     },
     // 上传预处理
     beforeUpload(file) {
       console.log("上传预处理file：" + file);
-      if (file.type.indexOf("image/") == -1) {
-        this.$modal.msgError("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
-      } else if (file.type.indexOf(".xlsx") == -1 || file.type.indexOf(".xls") == -1) {
-        this.$modal.msgError("文件格式错误，请上传图片类型,如：.xlsx，.xls后缀的文件。");
-      } else if (ile.type.indexOf(".docx") == -1 || file.type.indexOf(".doc") == -1) {
-        this.$modal.msgError("文件格式错误，请上传图片类型,如：.docx，.doc后缀的文件。");
+      // if (file.type.indexOf("image/") == -1) {
+      //   this.$modal.msgError("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
+      // } else if (file.type.indexOf(".xlsx") == -1 || file.type.indexOf(".xls") == -1) {
+      //   this.$modal.msgError("文件格式错误，请上传图片类型,如：.xlsx，.xls后缀的文件。");
+      // } else if (file.type.indexOf(".docx") == -1 || file.type.indexOf(".doc") == -1) {
+      //   this.$modal.msgError("文件格式错误，请上传图片类型,如：.docx，.doc后缀的文件。");
+      // }
+      if (file.type.indexOf(".xlsx") == -1 || file.type.indexOf(".xls") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
+      } else if (file.type.indexOf(".docx") == -1 || file.type.indexOf(".doc") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
+      } else if (file.type.indexOf(".pdf") == -1 || file.type.indexOf(".PDF") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
       }
     },
-    getContractAdditional(contractForm) {
-      console.log(contractForm);
-      this.loading = true;
-      getContractAdditional(contractId).then(response => {
-        console.log("JSON.stringify(response.rows)");
-        this.contractAdditionalList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-        
+    downLoadFile(filePath) {
+      let index = filePath.lastIndexOf("\\"); // 提交阿里云切换为Linux的路径分隔符/
+      let fileName = filePath.substring(index + 1, index.length);
+
+      let params = {
+        resource:filePath
+      }
+
+      download("/common/download/resource", params, fileName);
+    },
+    delteFileByAdditionalId(contractId, additionalId) {
+        delteFile(contractId, additionalId).then(response => {
+          console.log(response)
+          this.$modal.msgSuccess("删除附件成功！");
+          console.log(JSON.stringify(response.rows));
+          this.contractAdditionalList = response.rows;
       });
     }
   }
 };
 </script>
+
+<style scoped>
+  i:hover{
+    cursor:pointer
+  }
+</style>

@@ -160,4 +160,33 @@ public class CommonController
             log.error("下载文件失败", e);
         }
     }
+
+    /**
+     * 本地资源通用下载
+     */
+    @PostMapping("/download/resource")
+    public void resourceDownload1(String resource, HttpServletRequest request, HttpServletResponse response)
+            throws Exception
+    {
+        try
+        {
+            if (!FileUtils.checkAllowDownload(resource))
+            {
+                throw new Exception(StringUtils.format("资源文件({})非法，不允许下载。 ", resource));
+            }
+            // 本地资源路径
+            String localPath = RuoYiConfig.getProfile();
+            // 数据库资源地址
+            String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
+            // 下载名称
+            String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            FileUtils.setAttachmentResponseHeader(response, downloadName);
+            FileUtils.writeBytes(downloadPath, response.getOutputStream());
+        }
+        catch (Exception e)
+        {
+            log.error("下载文件失败", e);
+        }
+    }
 }

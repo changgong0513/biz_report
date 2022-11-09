@@ -11,6 +11,7 @@ import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.common.utils.uuid.UUID;
@@ -150,7 +151,13 @@ public class ContractContentInfoController extends BaseController
         contractAdditionalInfo.setCreateBy(SecurityUtils.getUsername());
         contractAdditionalInfo.setUpdateBy(SecurityUtils.getUsername());
         contractAdditionalInfo.setContractId(uploadData.getUploadContractId());
-        contractAdditionalInfo.setUplloadFilePath(filePath + File.separator + fileName);
+
+        if (fileName.lastIndexOf(".jpeg") > 0 || fileName.lastIndexOf(".png") > 0) {
+            contractAdditionalInfo.setUploadImagePath(filePath + File.separator + fileName);
+        } else {
+            contractAdditionalInfo.setUplloadFilePath(filePath + File.separator + fileName);
+        }
+
         contractAdditionalInfoService.insertContractAdditionalInfo(contractAdditionalInfo);
 
         return AjaxResult.success();
@@ -160,11 +167,23 @@ public class ContractContentInfoController extends BaseController
      * 获取合同附件列表
      */
     @GetMapping(value = "/additional/{contractId}")
-    public String getContractAdditional(@PathVariable("contractId") String contractId) {
-//        startPage();
-//        List<ContractAdditionalInfo> list = contractAdditionalInfoService.selectContractAdditionalInfoByContractId(contractId);
-//        return getDataTable(list);
-        return "1";
+    public TableDataInfo getContractAdditional(@PathVariable("contractId") String contractId) {
+        List<ContractAdditionalInfo> list = contractAdditionalInfoService.selectContractAdditionalInfoByContractId(contractId);
+        return getDataTable(list);
+    }
+
+    /**
+     * 删除合同附件
+     */
+    @GetMapping(value = "/del/{contractId}/additional/{additionalId}")
+    public TableDataInfo delContractAdditional(@PathVariable("contractId") String contractId,
+                                               @PathVariable("additionalId") String additionalId) {
+
+        int delResult = contractAdditionalInfoService.deleteContractAdditionalInfoByAdditionalId(additionalId);
+        toAjax(delResult);
+
+        List<ContractAdditionalInfo> list = contractAdditionalInfoService.selectContractAdditionalInfoByContractId(contractId);
+        return getDataTable(list);
     }
 
 

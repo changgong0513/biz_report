@@ -75,3 +75,14 @@ export function getContractAdditional(contractId) {
     method: 'get'
   })
 }
+
+export function delteFile(contractId, additionalId) {
+  console.log("删除附件对应的合同编号" + contractId);
+  console.log("删除附件的编号" + additionalId);
+  return request({
+    url: '/contract/mgr/del/' + contractId + '/additional/' + additionalId,
+    method: 'get'
+  })
+}
+
+
