@@ -129,16 +129,16 @@
       @row-dblclick="handleView">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="发货编号" align="center" prop="deliverId" width="150" />
-      <el-table-column label="发货日期" align="center" prop="deliverDate" width="140">
+      <el-table-column label="发货日期" align="center" prop="deliverDate" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.deliverDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="销售订单" align="center" prop="saleOrderId" width="150" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="150" :show-overflow-tooltip="true" />
-      <el-table-column label="仓库名称" align="center" prop="warehouseName" width="240" :show-overflow-tooltip="true" />
-      <el-table-column label="物料名称" align="center" prop="materialName" width="240" />
-      <el-table-column label="订单状态" align="center" prop="orderStatus" width="150" />
+      <el-table-column label="仓库名称" align="center" prop="warehouseName" width="200" :show-overflow-tooltip="true" />
+      <el-table-column label="物料名称" align="center" prop="materialName" width="200" :show-overflow-tooltip="true" />
+      <el-table-column label="订单状态" align="center" prop="orderStatus" width="100" />
     </el-table>
     
     <pagination

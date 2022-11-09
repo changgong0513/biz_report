@@ -131,7 +131,7 @@
     <el-table v-loading="loading" :data="purchaseList" @selection-change="handleSelectionChange"
     @row-dblclick="handleView">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单编号" align="center" prop="orderId" width="190" />
+      <el-table-column label="订单编号" align="center" prop="orderId" width="150" :show-overflow-tooltip="true" />
       <el-table-column label="业务日期" align="center" prop="businessDate" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.businessDate, '{y}-{m}-{d}') }}</span>
@@ -143,14 +143,14 @@
         </template>
       </el-table-column>
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="supplierName" width="260" :show-overflow-tooltip="true" />
+      <el-table-column label="客户名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.contractmgr_contract_approval_status" :value="scope.row.orderStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="物料名称" align="center" prop="materialName" width="150" />
-      <el-table-column label="核算金额" align="center" prop="checkMoney" width="100" />
+      <el-table-column label="物料名称" align="center" prop="materialName" width="150" :show-overflow-tooltip="true" />
+      <el-table-column label="核算金额" align="center" prop="checkMoney" width="80" :show-overflow-tooltip="true" />
     </el-table>
     
     <pagination
