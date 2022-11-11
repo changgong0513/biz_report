@@ -33,6 +33,17 @@ public class ContractAdditionalInfoServiceImpl implements IContractAdditionalInf
     }
 
     /**
+     * 根据订单编号，取得附件
+     *
+     * @param orderId
+     * @return
+     */
+    public List<ContractAdditionalInfo> selectOrderAdditional(String orderId) {
+        List<ContractAdditionalInfo> list = contractAdditionalInfoMapper.selectContractAdditionalInfoByContractId(orderId);
+        return list;
+    }
+
+    /**
      * 查询contract列表
      * 
      * @param contractAdditionalInfo contract

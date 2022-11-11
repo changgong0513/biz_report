@@ -30,6 +30,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContractAdditionalInfoVo"/>
         where contract_id = #{contractId}
     </select>
+
+    <select id="selectOrderAdditional" parameterType="String" resultMap="ContractAdditionalInfoResult">
+        <include refid="selectContractAdditionalInfoVo"/>
+        where order_id = #{orderId}
+    </select>
         
     <insert id="insertContractAdditionalInfo" parameterType="ContractAdditionalInfo" useGeneratedKeys="true" keyProperty="additionalId">
         insert into contract_additional_info

@@ -429,11 +429,11 @@
                 </div>
               </el-upload>
               <!-- 文件列表 -->
-              <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
+              <transition-group class="upload-file-list el-upload-list el-upload-list--text" 
+                name="el-fade-in-linear" tag="ul" style="width: 600px;">
                 <li :key="file.url" 
                   class="el-upload-list__item ele-upload-list__item-content" 
-                  v-for="(file, index) in fileList"
-                  style="width: 50%;">
+                  v-for="(file, index) in fileList">
                   <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
                     <span class="el-icon-document" style="font-size: 12px;"> {{ getFileName(file.name) }} </span>
                   </el-link>
@@ -454,7 +454,7 @@
     </el-dialog>
 
     <!-- 采购管理数据详细 -->
-    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="900px" append-to-body :close-on-click-modal="false">
+    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="80%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
@@ -536,11 +536,8 @@
           <!-- 到账条件 -->
           <el-col :span="8">
             <el-form-item label="到账条件" prop="arrivalTerms">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_arrival_terms" :value="formDetail.arrivalTerms"/>
-              </template>
-              <!-- 到账条件值 -->
-              {{formDetail.arrivalTermsValue}}（天）
+              <dict-tag :options="dict.type.purchasesale_arrival_terms" :value="formDetail.arrivalTerms" style="display: inline" />
+              {{formDetail.arrivalTermsValue}}（天）<!-- 到账条件值 -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -567,6 +564,28 @@
             <el-form-item label="备注" prop="orderRemark">{{formDetail.orderRemark}}</el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="2">
+            <el-form-item label="附件" style="padding-top: 8px;"></el-form-item>
+          </el-col>
+          <el-col :span="22">
+            <!-- 文件上传 start -->
+            <div class="upload-file" style="height: 30px;">
+              <!-- 文件列表 -->
+              <transition-group class="upload-file-list el-upload-list el-upload-list--text" 
+                name="el-fade-in-linear" tag="ul" style="width: 600px;">
+                <li :key="file.url" 
+                  class="el-upload-list__item ele-upload-list__item-content" 
+                  v-for="(file) in fileListDetail">
+                  <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
+                    <span class="el-icon-document" style="font-size: 12px;"> {{ getFileName(file.name) }} </span>
+                  </el-link>
+                </li>
+              </transition-group>
+            </div>
+            <!-- 文件上传 end -->
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelDetail">关 闭</el-button>
@@ -577,7 +596,8 @@
 
 <script>
 
-import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile } from "@/api/purchasesale/purchasesale";
+import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, 
+  getOrderAdditional } from "@/api/purchasesale/purchasesale";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -619,6 +639,7 @@ export default {
         Authorization: "Bearer " + getToken()
       },
       fileList: [],
+      fileListDetail: [],
       // 遮罩层
       // loading: true,
       loading: false,
@@ -817,6 +838,7 @@ export default {
       this.title = "添加采购订单数据";
       this.form.isInvoicing = "1";
       this.isUpdate = false;
+      this.fileList = [];
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -827,10 +849,19 @@ export default {
         this.open = true;
         this.title = "修改采购订单数据";
         this.isUpdate = true;
+        this.fileList = [];
+        getOrderAdditional(this.form.orderId).then(response => {
+          console.log(JSON.stringify(response.rows));
+          response.rows.forEach(element => {
+            this.fileList.push({ name: element.uplloadFilePath, 
+              url: element.uplloadFilePath });
+          });
+        });
       });
     },
     /** 提交按钮 */
     submitForm() {
+      console.log("提交按钮");
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
@@ -868,7 +899,16 @@ export default {
      /** 查看合同数据 */ 
     handleView(row) {
       this.formDetail = row;
-      this.openDetail = true;
+      this.fileListDetail = [];
+      getOrderAdditional(this.formDetail.orderId).then(response => {
+        console.log(JSON.stringify(response.rows));
+        response.rows.forEach(element => {
+          this.fileListDetail.push({ name: element.uplloadFilePath, 
+            url: element.uplloadFilePath });
+        });
+
+        this.openDetail = true;
+      });
     },
     // 文件上传用
     // 上传前校检格式和大小

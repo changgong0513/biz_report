@@ -62,3 +62,12 @@ export function deleteUploadFile(filePath) {
     data: filePath
   })
 }
+
+// 查询订单附件
+export function getOrderAdditional(orderId) {
+  console.log("查询订单附件");
+  return request({
+    url: '/contract/mgr/order/additional/' + orderId,
+    method: 'get'
+  })
+}

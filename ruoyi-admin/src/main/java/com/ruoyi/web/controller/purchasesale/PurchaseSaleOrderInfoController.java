@@ -144,7 +144,7 @@ public class PurchaseSaleOrderInfoController extends BaseController
             if (fileName.lastIndexOf(".jpeg") > 0 || fileName.lastIndexOf(".png") > 0) {
                 contractAdditionalInfo.setUploadImagePath(filePath + File.separator + fileName);
             } else {
-                contractAdditionalInfo.setUplloadFilePath(filePath + File.separator + fileName);
+                contractAdditionalInfo.setUplloadFilePath(fileName);
             }
 
             contractAdditionalInfoService.insertContractAdditionalInfo(contractAdditionalInfo);

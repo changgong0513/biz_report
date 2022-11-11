@@ -173,6 +173,15 @@ public class ContractContentInfoController extends BaseController
     }
 
     /**
+     * 根据订单编号，取得附件
+     */
+    @GetMapping(value = "/order/additional/{orderId}")
+    public TableDataInfo getOrderAdditional(@PathVariable("orderId") String orderId) {
+        List<ContractAdditionalInfo> list = contractAdditionalInfoService.selectOrderAdditional(orderId);
+        return getDataTable(list);
+    }
+
+    /**
      * 删除合同附件
      */
     @GetMapping(value = "/del/{contractId}/additional/{additionalId}")
