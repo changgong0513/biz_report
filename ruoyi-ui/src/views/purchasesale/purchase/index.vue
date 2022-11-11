@@ -168,13 +168,18 @@
         <el-row>
           <!-- 订单编号 -->
           <el-col :span="8">
-            <el-form-item label="订单编号">
-              <el-input v-model="form.orderId" placeholder="请输入订单编号" :disabled="this.isUpdate" style="width: 240px" />
+            <el-form-item label="订单编号" prop="orderId">
+              <el-input v-model="form.orderId" 
+                placeholder="请输入订单编号" 
+                :disabled="this.isUpdate" 
+                style="width: 240px"
+                maxlength="32"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <!-- 采购类型 -->
           <el-col :span="8">
-            <el-form-item label="采购类型">
+            <el-form-item label="采购类型" prop="purchaseType">
               <el-select
                 v-model="form.purchaseType"
                 placeholder="采购类型"
@@ -192,7 +197,12 @@
           <!-- 合同编号 -->
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
-              <el-input v-model="form.contractId" placeholder="请输入合同编号" style="width: 240px" />
+              <el-input 
+                v-model="form.contractId" 
+                placeholder="请输入合同编号" 
+                style="width: 240px"
+                maxlength="32"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -205,7 +215,7 @@
           </el-col>
           <!-- 所属部门 -->
           <el-col :span="8">
-            <el-form-item label="所属部门">
+            <el-form-item label="所属部门" prop="belongDept">
               <el-select
                 v-model="form.belongDept"
                 placeholder="所属部门"
@@ -237,7 +247,12 @@
           <!-- 物料名称 -->
           <el-col :span="8">
             <el-form-item label="物料名称" prop="materialName">
-              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" />
+              <el-input 
+                v-model="form.materialName" 
+                placeholder="请输入物料名称" 
+                style="width: 240px"
+                maxlength="64"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <!-- 采购数量 -->
@@ -249,7 +264,12 @@
           <!-- 供应商名称 -->
           <el-col :span="8">
             <el-form-item label="供应商名称" prop="supplierName">
-              <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" />
+              <el-input 
+                v-model="form.supplierName" 
+                placeholder="请输入供应商名称" 
+                style="width: 240px"
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -365,8 +385,65 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="orderRemark">
-              <el-input v-model="form.orderRemark" type="textarea" style="width: 90%" />
+              <el-input 
+                v-model="form.orderRemark" 
+                type="textarea" 
+                style="width: 90%" 
+                maxlength="128"
+                show-word-limit />
             </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="2">
+            <el-form-item label=""></el-form-item>
+          </el-col>
+          <el-col :span="22">
+            <!-- 文件上传 start -->
+            <div class="upload-file" style="height: 30px;">
+              <el-upload
+                multiple
+                :action="uploadFileUrl"
+                :headers="headers"
+                :data="{uploadOrderId: form.orderId}"
+                :before-upload="handleBeforeUpload"
+                :on-error="handleUploadError"
+                :on-exceed="handleExceed"
+                :on-success="handleUploadSuccess"
+                :file-list="fileList"
+                :limit="limit"
+                :show-file-list="false"
+                accept=".xlsx, .xls, .docx, .doc, .pptx, .ppt, .pdf"
+                class="upload-file-uploader"
+                ref="fileUpload"
+                v-show="form.orderId"
+              >
+                <!-- 上传按钮 -->
+                <el-button size="mini" type="primary">选取文件</el-button>
+                <!-- 上传提示 -->
+                <div class="el-upload__tip" slot="tip" v-if="showTip">
+                  请上传
+                  <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
+                  <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
+                  的文件
+                </div>
+              </el-upload>
+              <!-- 文件列表 -->
+              <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
+                <li :key="file.url" 
+                  class="el-upload-list__item ele-upload-list__item-content" 
+                  v-for="(file, index) in fileList"
+                  style="width: 50%;">
+                  <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
+                    <span class="el-icon-document" style="font-size: 12px;"> {{ getFileName(file.name) }} </span>
+                  </el-link>
+                  <div class="ele-upload-list__item-content-action">
+                    <el-link :underline="false" @click="handleUploadDelete(index)" type="danger">删除</el-link>
+                  </div>
+                </li>
+              </transition-group>
+            </div>
+            <!-- 文件上传 end -->
           </el-col>
         </el-row>
       </el-form>
@@ -377,8 +454,8 @@
     </el-dialog>
 
     <!-- 采购管理数据详细 -->
-    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
-      <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
+    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="900px" append-to-body :close-on-click-modal="false">
+      <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
           <el-col :span="8">
@@ -500,14 +577,48 @@
 
 <script>
 
-import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase } from "@/api/purchasesale/purchasesale";
+import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile } from "@/api/purchasesale/purchasesale";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status'],
+  // 文件上传用
+  props: {
+    // 值
+    value: [String, Object, Array],
+    // 数量限制
+    limit: {
+      type: Number,
+      default: 5,
+    },
+    // 大小限制(MB)
+    fileSize: {
+      type: Number,
+      default: 5,
+    },
+    // 文件类型, 例如['png', 'jpg', 'jpeg']
+    fileType: {
+      type: Array,
+      default: () => ["doc", 'docx', "xls", 'xlsx', "ppt", 'pptx', "txt", "pdf"],
+    },
+    // 是否显示提示
+    isShowTip: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
+      number: 0,
+      uploadList: [],
+      baseUrl: process.env.VUE_APP_BASE_API,
+      uploadFileUrl: process.env.VUE_APP_BASE_API + "/purchase/mgr/upload", // 上传的图片服务器地址
+      headers: {
+        Authorization: "Bearer " + getToken()
+      },
+      fileList: [],
       // 遮罩层
       // loading: true,
       loading: false,
@@ -543,82 +654,98 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
-      // rules: {
-      //   purchaseType: [
-      //     { required: true, message: "采购类型不能为空", trigger: "change" }
-      //   ],
-      //   contractId: [
-      //     { required: true, message: "合同编号不能为空", trigger: "blur" }
-      //   ],
-      //   handledBy: [
-      //     { required: true, message: "经办人不能为空", trigger: "blur" }
-      //   ],
-      //   belongDept: [
-      //     { required: true, message: "所属部门不能为空", trigger: "blur" }
-      //   ],
-      //   businessDate: [
-      //     { required: true, message: "业务日期不能为空", trigger: "blur" }
-      //   ],
-      //   materialName: [
-      //     { required: true, message: "物料名称不能为空", trigger: "blur" }
-      //   ],
-      //   purchaseQuantity: [
-      //     { required: true, message: "采购数量不能为空", trigger: "blur" }
-      //   ],
-      //   supplierName: [
-      //     { required: true, message: "供应商名称不能为空", trigger: "blur" }
-      //   ],
-      //   unitPrice: [
-      //     { required: true, message: "单价不能为空", trigger: "blur" }
-      //   ],
-      //   meteringUnit: [
-      //     { required: true, message: "计量单位不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalDate: [
-      //     { required: true, message: "预计到货期不能为空", trigger: "blur" }
-      //   ],
-      //   requiredDeliveryDate: [
-      //     { required: true, message: "要求交货期不能为空", trigger: "blur" }
-      //   ],
-      //   accountPeriod: [
-      //     { required: true, message: "账期不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTerms: [
-      //     { required: true, message: "到账条件不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTermsValue: [
-      //     { required: true, message: "到账条件值不能为空", trigger: "blur" }
-      //   ],
-      //   settlementMethod: [
-      //     { required: true, message: "结算方式不能为空", trigger: "blur" }
-      //   ],
-      //   isInvoicing: [
-      //     { required: true, message: "是否开票不能为空", trigger: "blur" }
-      //   ],
-      //   createBy: [
-      //     { required: true, message: "创建者不能为空", trigger: "blur" }
-      //   ],
-      //   createTime: [
-      //     { required: true, message: "创建时间不能为空", trigger: "blur" }
-      //   ],
-      //   updateBy: [
-      //     { required: true, message: "更新者不能为空", trigger: "blur" }
-      //   ],
-      //   updateTime: [
-      //     { required: true, message: "更新时间不能为空", trigger: "blur" }
-      //   ],
-      //   bizVersion: [
-      //     { required: true, message: "版本号不能为空", trigger: "blur" }
-      //   ]
-      // },
+      rules: {
+        orderId: [
+          { required: true, message: "订单编号不能为空", trigger: "blur" }
+        ],
+        purchaseType: [
+          { required: true, message: "采购类型不能为空", trigger: "change" }
+        ],
+        contractId: [
+          { required: true, message: "合同编号不能为空", trigger: "blur" }
+        ],
+        handledBy: [
+          { required: true, message: "经办人不能为空", trigger: "blur" }
+        ],
+        belongDept: [
+          { required: true, message: "所属部门不能为空", trigger: "blur" }
+        ],
+        businessDate: [
+          { required: true, message: "业务日期不能为空", trigger: "blur" }
+        ],
+        materialName: [
+          { required: true, message: "物料名称不能为空", trigger: "blur" }
+        ],
+        purchaseQuantity: [
+          { required: true, message: "采购数量不能为空", trigger: "blur" }
+        ],
+        supplierName: [
+          { required: true, message: "供应商名称不能为空", trigger: "blur" }
+        ],
+        unitPrice: [
+          { required: true, message: "单价不能为空", trigger: "blur" }
+        ],
+        meteringUnit: [
+          { required: true, message: "计量单位不能为空", trigger: "blur" }
+        ],
+        arrivalDate: [
+          { required: true, message: "预计到货期不能为空", trigger: "blur" }
+        ],
+        requiredDeliveryDate: [
+          { required: true, message: "要求交货期不能为空", trigger: "blur" }
+        ],
+        accountPeriod: [
+          { required: true, message: "账期不能为空", trigger: "blur" }
+        ],
+        arrivalTerms: [
+          { required: true, message: "到账条件不能为空", trigger: "blur" }
+        ],
+        arrivalTermsValue: [
+          { required: true, message: "到账条件值不能为空", trigger: "blur" }
+        ],
+        settlementMethod: [
+          { required: true, message: "结算方式不能为空", trigger: "blur" }
+        ]
+      },
       isUpdate: false,
       formDetail: {},
-      openDetail: false
+      openDetail: false,
+      fileList: []
     };
   },
   created() {
     this.getList();
+  },
+  // 文件上传用
+  watch: {
+    value: {
+      handler(val) {
+        if (val) {
+          let temp = 1;
+          // 首先将值转为数组
+          const list = Array.isArray(val) ? val : this.value.split(',');
+          // 然后将数组转为对象数组
+          this.fileList = list.map(item => {
+            if (typeof item === "string") {
+              item = { name: item, url: item };
+            }
+            item.uid = item.uid || new Date().getTime() + temp++;
+            return item;
+          });
+        } else {
+          this.fileList = [];
+          return [];
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  computed: {
+    // 是否显示提示
+    showTip() {
+      return this.isShowTip && (this.fileType || this.fileSize);
+    },
   },
   methods: {
     /** 查询采购收货销售发货管理列表 */
@@ -742,7 +869,130 @@ export default {
     handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
+    },
+    // 文件上传用
+    // 上传前校检格式和大小
+    handleBeforeUpload(file) {
+      let isValidSuccess = true;
+
+      // this.$refs["form"].validate(valid => {
+      //   if (!valid) {
+      //     isValidSuccess = false;
+      //   }
+      // });
+
+      console.log("表单校验结果" + isValidSuccess);
+      if (!isValidSuccess) {
+        this.$modal.msgError(`添加上传文件时，表单必填字段不能为空，否则无法上传文件，请检查!`);
+        this.$modal.closeLoading();
+        return false;
+      }
+
+      // 校检文件类型
+      if (this.fileType) {
+        let fileExtension = "";
+        if (file.name.lastIndexOf(".") > -1) {
+          fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
+        }
+        const isTypeOk = this.fileType.some((type) => {
+          if (file.type.indexOf(type) > -1) return true;
+          if (fileExtension && fileExtension.indexOf(type) > -1) return true;
+          return false;
+        });
+        if (!isTypeOk) {
+          this.$modal.msgError(`文件格式不正确, 请上传${this.fileType.join("/")}格式文件!`);
+          return false;
+        }
+      }
+      // 校检文件大小
+      if (this.fileSize) {
+        const isLt = file.size / 1024 / 1024 < this.fileSize;
+        if (!isLt) {
+          this.$modal.msgError(`上传文件大小不能超过 ${this.fileSize} MB!`);
+          return false;
+        }
+      }
+      this.$modal.loading("正在上传文件，请稍候...");
+      this.number++;
+      return true;
+    },
+    // 上传失败
+    handleUploadError(err) {
+      this.$modal.msgError("上传图片失败，请重试");
+      this.$modal.closeLoading()
+    },
+    // 文件个数超出
+    handleExceed() {
+      this.$modal.msgError(`上传文件数量不能超过 ${this.limit} 个!`);
+    },
+    // 上传成功回调
+    handleUploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.uploadList.push({ name: res.fileName, url: res.fileName });
+        this.uploadedSuccessfully();
+      } else {
+        this.number--;
+        this.$modal.closeLoading();
+        this.$modal.msgError(res.msg);
+        this.$refs.fileUpload.handleRemove(file);
+        this.uploadedSuccessfully();
+      }
+    },
+    // 删除文件
+    handleUploadDelete(index) {
+      deleteUploadFile(this.listToString(this.fileList)).then(response => {
+        this.fileList.splice(index, 1);
+        this.$emit("input", this.listToString(this.fileList));
+      });
+    },
+    // 上传结束处理
+    uploadedSuccessfully() {
+      if (this.number > 0 && this.uploadList.length === this.number) {
+        this.fileList = this.fileList.concat(this.uploadList);
+        this.uploadList = [];
+        this.number = 0;
+        this.$emit("input", this.listToString(this.fileList));
+        this.$modal.closeLoading();
+      }
+    },
+    // 获取文件名称
+    getFileName(name) {
+      if (name.lastIndexOf("/") > -1) {
+        return name.slice(name.lastIndexOf("/") + 1);
+      } else {
+        return "";
+      }
+    },
+    // 对象转成指定字符串分隔
+    listToString(list, separator) {
+      let strs = "";
+      separator = separator || ",";
+      for (let i in list) {
+        strs += list[i].url + separator;
+      }
+      return strs != '' ? strs.substr(0, strs.length - 1) : '';
     }
   }
 };
 </script>
+
+<style scoped lang="scss">
+.upload-file-uploader {
+  margin-bottom: 5px;
+}
+.upload-file-list .el-upload-list__item {
+  border: 1px solid #e4e7ed;
+  line-height: 2;
+  margin-bottom: 10px;
+  position: relative;
+}
+.upload-file-list .ele-upload-list__item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: inherit;
+}
+.ele-upload-list__item-content-action .el-link {
+  margin-right: 10px;
+}
+</style>

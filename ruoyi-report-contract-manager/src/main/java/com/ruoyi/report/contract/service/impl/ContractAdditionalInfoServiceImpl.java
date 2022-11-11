@@ -93,4 +93,14 @@ public class ContractAdditionalInfoServiceImpl implements IContractAdditionalInf
     {
         return contractAdditionalInfoMapper.deleteContractAdditionalInfoByAdditionalId(additionalId);
     }
+
+    /**
+     * 删除上传文件
+     *
+     * @param filePath
+     * @return
+     */
+    public int deleteUploadFile(String filePath) {
+        return contractAdditionalInfoMapper.deleteUploadFile(filePath);
+    }
 }

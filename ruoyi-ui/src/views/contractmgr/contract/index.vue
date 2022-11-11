@@ -524,6 +524,7 @@ export default {
   filters:{
     getDownloadFileName(value) {
       let index = value.lastIndexOf("\\"); // 提交阿里云切换为Linux的路径分隔符/
+      // let index = value.lastIndexOf("/"); // 提交阿里云切换为Linux的路径分隔符/
       return value.substring(index + 1, index.length);
     }
   },
@@ -678,10 +679,9 @@ export default {
           console.log(response)
           this.$modal.msgSuccess("上传成功！");
           getContractAdditional(uploadContractId).then(response => {
-          console.log(JSON.stringify(response.rows));
-          this.contractAdditionalList = response.rows;
-      });
-
+              console.log(JSON.stringify(response.rows));
+              this.contractAdditionalList = response.rows;
+          });
         });
       }
     },
@@ -705,6 +705,7 @@ export default {
     },
     downLoadFile(filePath) {
       let index = filePath.lastIndexOf("\\"); // 提交阿里云切换为Linux的路径分隔符/
+      // let index = filePath.lastIndexOf("/"); // 提交阿里云切换为Linux的路径分隔符/
       let fileName = filePath.substring(index + 1, index.length);
 
       let params = {

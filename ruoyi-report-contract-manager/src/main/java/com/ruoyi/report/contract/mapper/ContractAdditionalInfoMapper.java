@@ -58,4 +58,13 @@ public interface ContractAdditionalInfoMapper
      * @return 结果
      */
     public int deleteContractAdditionalInfoByAdditionalIds(String[] additionalIds);
+
+
+    /**
+     * 删除上传文件
+     *
+     * @param filePath
+     * @return
+     */
+    public int deleteUploadFile(String filePath);
 }

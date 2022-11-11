@@ -42,3 +42,23 @@ export function delPurchase(orderId) {
     method: 'delete'
   })
 }
+
+// 订单管理文件上传
+export function uploadFile(data) {
+  console.log("订单管理文件上传");
+  return request({
+    url: '/purchase/mgr/upload',
+    method: 'post',
+    data: data
+  })
+}
+
+// 删除订单管理上传的文件
+export function deleteUploadFile(filePath) {
+  console.log("删除订单管理上传的文件" + filePath);
+  return request({
+    url: '/purchase/mgr/del/uploadfile',
+    method: 'post',
+    data: filePath
+  })
+}

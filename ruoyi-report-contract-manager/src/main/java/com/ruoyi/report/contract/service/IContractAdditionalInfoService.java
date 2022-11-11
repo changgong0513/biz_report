@@ -58,4 +58,12 @@ public interface IContractAdditionalInfoService
      * @return 结果
      */
     public int deleteContractAdditionalInfoByAdditionalId(String additionalId);
+
+    /**
+     * 删除上传文件
+     *
+     * @param filePath
+     * @return
+     */
+    public int deleteUploadFile(String filePath);
 }

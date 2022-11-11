@@ -80,4 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{additionalId}
         </foreach>
     </delete>
+
+    <delete id="deleteUploadFile" parameterType="String">
+        delete from contract_additional_info where uplload_file_path like concat('%', #{filePath}, '%')
+    </delete>
 </mapper>
