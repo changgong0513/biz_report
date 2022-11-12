@@ -72,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             t1.contract_id = t2.contract_id
             and t2.contract_type = #{contractType}
             <if test="contractId != null  and contractId != ''"> and t1.contract_id like concat('%', #{contractId}, '%')</if>
+            <if test="orderId != null  and orderId != ''"> and t1.order_id like concat('%', #{orderId}, '%')</if>
             <if test="handledBy != null  and handledBy != ''"> and t1.handled_by like concat('%', #{handledBy}, '%')</if>
             <if test="belongDept != null  and belongDept != ''"> and t1.belong_dept = #{belongDept}</if>
             <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->

@@ -152,7 +152,7 @@
 
     <!-- 添加或修改采购收货销售发货管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <!-- 收货编号 -->
           <el-col :span="8">
@@ -163,13 +163,30 @@
           <!-- 采购订单编号 -->
           <el-col :span="8">
             <el-form-item label="采购订单编号" prop="purchaseOrderId">
-              <el-input v-model="form.purchaseOrderId" placeholder="请输入采购订单编号" style="width: 240px" />
+              <!-- <el-input v-model="form.purchaseOrderId" placeholder="请输入采购订单编号" style="width: 240px" /> -->
+              <el-select
+                v-model="form.purchaseOrderId"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入采购订单编号关键字"
+                :remote-method="remoteMethod"
+                :loading="remoteLoading"
+                @change="selChange">
+                <el-option
+                  v-for="item in purchaseOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 采购合同编号 -->
           <el-col :span="8">
             <el-form-item label="采购合同编号" prop="purchaseContractId">
-              <el-input v-model="form.purchaseContractId" placeholder="请输入采购合同编号" style="width: 240px" />
+              <el-input v-model="form.contractId" placeholder="请输入采购合同编号" style="width: 240px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -466,6 +483,8 @@
 
 <script>
 import { listReceipt, getReceipt, addReceipt, delReceipt, updateReceipt } from "@/api/purchasesale/receipt";
+import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, 
+  getOrderAdditional } from "@/api/purchasesale/purchasesale";
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
@@ -498,6 +517,7 @@ export default {
         pageSize: 10,
         receiptId: null,
         purchaseOrderId: null,
+        contractType: null,
         handledBy: null,
         materialName: null,
         warehouseName: null,
@@ -506,16 +526,56 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
+      rules: {
+        receiptId: [
+          { required: true, message: "收货编号为空", trigger: "blur" }
+        ],
+        purchaseOrderId: [
+          { required: true, message: "采购订单编号为空", trigger: "blur" }
+        ],
+        purchaseContractId: [
+          { required: true, message: "采购合同编号为空", trigger: "blur" }
+        ],
+      },
       isUpdate: false,
       formDetail: {},
-      openDetail: false
+      openDetail: false,
+      purchaseOptions: [],
+      purchaseOrderList: [],
+      remoteLoading: false
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    remoteMethod(query) {
+      if (query !== '') {
+        this.remoteLoading = true;
+        this.queryParams.orderId = query;
+        this.queryParams.contractType = "P";
+        console.log("select远程方法调用" + JSON.stringify(this.queryParams));
+        listPurchase(this.queryParams).then(response => {
+          this.remoteLoading = false;
+          this.purchaseOrderList = response.rows;
+          this.purchaseOptions = response.rows.map(item => {
+            return { value: `${item.orderId}`, label: `${item.orderId}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.purchaseOptions = [];
+      }
+    },
+    selChange(selValue) {
+      console.log("选择的订单编号是：" + selValue);
+      this.form.contractId = this.purchaseOrderList.find(item => {
+        return item.orderId === selValue;
+      }).contractId;
+      console.log("查找到的合同编号是：" + this.form.contractId);
+    },
     /** 查询采购收货销售发货管理列表 */
     getList() {
       this.loading = true;
