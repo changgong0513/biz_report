@@ -185,17 +185,13 @@
           </el-col>
           <!-- 采购合同编号 -->
           <el-col :span="8">
-            <el-form-item label="采购合同编号" prop="purchaseContractId">
-              <el-input v-model="form.contractId" placeholder="请输入采购合同编号" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="采购合同编号" prop="purchaseContractId">{{form.purchaseContractId}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
-            <el-form-item label="经办人" prop="handledBy">
-              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="经办人" prop="handledBy">{{form.handledBy}}</el-form-item>
           </el-col>
           <!-- 收货日期 -->
           <el-col :span="8">
@@ -211,29 +207,40 @@
           </el-col>
           <!-- 供应商名称 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">
-              <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="供应商名称" prop="handledBy">{{form.supplierName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 物料名称 -->
           <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">
-              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="物料名称" prop="handledBy">{{form.materialName}}</el-form-item>
           </el-col>
           <!-- 仓库编号 -->
           <el-col :span="8">
             <el-form-item label="仓库编号" prop="warehouseCode">
-              <el-input v-model="form.warehouseCode" placeholder="请输入仓库编号" style="width: 240px" />
+              <!-- <el-input v-model="form.warehouseCode" placeholder="请输入仓库编号" style="width: 240px" /> -->
+              <el-select
+                v-model="form.warehouseCode"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入仓库编号关键字"
+                :remote-method="remoteWarehouseCode"
+                :loading="remoteLoadingWarehouse"
+                @change="selChangeWarehouse">
+                <el-option
+                  v-for="item in purchaseOptionsWarehouse"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 仓库名称 -->
           <el-col :span="8">
-            <el-form-item label="仓库名称" prop="warehouseName">
-              <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="仓库名称" prop="warehouseName">{{form.warehouseName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -283,29 +290,21 @@
           </el-col>
           <!-- 核算单价 -->
           <el-col :span="8">
-            <el-form-item label="核算单价" prop="checkPrice">
-              <el-input v-model="form.checkPrice" placeholder="请输入核算单价" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="核算单价" prop="checkPrice">{{form.checkPrice}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 核算金额 -->
           <el-col :span="8">
-            <el-form-item label="核算金额" prop="checkMoney">
-              <el-input v-model="form.checkMoney" placeholder="请输入核算金额" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="核算金额" prop="checkMoney">{{form.checkMoney}}</el-form-item>
           </el-col>
           <!-- 货损数量 -->
           <el-col :span="8">
-            <el-form-item label="货损数量" prop="cargoDamageQuantity">
-              <el-input v-model="form.cargoDamageQuantity" placeholder="请输入货损数量" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="货损数量" prop="cargoDamageQuantity">{{form.cargoDamageQuantity}}</el-form-item>
           </el-col>
           <!-- 货损金额 -->
           <el-col :span="8">
-            <el-form-item label="货损金额" prop="cargoDamageMoney">
-              <el-input v-model="form.cargoDamageMoney" placeholder="请输入货损金额" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="货损金额" prop="cargoDamageMoney">{{form.cargoDamageMoney}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -483,8 +482,9 @@
 
 <script>
 import { listReceipt, getReceipt, addReceipt, delReceipt, updateReceipt } from "@/api/purchasesale/receipt";
-import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, 
-  getOrderAdditional } from "@/api/purchasesale/purchasesale";
+import { listPurchase } from "@/api/purchasesale/purchasesale";
+import { listWarehouse } from "@/api/masterdata/warehouse";
+
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
@@ -528,27 +528,49 @@ export default {
       // 表单校验
       rules: {
         receiptId: [
-          { required: true, message: "收货编号为空", trigger: "blur" }
+          { required: true, message: "收货编号不能为空", trigger: "blur" }
         ],
         purchaseOrderId: [
-          { required: true, message: "采购订单编号为空", trigger: "blur" }
+          { required: true, message: "采购订单编号不能为空", trigger: "blur" }
         ],
-        purchaseContractId: [
-          { required: true, message: "采购合同编号为空", trigger: "blur" }
+        receiptDate: [
+          { required: true, message: "收货日期不能为空", trigger: "blur" }
         ],
+        warehouseCode: [
+          { required: true, message: "仓库编号不能为空", trigger: "blur" }
+        ],
+        batchNo: [
+          { required: true, message: "批次号不能为空", trigger: "blur" }
+        ],
+        transportMode: [
+          { required: true, message: "运输方式不能为空", trigger: "blur" }
+        ],
+        transportNumber: [
+          { required: true, message: "运输单号不能为空", trigger: "blur" }
+        ],
+        expectReceiptQuantity: [
+          { required: true, message: "预期收货数量不能为空", trigger: "blur" }
+        ],
+        checkQuantity: [
+          { required: true, message: "核算数量不能为空", trigger: "blur" }
+        ]
       },
       isUpdate: false,
       formDetail: {},
       openDetail: false,
       purchaseOptions: [],
       purchaseOrderList: [],
-      remoteLoading: false
+      remoteLoading: false,
+      remoteLoadingWarehouse: false,
+      purchaseOptionsWarehouse: [],
+      purchaseOrderListWarehouse: []
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    /** 根据输入订单编号关键字，取得订单编号列表 */
     remoteMethod(query) {
       if (query !== '') {
         this.remoteLoading = true;
@@ -569,12 +591,48 @@ export default {
         this.purchaseOptions = [];
       }
     },
+    /** 根据输入仓库编号关键字，取得订单编号列表 */
+    remoteWarehouseCode(query) {
+      if (query !== '') {
+        this.remoteLoadingWarehouse = true;
+        listWarehouse(this.form).then(response => {
+          this.remoteLoadingWarehouse = false;
+          console.log(JSON.stringify(response.rows));
+          this.purchaseOrderListWarehouse = response.rows;
+          this.purchaseOptionsWarehouse = response.rows.map(item => {
+            return { value: `${item.warehouseCode}`, label: `${item.warehouseCode}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.purchaseOptionsWarehouse = [];
+      }
+    },
+    /** 订单编号下拉列表框，选择值改变后回调方法 */
     selChange(selValue) {
       console.log("选择的订单编号是：" + selValue);
-      this.form.contractId = this.purchaseOrderList.find(item => {
+
+      let purchaseOrder = this.purchaseOrderList.find(item => {
         return item.orderId === selValue;
-      }).contractId;
-      console.log("查找到的合同编号是：" + this.form.contractId);
+      });
+
+      this.form.purchaseContractId = purchaseOrder.contractId; // 合同编号
+      this.form.handledBy = purchaseOrder.handledBy;  // 经办人
+      this.form.supplierName = purchaseOrder.supplierName;  // 供应商名称
+      this.form.materialName = purchaseOrder.materialName;  // 物料名称
+      this.form.checkPrice = purchaseOrder.unitPrice; // 核算单价
+    },
+    /** 仓库编号下拉列表框，选择值改变后回调方法 */
+    selChangeWarehouse(selValue) {
+      console.log("选择的仓库编号是：" + selValue);
+
+      let warehouse = this.purchaseOrderListWarehouse.find(item => {
+        return item.warehouseCode === selValue;
+      });
+
+      this.form.warehouseName = warehouse.warehouseName; // 仓库名称
     },
     /** 查询采购收货销售发货管理列表 */
     getList() {

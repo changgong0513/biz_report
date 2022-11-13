@@ -34,7 +34,7 @@
     <select id="selectMasterDataWarehouseBaseInfoList" parameterType="MasterDataWarehouseBaseInfo" resultMap="MasterDataWarehouseBaseInfoResult">
         <include refid="selectMasterDataWarehouseBaseInfoVo"/>
         <where>
-            <if test="warehouseCode != null  and warehouseCode != ''"> and warehouse_code = #{warehouseCode}</if>
+            <if test="warehouseCode != null  and warehouseCode != ''"> and warehouse_code like concat('%', #{warehouseCode}, '%')</if>
             <if test="warehouseName != null  and warehouseName != ''"> and warehouse_name like concat('%', #{warehouseName}, '%')</if>
             <if test="warehouseRegion != null "> and warehouse_region = #{warehouseRegion}</if>
             <if test="warehouseAddress != null  and warehouseAddress != ''"> and warehouse_address = #{warehouseAddress}</if>
