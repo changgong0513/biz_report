@@ -46,18 +46,18 @@
         />
       </el-form-item>
       <!-- 核算金额min -->
-      <el-form-item label="核算金额" prop="checkMoney">
+      <el-form-item label="核算金额" prop="checkMoneyMin">
         <el-input
-          v-model="queryParams.checkMoney"
+          v-model="queryParams.checkMoneyMin"
           placeholder="请输入核算金额"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 核算金额max -->
-      <el-form-item label="~" prop="checkMoney" label-width="15px">
+      <el-form-item label="~" prop="checkMoneyMax" label-width="15px">
         <el-input
-          v-model="queryParams.checkMoney"
+          v-model="queryParams.checkMoneyMax"
           placeholder="请输入核算金额"
           clearable
           @keyup.enter.native="handleQuery"
@@ -715,7 +715,9 @@ export default {
         handledBy: null,
         materialName: null,
         startBusinessDate: null,
-        endbusinessDate: null
+        endbusinessDate: null,
+        checkMoneyMin: null,
+        checkMoneyMax: null
       },
       // 表单参数
       form: {},

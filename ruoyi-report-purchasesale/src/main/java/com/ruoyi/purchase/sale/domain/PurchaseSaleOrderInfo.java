@@ -100,6 +100,12 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 核算金额（来自于收货管理） */
     private Long checkMoney;
 
+    /** 核算金额Min（查询用） */
+    private Long checkMoneyMin;
+
+    /** 核算金额max（查询用） */
+    private Long checkMoneyMax;
+
     /** 完成率（计算属性） */
     private String completionRate;
 
@@ -307,6 +313,24 @@ public class PurchaseSaleOrderInfo extends BaseEntity
         return checkMoney;
     }
 
+    public void setCheckMoneyMin(Long checkMoneyMin)
+    {
+        this.checkMoneyMin = checkMoneyMin;
+    }
+    public Long getCheckMoneyMin()
+    {
+        return checkMoneyMin;
+    }
+
+    public void setCheckMoneyMax(Long checkMoneyMax)
+    {
+        this.checkMoneyMax = checkMoneyMax;
+    }
+    public Long getCheckMoneyMax()
+    {
+        return checkMoneyMax;
+    }
+
     public void setCompletionRate(String completionRate)
     {
         this.completionRate = completionRate;
@@ -315,8 +339,6 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         return completionRate;
     }
-
-
 
     @Override
     public String toString() {

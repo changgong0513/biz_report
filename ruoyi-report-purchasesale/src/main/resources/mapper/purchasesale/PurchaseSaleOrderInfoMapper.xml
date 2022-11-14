@@ -115,6 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             <if test="materialName != null  and materialName != ''"> and t1.material_name like concat('%', #{materialName}, '%')</if>
             <if test="purchaseType != null  and purchaseType != ''"> and t1.purchase_type = #{purchaseType}</if>
+            <if test="checkMoneyMin != null  and checkMoneyMin != '' and checkMoneyMax != null  and checkMoneyMax != ''"> and t3.check_money between #{checkMoneyMin} and #{checkMoneyMax}</if>
         </where>
     </select>
     
