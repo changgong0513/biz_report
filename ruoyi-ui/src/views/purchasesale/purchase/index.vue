@@ -586,6 +586,47 @@
             <!-- 文件上传 end -->
           </el-col>
         </el-row>
+        <el-divider />
+        <h3>收货明细</h3>
+        <el-row>
+          <el-table v-loading="loading" :data="this.receiptList">
+            <el-table-column label="收货单编号" align="center" prop="receiptId" width="150" />
+            <el-table-column label="收货日期" align="center" prop="receiptDate" width="100">
+              <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.receiptDate, '{y}-{m}-{d}') }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="仓库名称" align="center" prop="warehouseName" width="100" :show-overflow-tooltip="true" />
+            <el-table-column label="批次号" align="center" prop="batchNo" width="240" :show-overflow-tooltip="true" />
+            <el-table-column label="运输方式" align="center" prop="transportMode" width="100">
+              <template slot-scope="scope">
+                <dict-tag :options="dict.type.purchasesale_transport_mode" :value="scope.row.transportMode"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="运输单号" align="center" prop="transportNumber" width="100" :show-overflow-tooltip="true" />
+            <el-table-column label="核算金额" align="center" prop="checkMoney" width="100" />
+            <el-table-column label="货损金额" align="center" prop="cargoDamageMoney" width="100" />
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="text"
+                  icon="el-icon-edit"
+                  @click="viewReceipt(scope.row)"
+                  v-hasPermi="['kcdb:kcdb:edit']"
+                >查看</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          
+          <pagination
+            v-show="totalReceipt>0"
+            :total="totalReceipt"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getReceiptList"
+          />
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelDetail">关 闭</el-button>
@@ -596,15 +637,17 @@
 
 <script>
 
-import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, 
-  getOrderAdditional } from "@/api/purchasesale/purchasesale";
+import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, getOrderAdditional } from "@/api/purchasesale/purchasesale";
+import { listReceipt } from "@/api/purchasesale/receipt";
 import { getToken } from "@/utils/auth";
+
+
 
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status', 
-          'purchase_mgr_order_status'],
+          'purchase_mgr_order_status', 'purchasesale_transport_mode'],
   // 文件上传用
   props: {
     // 值
@@ -654,6 +697,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 1,
+      totalReceipt: 1,
       // 采购收货销售发货管理表格数据
       purchaseList: [],
       // 弹出层标题
@@ -732,7 +776,9 @@ export default {
       isUpdate: false,
       formDetail: {},
       openDetail: false,
-      fileList: []
+      fileList: [],
+      selRow: {},
+      receiptList: []
     };
   },
   created() {
@@ -781,6 +827,13 @@ export default {
         this.loading = false;
       });
     },
+    getReceiptList() {
+      listReceipt(this.selRow).then(response => {
+        console.log(JSON.stringify(response.rows));
+        this.receiptList = response.rows;
+        this.totalReceipt = response.total;
+      });
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -789,12 +842,14 @@ export default {
     // 取消按钮
     cancelDetail() {
     this.openDetail = false;
+    this.selRow = {},
     this.reset();
     },
     // 表单重置
     reset() {
       this.form = {
         orderId: null,
+        purchaseOrderId: null,
         purchaseType: null,
         contractId: null,
         handledBy: null,
@@ -901,15 +956,19 @@ export default {
     handleView(row) {
       this.formDetail = row;
       this.fileListDetail = [];
+      this.selRow = row;
+      this.selRow.purchaseOrderId = this.formDetail.orderId;
+
       getOrderAdditional(this.formDetail.orderId).then(response => {
         console.log(JSON.stringify(response.rows));
         response.rows.forEach(element => {
           this.fileListDetail.push({ name: element.uplloadFilePath, 
             url: element.uplloadFilePath });
         });
-
-        this.openDetail = true;
       });
+
+      this.getReceiptList(this.selRow);
+      this.openDetail = true;
     },
     // 文件上传用
     // 上传前校检格式和大小
@@ -1012,6 +1071,11 @@ export default {
         strs += list[i].url + separator;
       }
       return strs != '' ? strs.substr(0, strs.length - 1) : '';
+    },
+    // 库区维护
+    viewReceipt(row) {
+      // console.log("选择的仓库数据: " + JSON.stringify(row));
+      this.$router.push({ path: "/cgmgr/shmgr", query: { selRow: row } });
     }
   }
 };

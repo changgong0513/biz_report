@@ -103,6 +103,20 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/cgmgr',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'shmgr',
+        component: () => import('@/views/purchasesale/receipt/index'),
+        name: 'receiptMgr',
+        meta: { title: '收货管理' }
+      }
+    ]
+  },
+  {
     path: '/to',
     component: Layout,
     hidden: true,
