@@ -296,15 +296,17 @@
         <el-row>
           <!-- 核算金额 -->
           <el-col :span="8">
-            <el-form-item label="核算金额" prop="checkMoney">{{form.checkMoney}}</el-form-item>
+            <el-form-item label="核算金额" prop="checkMoney">{{calCheckMoney}}</el-form-item>
           </el-col>
           <!-- 货损数量 -->
           <el-col :span="8">
-            <el-form-item label="货损数量" prop="cargoDamageQuantity">{{form.cargoDamageQuantity}}</el-form-item>
+            <el-form-item label="货损数量" prop="cargoDamageQuantity">
+              <el-input v-model="form.cargoDamageQuantity" placeholder="请输入货损数量" style="width: 240px" />
+            </el-form-item>
           </el-col>
           <!-- 货损金额 -->
           <el-col :span="8">
-            <el-form-item label="货损金额" prop="cargoDamageMoney">{{form.cargoDamageMoney}}</el-form-item>
+            <el-form-item label="货损金额" prop="cargoDamageMoney">{{calCargoDamageMoney}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -553,6 +555,9 @@ export default {
         ],
         checkQuantity: [
           { required: true, message: "核算数量不能为空", trigger: "blur" }
+        ],
+        cargoDamageQuantity: [
+          { required: true, message: "货损数量不能为空", trigger: "blur" }
         ]
       },
       isUpdate: false,
@@ -568,6 +573,24 @@ export default {
   },
   created() {
     this.getList();
+  },
+  computed: {
+    /** 核算金额 */
+    calCheckMoney: function () {
+      if (this.form.checkPrice && this.form.checkQuantity) {
+        return Number(this.form.checkPrice) * Number(this.form.checkQuantity)
+      }
+      
+      return 0;
+    },
+    /** 货损金额 */
+    calCargoDamageMoney: function () {
+      if (this.form.checkPrice && this.form.cargoDamageQuantity) {
+        return Number(this.form.checkPrice) * Number(this.form.cargoDamageQuantity)
+      }
+      
+      return 0;
+    }
   },
   methods: {
     /** 根据输入订单编号关键字，取得订单编号列表 */
@@ -722,16 +745,20 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
+            this.form.checkMoney = this.calCheckMoney;
+            this.form.cargoDamageMoney = this.calCargoDamageMoney;
             updateReceipt(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
+            this.form.checkMoney = this.calCheckMoney;
+            this.form.cargoDamageMoney = this.calCargoDamageMoney;
             addReceipt(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
-              //this.getList();
+              this.getList();
             });
           }
         }

@@ -94,6 +94,15 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
+    /** 核算数量（来自于收货管理） */
+    private Long checkQuantity;
+
+    /** 核算金额（来自于收货管理） */
+    private Long checkMoney;
+
+    /** 完成率（计算属性） */
+    private String completionRate;
+
     public void setOrderId(String orderId) { this.orderId = orderId; }
     public String getOrderId() { return orderId; }
 
@@ -104,16 +113,15 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         this.purchaseType = purchaseType;
     }
-
     public String getPurchaseType() 
     {
         return purchaseType;
     }
+
     public void setContractId(String contractId) 
     {
         this.contractId = contractId;
     }
-
     public String getContractId() 
     {
         return contractId;
@@ -123,7 +131,6 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         this.contractType = contractType;
     }
-
     public String getContractType()
     {
         return contractType;
@@ -133,25 +140,24 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         this.handledBy = handledBy;
     }
-
     public String getHandledBy() 
     {
         return handledBy;
     }
+
     public void setBelongDept(String belongDept) 
     {
         this.belongDept = belongDept;
     }
-
     public String getBelongDept() 
     {
         return belongDept;
     }
+
     public void setBusinessDate(Date businessDate) 
     {
         this.businessDate = businessDate;
     }
-
     public Date getBusinessDate() 
     {
         return businessDate;
@@ -161,137 +167,165 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     {
         this.materialName = materialName;
     }
-
     public String getMaterialName() 
     {
         return materialName;
     }
+
     public void setPurchaseQuantity(Long purchaseQuantity) 
     {
         this.purchaseQuantity = purchaseQuantity;
     }
-
     public Long getPurchaseQuantity() 
     {
         return purchaseQuantity;
     }
+
     public void setSupplierName(String supplierName) 
     {
         this.supplierName = supplierName;
     }
-
     public String getSupplierName() 
     {
         return supplierName;
     }
+
     public void setUnitPrice(BigDecimal unitPrice) 
     {
         this.unitPrice = unitPrice;
     }
-
-    public BigDecimal getUnitPrice() 
+    public BigDecimal getUnitPrice()
     {
         return unitPrice;
     }
+
     public void setMeteringUnit(String meteringUnit) 
     {
         this.meteringUnit = meteringUnit;
     }
-
     public String getMeteringUnit() 
     {
         return meteringUnit;
     }
+
     public void setArrivalDate(Date arrivalDate) 
     {
         this.arrivalDate = arrivalDate;
     }
-
     public Date getArrivalDate() 
     {
         return arrivalDate;
     }
+
     public void setRequiredDeliveryDate(Date requiredDeliveryDate) 
     {
         this.requiredDeliveryDate = requiredDeliveryDate;
     }
-
     public Date getRequiredDeliveryDate() 
     {
         return requiredDeliveryDate;
     }
+
     public void setAccountPeriod(Long accountPeriod) 
     {
         this.accountPeriod = accountPeriod;
     }
-
     public Long getAccountPeriod() 
     {
         return accountPeriod;
     }
+
     public void setArrivalTerms(String arrivalTerms) 
     {
         this.arrivalTerms = arrivalTerms;
     }
-
     public String getArrivalTerms() 
     {
         return arrivalTerms;
     }
+
     public void setArrivalTermsValue(Long arrivalTermsValue) 
     {
         this.arrivalTermsValue = arrivalTermsValue;
     }
-
     public Long getArrivalTermsValue() 
     {
         return arrivalTermsValue;
     }
+
     public void setSettlementMethod(String settlementMethod) 
     {
         this.settlementMethod = settlementMethod;
     }
-
     public String getSettlementMethod() 
     {
         return settlementMethod;
     }
+
     public void setIsInvoicing(Long isInvoicing) 
     {
         this.isInvoicing = isInvoicing;
     }
-
     public Long getIsInvoicing() 
     {
         return isInvoicing;
     }
+
     public void setOrderRemark(String orderRemark) 
     {
         this.orderRemark = orderRemark;
     }
-
     public String getOrderRemark() 
     {
         return orderRemark;
     }
+
     public void setBizVersion(Long bizVersion) 
     {
         this.bizVersion = bizVersion;
     }
-
     public Long getBizVersion() 
     {
         return bizVersion;
     }
 
+    public void setCheckQuantity(Long checkQuantity)
+    {
+        this.checkQuantity = checkQuantity;
+    }
+    public Long getCheckQuantity()
+    {
+        return checkQuantity;
+    }
+
+    public void setCheckMoney(Long checkMoney)
+    {
+        this.checkMoney = checkMoney;
+    }
+    public Long getCheckMoney()
+    {
+        return checkMoney;
+    }
+
+    public void setCompletionRate(String completionRate)
+    {
+        this.completionRate = completionRate;
+    }
+    public String getCompletionRate()
+    {
+        return completionRate;
+    }
+
+
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-                .append("orderId", getOrderId())
-                .append("orderStatus", getOrderStatus())
+            .append("orderId", getOrderId())
+            .append("orderStatus", getOrderStatus())
             .append("purchaseType", getPurchaseType())
             .append("contractId", getContractId())
-                .append("contractType", getContractType())
+            .append("contractType", getContractType())
             .append("handledBy", getHandledBy())
             .append("belongDept", getBelongDept())
             .append("businessDate", getBusinessDate())
@@ -308,10 +342,8 @@ public class PurchaseSaleOrderInfo extends BaseEntity
             .append("settlementMethod", getSettlementMethod())
             .append("isInvoicing", getIsInvoicing())
             .append("orderRemark", getOrderRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
+            .append("checkQuantity", getCheckQuantity())
+            .append("checkMoney", getCheckMoney())
             .append("bizVersion", getBizVersion())
             .toString();
     }

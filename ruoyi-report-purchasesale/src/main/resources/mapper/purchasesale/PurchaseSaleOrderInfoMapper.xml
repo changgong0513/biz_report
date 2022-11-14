@@ -32,6 +32,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bizVersion"    column="biz_version"    />
     </resultMap>
 
+    <resultMap type="PurchaseSaleOrderInfo" id="PurchaseSaleOrderInfoUnionResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="purchaseType"    column="purchase_type"    />
+        <result property="contractId"    column="contract_id"    />
+        <result property="handledBy"    column="handled_by"    />
+        <result property="belongDept"    column="belong_dept"    />
+        <result property="businessDate"    column="business_date"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="purchaseQuantity"    column="purchase_quantity"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="meteringUnit"    column="metering_unit"    />
+        <result property="arrivalDate"    column="arrival_date"    />
+        <result property="requiredDeliveryDate"    column="required_delivery_date"    />
+        <result property="accountPeriod"    column="account_period"    />
+        <result property="arrivalTerms"    column="arrival_terms"    />
+        <result property="arrivalTermsValue"    column="arrival_terms_value"    />
+        <result property="settlementMethod"    column="settlement_method"    />
+        <result property="isInvoicing"    column="is_invoicing"    />
+        <result property="orderRemark"    column="order_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+        <result property="checkQuantity"    column="check_quantity"    />
+        <result property="checkMoney"    column="check_money"    />
+    </resultMap>
+
     <sql id="selectPurchaseSaleOrderInfoVo">
         select order_id, order_status, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
     </sql>
@@ -44,9 +74,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             t1.arrival_date, t1.required_delivery_date, t1.account_period, t1.arrival_terms,
             t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark,
             t1.create_by, t1.create_time, t1.update_by, t1.update_time,
-            t1.biz_version
+            t1.biz_version,
+            t3.check_quantity, t3.check_money
         from
-            purchase_sale_order_info t1, contract_content_info t2
+            purchase_sale_order_info t1, contract_content_info t2, purchase_receipt_info t3
     </sql>
 
     <select id="selectPurchaseSaleOrderInfoList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
@@ -66,10 +97,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="selectPurchaseSaleOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
+    <select id="selectPurchaseSaleOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoUnionResult">
         <include refid="selectPurchaseSaleOrderInfoUnionVo"/>
         <where>
             t1.contract_id = t2.contract_id
+            and t1.order_id = t3.purchase_order_id
             and t2.contract_type = #{contractType}
             <if test="contractId != null  and contractId != ''"> and t1.contract_id like concat('%', #{contractId}, '%')</if>
             <if test="orderId != null  and orderId != ''"> and t1.order_id like concat('%', #{orderId}, '%')</if>

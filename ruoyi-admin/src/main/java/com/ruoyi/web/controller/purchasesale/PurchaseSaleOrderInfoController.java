@@ -27,6 +27,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,24 @@ public class PurchaseSaleOrderInfoController extends BaseController
     public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         startPage();
         List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+        list.stream().forEach(element -> {
+            long purchaseQuantity = element.getPurchaseQuantity();
+            long checkQuantity = element.getCheckQuantity();
+            if (0 == Long.compare(purchaseQuantity, checkQuantity)) {
+                // 已关闭
+                element.setOrderStatus("1");
+                element.setCompletionRate(100 + "%");
+            } else {
+                // 待确认
+                element.setOrderStatus("2");
+                if (0 != Long.compare(purchaseQuantity, 0)) {
+                    new Double(purchaseQuantity);
+                    new Double(checkQuantity);
+                    double completionRate = division(checkQuantity, purchaseQuantity, 2) * 100;
+                    element.setCompletionRate(completionRate + "%");
+                }
+            }
+        });
         return getDataTable(list);
     }
 
@@ -173,5 +192,22 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @PostMapping("/del/uploadfile")
     public AjaxResult delUploadFile(@RequestBody String filePath) throws Exception {
         return toAjax(contractAdditionalInfoService.deleteUploadFile(filePath));
+    }
+
+    /**
+     * double除法
+     *
+     * @param a
+     * @param b
+     * @param accurate 结果保留位数
+     * @return
+     */
+    private double division(double a, double b, int accurate) {
+        if (accurate < 0) {
+            throw new RuntimeException("精确度必须是正整数或零");
+        }
+        BigDecimal b1 = new BigDecimal(a);
+        BigDecimal b2 = new BigDecimal(b);
+        return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

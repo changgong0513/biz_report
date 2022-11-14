@@ -146,12 +146,12 @@
       <el-table-column label="供应商名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="80">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.contractmgr_contract_approval_status" :value="scope.row.orderStatus"/>
+          <dict-tag :options="dict.type.purchase_mgr_order_status" :value="scope.row.orderStatus"/>
         </template>
       </el-table-column>
       <el-table-column label="物料名称" align="center" prop="materialName" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="核算金额" align="center" prop="checkMoney" width="100" />
-      <el-table-column label="完成率" align="center" prop="completeRate" width="100" />
+      <el-table-column label="完成率" align="center" prop="completionRate" width="100" />
     </el-table>
     
     <pagination
@@ -603,7 +603,8 @@ import { getToken } from "@/utils/auth";
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
-          'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status'],
+          'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status', 
+          'purchase_mgr_order_status'],
   // 文件上传用
   props: {
     // 值
