@@ -146,7 +146,7 @@
       <el-table-column label="客户名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.contractmgr_contract_approval_status" :value="scope.row.orderStatus"/>
+          <dict-tag :options="dict.type.purchase_mgr_order_status" :value="scope.row.orderStatus"/>
         </template>
       </el-table-column>
       <el-table-column label="物料名称" align="center" prop="materialName" width="150" :show-overflow-tooltip="true" />
@@ -487,7 +487,7 @@ import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase } f
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
-          'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status'],
+          'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'purchase_mgr_order_status'],
   data() {
     return {
       // 遮罩层

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -57,7 +58,15 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         startPage();
-        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+        List<PurchaseSaleOrderInfo> list = null;
+        if (StringUtils.equals(purchaseSaleOrderInfo.getContractType(), "P")) {
+            // 采购收货
+            list = purchaseSaleOrderInfoService.selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
+        } else {
+            // 销售发货
+            list = purchaseSaleOrderInfoService.selectSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+        }
+
         list.stream().forEach(element -> {
             long purchaseQuantity = element.getPurchaseQuantity();
             long checkQuantity = element.getCheckQuantity();

@@ -32,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bizVersion"    column="biz_version"    />
     </resultMap>
 
+    <!-- 采购收货/销售发货结果集 -->
     <resultMap type="PurchaseSaleOrderInfo" id="PurchaseSaleOrderInfoUnionResult">
         <result property="orderId"    column="order_id"    />
         <result property="orderStatus"    column="order_status"    />
@@ -66,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select order_id, order_status, purchase_type, contract_id, handled_by, belong_dept, business_date, material_name, purchase_quantity, supplier_name, unit_price, metering_unit, arrival_date, required_delivery_date, account_period, arrival_terms, arrival_terms_value, settlement_method, is_invoicing, order_remark, create_by, create_time, update_by, update_time, biz_version from purchase_sale_order_info
     </sql>
 
-    <!-- 1.查询采购订单列表sql -->
+    <!-- 1.查询采购收货列表sql -->
     <sql id="selectPurchaseOrderInfoUnionVo">
         select
             tt1.order_id, tt1.order_status, tt1.purchase_type, tt1.contract_id,
@@ -90,6 +91,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ) tt1 left join purchase_receipt_info tt2 on tt1.order_id = tt2.purchase_order_id
     </sql>
 
+    <!-- 2.查询销售发货列表sql -->
+    <sql id="selectSaleOrderInfoUnionVo">
+        select
+            tt1.order_id, tt1.order_status, tt1.purchase_type, tt1.contract_id,
+            tt1.handled_by, tt1.belong_dept, tt1.business_date, tt1.material_name,
+            tt1.purchase_quantity, tt1.supplier_name, tt1.unit_price, tt1.metering_unit,
+            tt1.arrival_date, tt1.required_delivery_date, tt1.account_period, tt1.arrival_terms,
+            tt1.arrival_terms_value, tt1.settlement_method, tt1.is_invoicing, tt1.order_remark,
+            ifnull(tt2.check_quantity, 0) as check_quantity,
+            ifnull(tt2.check_money, 0) as check_money
+        from (
+            select
+                t1.order_id, t1.order_status, t1.purchase_type, t1.contract_id,
+                t1.handled_by, t1.belong_dept, t1.business_date, t1.material_name,
+                t1.purchase_quantity, t1.supplier_name, t1.unit_price, t1.metering_unit,
+                t1.arrival_date, t1.required_delivery_date, t1.account_period, t1.arrival_terms,
+                t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark
+            from
+                purchase_sale_order_info t1, contract_content_info t2
+            where
+                t1.contract_id = t2.contract_id and t2.contract_type = 'S'
+        ) tt1 left join sale_deliver_info tt2 on tt1.order_id = tt2.sale_order_id
+    </sql>
+
     <select id="selectPurchaseSaleOrderInfoList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoResult">
         <include refid="selectPurchaseSaleOrderInfoVo"/>
         <where>  
@@ -107,9 +132,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <!-- 1.查询采购订单列表 -->
-    <select id="selectPurchaseSaleOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoUnionResult">
+    <!-- 1.查询采购收货列表 -->
+    <select id="selectPurchaseOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoUnionResult">
         <include refid="selectPurchaseOrderInfoUnionVo"/>
+        <where>
+            <if test="contractId != null  and contractId != ''"> and tt1.contract_id like concat('%', #{contractId}, '%')</if>
+            <if test="orderId != null  and orderId != ''"> and tt1.order_id like concat('%', #{orderId}, '%')</if>
+            <if test="handledBy != null  and handledBy != ''"> and tt1.handled_by like concat('%', #{handledBy}, '%')</if>
+            <if test="belongDept != null  and belongDept != ''"> and tt1.belong_dept = #{belongDept}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(tt1.business_date,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(tt1.business_date,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="materialName != null  and materialName != ''"> and tt1.material_name like concat('%', #{materialName}, '%')</if>
+            <if test="purchaseType != null  and purchaseType != ''"> and tt1.purchase_type = #{purchaseType}</if>
+            <if test="checkMoneyMin != null  and checkMoneyMin != '' and checkMoneyMax != null  and checkMoneyMax != ''"> and tt2.check_money between #{checkMoneyMin} and #{checkMoneyMax}</if>
+        </where>
+    </select>
+
+    <!-- 2.查询销售发货列表 -->
+    <select id="selectSaleOrderInfoUnionList" parameterType="PurchaseSaleOrderInfo" resultMap="PurchaseSaleOrderInfoUnionResult">
+        <include refid="selectSaleOrderInfoUnionVo"/>
         <where>
             <if test="contractId != null  and contractId != ''"> and tt1.contract_id like concat('%', #{contractId}, '%')</if>
             <if test="orderId != null  and orderId != ''"> and tt1.order_id like concat('%', #{orderId}, '%')</if>

@@ -28,12 +28,20 @@ public interface PurchaseSaleOrderInfoMapper
     public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
 
     /**
-     * 查询采购收货销售发货管理列表
+     * 查询采购收货管理列表
      *
      * @param purchaseSaleOrderInfo 采购收货销售发货管理
-     * @return 采购收货销售发货管理集合
+     * @return 采购收货集合
      */
-    public List<PurchaseSaleOrderInfo> selectPurchaseSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
+    public List<PurchaseSaleOrderInfo> selectPurchaseOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
+
+    /**
+     * 查询销售发货管理列表
+     *
+     * @param purchaseSaleOrderInfo 采购收货销售发货管理
+     * @return 销售发货集合
+     */
+    public List<PurchaseSaleOrderInfo> selectSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
 
     /**
      * 新增采购收货销售发货管理
