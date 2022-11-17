@@ -134,7 +134,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange"
-      @row-dblclick="handleView">
+      @row-dblclick="handleUpdate">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="合同编号" align="center" prop="contractId" width="150" />
       <el-table-column label="签约日期" align="center" prop="signDate" width="100">
@@ -319,127 +319,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="success" @click="submitForm" v-show="this.isUpdate">保 存</el-button>
+        <el-button type="warning" @click="submitForm" v-show="this.isUpdate" :disabled="form.constractIsExist == 1">生 成</el-button>
         <el-button @click="cancel(1)">取 消</el-button>
       </div>
-    </el-dialog>
-
-    <!-- 查看合同内容详细对话框 -->
-    <el-dialog :title="title" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
-      <el-form ref="formDetail" :model="formDetail" label-width="110px">
-        <h3>合同内容详细</h3>
-        <el-row>
-          <el-col :span="8"><el-form-item label="货物名称">{{formDetail.goodsName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同类型">{{formDetail.contractType}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同名称">{{formDetail.contractName}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同编号">{{formDetail.contractId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="签约日期">{{formDetail.signDate}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="交货日期">{{formDetail.deliveryDate}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="我方单位名称">{{formDetail.ourCompanyName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="我方负责人">{{formDetail.ourPrincipal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="对方单位名称">{{formDetail.oppositeCompanyName}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="对方负责人">{{formDetail.oppositePrincipal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同数量">{{formDetail.contractQuantity}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="合同单价">{{formDetail.contractPrice}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同总价">{{formDetail.contractTotal}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="账期">{{formDetail.accountingPeriod}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="交货方式">{{formDetail.deliveryMethod}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="港口到厂运费">{{formDetail.portToFactoryFare}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="港口到港口运费">{{formDetail.portToPortFare}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="其他">{{formDetail.contractOther}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24"><el-form-item label="代理或合作方">{{formDetail.contractAgent}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24"><el-form-item label="备注">{{formDetail.contractRemark}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <!-- 显示图片附件区域 -->
-          <!-- <el-col :span="12">
-            <el-form-item label="图片">
-              <div v-for="(item, index) in contractAdditionalList" :key="index">
-                <div class="demo-image__preview" v-show="!item.uploadImagePath">
-                  <el-image 
-                    style="width: 100px; height: 100px"
-                    :src="item.uploadImagePath" 
-                    :preview-src-list="[ item.uploadImagePath ]">
-                  </el-image>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col> -->
-          <el-col :span="24">
-            <el-form-item label="附件">
-              <div v-for="(item, index) in contractAdditionalList" :key="index">
-                <a @click="downLoadFile(item.uplloadFilePath)" style="color: blue;">{{ item.uplloadFilePath | getDownloadFileName(item.uplloadFilePath) }}</a>
-                <div @click="delteFileByAdditionalId(formDetail.contractId, item.additionalId)" style="display: inline-block; margin-left: 10px;"><i class="el-icon-delete"></i></div>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <el-divider />
-
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="12">
-          <h3 style="display:inline; margin-right: 15px">合同审批信息</h3>
-          <el-switch
-            v-model="showApproval"
-            active-color="#13ce66">
-          </el-switch>
-        </el-col>
-      </el-row>
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px" v-show="showApproval">
-        <el-row>
-          <el-col :span="8"><el-form-item label="合同ID">{{form.contractId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批编号">{{form.approvalId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="标题">{{form.approvalTitle}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="审批状态">{{form.approvalStatus}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批结果">{{form.approvalResult}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起时间">{{form.launchTime}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="完成时间">{{form.completeTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="耗时">{{form.takeupTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人工号">{{form.launchJobId}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="发起人ID">{{form.launchId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人姓名">{{form.launchName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人部门">{{form.launchDepartment}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><el-form-item label="审批人姓名">{{form.approvalName}}</el-form-item></el-col>
-          <el-col :span="16"><el-form-item label="当前处理人姓名">{{form.processorName}}</el-form-item></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="审批记录">
-              <el-input
-                type="textarea"
-                :rows="6"
-                v-model="form.approvalRecords">
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel(2)">关 闭</el-button>
-      </div>
-    </el-dialog>
+    </el-dialog> 
   </div>
 </template>
 
@@ -538,6 +422,7 @@ export default {
       this.loading = true;
       listContract(this.queryParams).then(response => {
         this.contractList = response.rows;
+        console.log(response.rows);
         this.total = response.total;
         this.loading = false;
       });
@@ -608,9 +493,15 @@ export default {
       const contractId = row.contractId || this.ids
       getContract(contractId).then(response => {
         this.form = response.data;
-        this.open = true;
+        this.form.constractIsExist = row.constractIsExist;
         this.title = "修改合同数据";
         this.isUpdate = true;
+      });
+
+      getContractAdditional(row.contractId).then(response => {
+        console.log(JSON.stringify(response.rows));
+        this.contractAdditionalList = response.rows;
+        this.open = true;
       });
     },
     /** 提交按钮 */
@@ -659,15 +550,15 @@ export default {
       });
     },
     /** 查看合同数据 */ 
-    handleView(row) {
-      getContractAdditional(row.contractId).then(response => {
-          console.log(JSON.stringify(response.rows));
-          this.contractAdditionalList = response.rows;
-          this.formDetail = row;
-          this.openDetail = true;
-      });
+    // handleView(row) {
+    //   getContractAdditional(row.contractId).then(response => {
+    //       console.log(JSON.stringify(response.rows));
+    //       this.contractAdditionalList = response.rows;
+    //       this.formDetail = row;
+    //       this.openDetail = true;
+    //   });
 
-    },
+    // },
     /** 文件上传 */
     handleChange(file, fileList, uploadContractId) {
       console.log("文件上传" + uploadContractId);

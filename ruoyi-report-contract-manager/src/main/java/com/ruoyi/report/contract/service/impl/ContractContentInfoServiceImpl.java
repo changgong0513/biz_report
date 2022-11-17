@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.dingtalkworkflow_1_0.models.*;
@@ -71,9 +72,33 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      * @return 合同管理
      */
     @Override
-    public List<ContractContentInfo> selectContractContentInfoList(ContractContentInfo contractContentInfo)
-    {
-        return contractContentInfoMapper.selectContractContentInfoList(contractContentInfo);
+    public List<ContractContentInfo> selectContractContentInfoList(ContractContentInfo contractContentInfo) {
+
+        // 取得所有采购销售订单
+        PurchaseSaleOrderInfo purchaseSaleOrderInfo = new PurchaseSaleOrderInfo();
+        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoMapper
+                .selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+
+        List<String> contractIdList = purchaseSaleOrderInfoList
+                .stream()
+                .map(PurchaseSaleOrderInfo::getContractId)
+                .collect(Collectors.toList());
+
+        // 取得所有从钉钉同步的合同
+        List<ContractContentInfo> contractContentInfoList = contractContentInfoMapper
+                .selectContractContentInfoList(contractContentInfo);
+
+        // 钉钉同步过来的合同， 在采购或销售表是否存在
+        contractContentInfoList.stream().forEach(element -> {
+            String contractId = element.getContractId();
+            if (contractIdList.contains(contractId)) {
+                element.setConstractIsExist(1);
+            } else {
+                element.setConstractIsExist(0);
+            }
+        });
+
+        return contractContentInfoList;
     }
 
     /**

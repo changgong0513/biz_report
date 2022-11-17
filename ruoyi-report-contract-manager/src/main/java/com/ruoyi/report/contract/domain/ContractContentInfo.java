@@ -101,7 +101,18 @@ public class ContractContentInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setGoodsId(String goodsId) 
+    /** 在采购或销售表是否存在 */
+    private int constractIsExist;
+
+    public int getConstractIsExist() {
+        return constractIsExist;
+    }
+
+    public void setConstractIsExist(int constractIsExist) {
+        this.constractIsExist = constractIsExist;
+    }
+
+    public void setGoodsId(String goodsId)
     {
         this.goodsId = goodsId;
     }
