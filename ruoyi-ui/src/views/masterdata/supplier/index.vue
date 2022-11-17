@@ -89,7 +89,7 @@
       @selection-change="handleSelectionChange"
       @row-dblclick="handleView">
       <el-table-column type="selection" align="center" width="55" />
-      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="公司名称" align="center" prop="companyName" :show-overflow-tooltip="true" width="200" />
       <el-table-column label="联系人姓名" align="center" prop="contactsName" width="150" />
       <el-table-column label="联系人电话" align="center" prop="contactsMobile"  width="150" />
       <el-table-column label="发票类型" align="center" prop="invoiceType" width="150">
@@ -99,7 +99,12 @@
       </el-table-column>
       <el-table-column label="收件人姓名" align="center" prop="sjrxm" width="140" />
       <el-table-column label="收件人电话" align="center" prop="sjrdh"  width="140" />
-      <el-table-column label="收件人地址" align="center" prop="sjrdz" :show-overflow-tooltip="true" width="240" />
+      <el-table-column label="收件人地址" align="center" prop="sjrdz" :show-overflow-tooltip="true" width="200" />
+      <el-table-column label="链接" align="center" prop="link" :show-overflow-tooltip="true" width="80">
+        <template  slot-scope="scope">
+          <el-link type="primary" style="font-size: 10px;" :href="scope.row.link" target="_blank">信用公示</el-link>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -572,6 +577,11 @@ export default {
       this.loading = true;
       listClient(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.supplierList = response.rows;
+
+          this.supplierList.forEach(element => {
+            element.link = 'https://www.gsxt.gov.cn/';
+          });
+
           this.total = response.total;
           this.loading = false;
         }
