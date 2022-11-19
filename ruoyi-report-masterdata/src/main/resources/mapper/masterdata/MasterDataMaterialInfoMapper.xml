@@ -34,6 +34,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectMasterDataMaterialInfoVo"/>
         where material_id = #{materialId}
     </select>
+
+    <!-- 取得最大的物料编号 -->
+    <select id="selectMaxMaterialId" resultMap="MasterDataMaterialInfoResult">
+        select max(material_id) as material_id from master_data_material_info
+    </select>
         
     <insert id="insertMasterDataMaterialInfo" parameterType="MasterDataMaterialInfo">
         insert into master_data_material_info

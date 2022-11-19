@@ -92,7 +92,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="物料编码" align="center" prop="materialId" />
       <el-table-column label="物料名称" align="center" prop="materialName" />
-      <el-table-column label="计量单位" align="center" prop="materialUnit" />
+      <el-table-column label="计量单位" align="center" prop="materialUnit">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="scope.row.materialUnit"/>
+        </template>
+      </el-table-column>
       <el-table-column label="开票别名" align="center" prop="billingAlias" />
     </el-table>
     
@@ -105,19 +109,28 @@
     />
 
     <!-- 添加或修改物料信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="400px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="物料编码" prop="materialId">
-          <el-input v-model="form.materialId" placeholder="请输入物料编码" />
-        </el-form-item>
         <el-form-item label="物料名称" prop="materialName">
-          <el-input v-model="form.materialName" placeholder="请输入物料名称" />
+          <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" />
         </el-form-item>
         <el-form-item label="计量单位" prop="materialUnit">
-          <el-input v-model="form.materialUnit" placeholder="请输入计量单位" />
+          <el-select
+            v-model="form.materialUnit"
+            placeholder="请输入计量单位"
+            clearable
+            style="width: 240px"
+          >
+            <el-option
+              v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="开票别名" prop="billingAlias">
-          <el-input v-model="form.billingAlias" placeholder="请输入开票别名，多个别名用逗号分隔" />
+          <el-input v-model="form.billingAlias" placeholder="请输入开票别名，多个别名用逗号分隔" style="width: 240px" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -131,7 +144,11 @@
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
         <el-form-item label="物料编码">{{formDetail.materialId}}</el-form-item>
         <el-form-item label="物料名称">{{formDetail.materialName}}</el-form-item>
-        <el-form-item label="计量单位">{{formDetail.materialUnit}}</el-form-item>
+        <el-form-item label="计量单位">
+          <template>
+            <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="formDetail.materialUnit"/>
+          </template>
+        </el-form-item>
         <el-form-item label="开票别名">{{formDetail.billingAlias}}</el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -146,6 +163,7 @@ import { listMaterialData, getMaterialData, delMaterialData, addMaterialData, up
 
 export default {
   name: "Material",
+  dicts: ['masterdata_warehouse_measurement_unit'],
   data() {
     return {
       // 遮罩层

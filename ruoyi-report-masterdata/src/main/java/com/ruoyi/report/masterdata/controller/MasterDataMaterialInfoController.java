@@ -74,6 +74,14 @@ public class MasterDataMaterialInfoController extends BaseController
     @Log(title = "物料管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MasterDataMaterialInfo masterDataMaterialInfo) {
+
+        MasterDataMaterialInfo max = masterDataMaterialInfoService.selectMaxMaterialId();
+        if (max == null) {
+            masterDataMaterialInfo.setMaterialId(10001);
+        } else {
+            masterDataMaterialInfo.setMaterialId(max.getMaterialId() + 1);
+        }
+
         masterDataMaterialInfo.setBizVersion(1L);
         masterDataMaterialInfo.setCreateTime(DateUtils.getNowDate());
         masterDataMaterialInfo.setUpdateTime(DateUtils.getNowDate());

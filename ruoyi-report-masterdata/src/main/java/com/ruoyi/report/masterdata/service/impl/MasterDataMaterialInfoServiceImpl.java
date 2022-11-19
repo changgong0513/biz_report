@@ -45,6 +45,16 @@ public class MasterDataMaterialInfoServiceImpl implements IMasterDataMaterialInf
     }
 
     /**
+     * 取得最大的物料编号
+     *
+     * @return 主数据管理
+     */
+    @Override
+    public MasterDataMaterialInfo selectMaxMaterialId() {
+        return masterDataMaterialInfoMapper.selectMaxMaterialId();
+    }
+
+    /**
      * 新增主数据管理
      * 
      * @param masterDataMaterialInfo 主数据管理

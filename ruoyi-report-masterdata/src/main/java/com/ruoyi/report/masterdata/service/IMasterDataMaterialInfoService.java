@@ -28,6 +28,13 @@ public interface IMasterDataMaterialInfoService
     public List<MasterDataMaterialInfo> selectMasterDataMaterialInfoList(MasterDataMaterialInfo masterDataMaterialInfo);
 
     /**
+     * 取得最大的物料编号
+     *
+     * @return 主数据管理
+     */
+    public MasterDataMaterialInfo selectMaxMaterialId();
+
+    /**
      * 新增主数据管理
      * 
      * @param masterDataMaterialInfo 主数据管理

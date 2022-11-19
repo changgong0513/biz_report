@@ -18,7 +18,7 @@ public class MasterDataMaterialInfo extends BaseEntity
 
     /** 物料编码 */
     @Excel(name = "物料编码")
-    private String materialId;
+    private int materialId;
 
     /** 物料名称 */
     @Excel(name = "物料名称")
@@ -35,12 +35,12 @@ public class MasterDataMaterialInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setMaterialId(String materialId) 
+    public void setMaterialId(int materialId)
     {
         this.materialId = materialId;
     }
 
-    public String getMaterialId() 
+    public int getMaterialId()
     {
         return materialId;
     }
