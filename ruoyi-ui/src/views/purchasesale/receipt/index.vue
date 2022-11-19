@@ -1,39 +1,31 @@
 <template>
   <div class="app-container">
     <!-- 查询表单 -->
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <!-- 收货编号 -->
-      <el-form-item label="收货编号" prop="receiptId">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="85px">
+      <!-- 收货日期 -->
+      <el-form-item label="收货日期" prop="receiptDate">
+        <el-date-picker
+          v-model="queryParams.receiptDate"
+          style="width: 240px"
+          placeholder="请输入收货日期"
+          value-format="yyyy-MM-dd"
+          type="date"
+        ></el-date-picker>
+      </el-form-item>
+      <!-- 车船编号 -->
+      <el-form-item label="车船编号" prop="receiptId">
         <el-input
           v-model="queryParams.receiptId"
-          placeholder="请输入收货编号"
+          placeholder="请输入车船编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 采购订单 -->
-      <el-form-item label="采购订单" prop="purchaseOrderId">
+      <!-- 供应商名称 -->
+      <el-form-item label="供应商名称" prop="supplierName">
         <el-input
-          v-model="queryParams.purchaseOrderId"
-          placeholder="请输入采购订单编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- 经办人 -->
-      <el-form-item label="经办人" prop="handledBy">
-        <el-input
-          v-model="queryParams.handledBy"
-          placeholder="请输入经办人"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- 物料名称 -->
-      <el-form-item label="物料名称" prop="materialName">
-        <el-input
-          v-model="queryParams.materialName"
-          placeholder="请输入物料名称"
+          v-model="queryParams.supplierName"
+          placeholder="请输入供应商名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -47,20 +39,11 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 收货日期 -->
-      <el-form-item label="收货日期" prop="receiptDate">
-        <el-date-picker
-          v-model="queryParams.receiptDate"
-          style="width: 240px"
-          placeholder="请输入收货日期"
-          value-format="yyyy-MM-dd"
-          type="date"
-        ></el-date-picker>
-      </el-form-item>
+      
       <!-- 订单状态（数据来源于采购（销售）订单信息表，关联查询） -->
       <el-form-item label="订单状态" prop="orderStatus">
         <el-select
-          v-model="queryParams.orderStatus"
+          v-model="queryParams.contractType"
           placeholder="请输入订单状态"
           clearable
           style="width: 240px"
@@ -517,13 +500,10 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        receiptId: null,
-        purchaseOrderId: null,
-        contractType: null,
-        handledBy: null,
-        materialName: null,
+        receiptDate: null,
+        supplierName: null,
         warehouseName: null,
-        receiptDate: null
+        contractType: null
       },
       // 表单参数
       form: {},
