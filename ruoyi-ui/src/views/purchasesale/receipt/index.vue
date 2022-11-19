@@ -400,6 +400,10 @@
           <el-col :span="8">
             <el-form-item label="批次号" prop="batchNo">{{formDetail.batchNo}}</el-form-item>
           </el-col>
+          <!-- 车船编号 -->
+          <el-col :span="8">
+            <el-form-item label="车船编号" prop="ccbh">{{formDetail.ccbh}}</el-form-item>
+          </el-col>
           <!-- 运输方式 -->
           <el-col :span="8">
             <el-form-item label="运输方式" prop="transportMode">
@@ -408,30 +412,36 @@
               </template>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">{{formDetail.transportNumber}}</el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <!-- 预期收货数量 -->
+          <!-- 卸货数量 -->
           <el-col :span="8">
-            <el-form-item label="预期收货数量" prop="expectReceiptQuantity">{{formDetail.expectReceiptQuantity}}</el-form-item>
+            <el-form-item label="卸货数量" prop="expectReceiptQuantity">{{formDetail.expectReceiptQuantity}}</el-form-item>
           </el-col>
           <!-- 核算数量 -->
           <el-col :span="8">
             <el-form-item label="核算数量" prop="checkQuantity">{{formDetail.checkQuantity}}</el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 核算单价 -->
           <el-col :span="8">
             <el-form-item label="核算单价" prop="checkPrice">{{formDetail.checkPrice}}</el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 核算金额 -->
           <el-col :span="8">
             <el-form-item label="核算金额" prop="checkMoney">{{formDetail.checkMoney}}</el-form-item>
           </el-col>
+          <!-- 合同单价 -->
+          <el-col :span="8">
+            <el-form-item label="合同单价" prop="checkMoney">{{formDetail.htdj}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">{{formDetail.cargoDamageQuantity}}</el-form-item>
