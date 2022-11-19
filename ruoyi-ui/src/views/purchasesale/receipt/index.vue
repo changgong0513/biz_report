@@ -233,6 +233,12 @@
               <el-input v-model="form.batchNo" placeholder="请输入批次号" style="width: 240px" />
             </el-form-item>
           </el-col>
+          <!-- 车船编号 -->
+          <el-col :span="8">
+            <el-form-item label="车船编号" prop="ccbh">
+              <el-input v-model="form.ccbh" placeholder="请输入车船编号" style="width: 240px" />
+            </el-form-item>
+          </el-col>
           <!-- 运输方式 -->
           <el-col :span="8">
             <el-form-item label="运输方式" prop="transportMode">
@@ -251,18 +257,18 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
               <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 240px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <!-- 预期收货数量 -->
+          <!-- 卸货数量 -->
           <el-col :span="8">
-            <el-form-item label="预期收货数量" prop="expectReceiptQuantity">
-              <el-input v-model="form.expectReceiptQuantity" placeholder="请输入预期收货数量" style="width: 240px" />
+            <el-form-item label="卸货数量" prop="expectReceiptQuantity">
+              <el-input v-model="form.expectReceiptQuantity" placeholder="请输入卸货数量" style="width: 240px" />
             </el-form-item>
           </el-col>
           <!-- 核算数量 -->
@@ -271,16 +277,26 @@
               <el-input v-model="form.checkQuantity" placeholder="请输入核算数量" style="width: 240px" />
             </el-form-item>
           </el-col>
-          <!-- 核算单价 -->
-          <el-col :span="8">
-            <el-form-item label="核算单价" prop="checkPrice">{{form.checkPrice}}</el-form-item>
-          </el-col>
         </el-row>
         <el-row>
+          <!-- 核算单价 -->
+          <el-col :span="8">
+            <el-form-item label="核算单价" prop="checkPrice">
+              <el-input v-model="form.checkPrice" placeholder="核算单价" style="width: 240px" />
+            </el-form-item>
+          </el-col>
           <!-- 核算金额 -->
           <el-col :span="8">
             <el-form-item label="核算金额" prop="checkMoney">{{calCheckMoney}}</el-form-item>
           </el-col>
+          <!-- 合同单价 -->
+          <el-col :span="8">
+            <el-form-item label="合同单价" prop=" htdj">
+              <el-input v-model="form.htdj" placeholder="请输入核算数量" style="width: 240px" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">
@@ -291,8 +307,6 @@
           <el-col :span="8">
             <el-form-item label="货损金额" prop="cargoDamageMoney">{{calCargoDamageMoney}}</el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="receiptRemark">
@@ -538,6 +552,9 @@ export default {
         ],
         cargoDamageQuantity: [
           { required: true, message: "货损数量不能为空", trigger: "blur" }
+        ],
+        ccbh: [
+          { required: true, message: "车船编号不能为空", trigger: "blur" }
         ]
       },
       isUpdate: false,
