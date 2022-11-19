@@ -277,22 +277,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="账期" prop="accountingPeriod">
-              <el-input v-model="form.accountingPeriod" placeholder="请输入账期" style="width: 280px" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="交货方式" prop="deliveryMethod">
               <el-input v-model="form.deliveryMethod" placeholder="请输入交货方式" style="width: 280px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="港口到厂运费" prop="portToFactoryFare">
               <el-input v-model="form.portToFactoryFare" placeholder="请输入港口到厂运费" style="width: 280px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="港口到港口运费" prop="portToPortFare">
               <el-input v-model="form.portToPortFare" placeholder="请输入港口到港口运费" style="width: 280px" />
@@ -303,14 +298,14 @@
               <el-input v-model="form.contractOther" placeholder="请输入其他" style="width: 280px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="代理或合作方" prop="contractAgent">
               <el-input v-model="form.contractAgent" placeholder="请输入代理或合作方" style="width: 280px" />
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="合同备注" prop="contractRemark">
               <el-input v-model="form.contractRemark" placeholder="请输入合同备注" style="width: 720px" />
             </el-form-item>
