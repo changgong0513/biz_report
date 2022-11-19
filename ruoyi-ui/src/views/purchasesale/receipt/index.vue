@@ -299,9 +299,7 @@
         <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
-            <el-form-item label="货损数量" prop="cargoDamageQuantity">
-              <el-input v-model="form.cargoDamageQuantity" placeholder="请输入货损数量" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="货损数量" prop="cargoDamageQuantity">{{calCargoDamageQuantity}}</el-form-item>
           </el-col>
           <!-- 货损金额 -->
           <el-col :span="8">
@@ -550,9 +548,6 @@ export default {
         checkQuantity: [
           { required: true, message: "核算数量不能为空", trigger: "blur" }
         ],
-        cargoDamageQuantity: [
-          { required: true, message: "货损数量不能为空", trigger: "blur" }
-        ],
         ccbh: [
           { required: true, message: "车船编号不能为空", trigger: "blur" }
         ]
@@ -584,6 +579,14 @@ export default {
     calCargoDamageMoney: function () {
       if (this.form.checkPrice && this.form.cargoDamageQuantity) {
         return Number(this.form.checkPrice) * Number(this.form.cargoDamageQuantity)
+      }
+      
+      return 0;
+    },
+       /** 货损数量（货损数量=卸货数量-核算数量） */
+    calCargoDamageQuantity: function () {
+      if (this.form.expectReceiptQuantity && this.form.checkQuantity) {
+        return Number(this.form.expectReceiptQuantity) * Number(this.form.checkQuantity)
       }
       
       return 0;
