@@ -28,6 +28,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dryCalDryingRate"    column="dry_cal_drying_rate"    />
         <result property="dryCalScaleRange"    column="dry_cal_scale_range"    />
         <result property="dryCalResult"    column="dry_cal_result"    />
+        <result property="ccbh"    column="ccbh"    />
+        <result property="htdj"    column="htdj"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -54,6 +56,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPurchaseReceiptInfoByReceiptId" parameterType="String" resultMap="PurchaseReceiptInfoResult">
         <include refid="selectPurchaseReceiptInfoVo"/>
         where receipt_id = #{receiptId}
+    </select>
+
+    <!-- 取得最大的收货编号 -->
+    <select id="selectMaxReceiptId" resultMap="PurchaseReceiptInfoResult">
+        SELECT max(t.receipt_id) as receipt_id FROM purchase_receipt_info t
     </select>
         
     <insert id="insertPurchaseReceiptInfo" parameterType="PurchaseReceiptInfo">
@@ -82,6 +89,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalDryingRate != null">dry_cal_drying_rate,</if>
             <if test="dryCalScaleRange != null">dry_cal_scale_range,</if>
             <if test="dryCalResult != null">dry_cal_result,</if>
+            <if test="ccbh != null">ccbh,</if>
+            <if test="hedj != null">hedj,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -112,6 +121,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalDryingRate != null">#{dryCalDryingRate},</if>
             <if test="dryCalScaleRange != null">#{dryCalScaleRange},</if>
             <if test="dryCalResult != null">#{dryCalResult},</if>
+            <if test="ccbh != null">#{ccbh},</if>
+            <if test="htdj != null">#{htdj},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -145,6 +156,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalDryingRate != null">dry_cal_drying_rate = #{dryCalDryingRate},</if>
             <if test="dryCalScaleRange != null">dry_cal_scale_range = #{dryCalScaleRange},</if>
             <if test="dryCalResult != null">dry_cal_result = #{dryCalResult},</if>
+            <if test="ccbh != null">ccbh = #{ccbh},</if>
+            <if test="htdj != null">htdj = #{htdj},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>

@@ -1,5 +1,6 @@
 package com.ruoyi.purchase.sale.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -95,6 +96,12 @@ public class PurchaseReceiptInfo extends BaseEntity
 
     /** 版本号 */
     private Long bizVersion;
+
+    /** 车船编号 */
+    private String ccbh;
+
+    /** 合同单价 */
+    private BigDecimal htdj;
 
     public void setReceiptId(String receiptId) 
     {
@@ -312,6 +319,12 @@ public class PurchaseReceiptInfo extends BaseEntity
     {
         return bizVersion;
     }
+
+    public String getCcbh() { return ccbh; }
+    public void setCcbh(String ccbh) { this.ccbh = ccbh; }
+
+    public BigDecimal getHtdj() { return htdj; }
+    public void setHtdj(BigDecimal htdj) { this.htdj = htdj; }
 
     @Override
     public String toString() {

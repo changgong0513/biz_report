@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.purchase.sale.domain.PurchaseReceiptInfo;
 import com.ruoyi.purchase.sale.service.IPurchaseReceiptInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -74,6 +75,16 @@ public class PurchaseReceiptInfoController extends BaseController
     @Log(title = "收货管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody PurchaseReceiptInfo purchaseReceiptInfo) {
+
+        PurchaseReceiptInfo maxReceiptInfo = purchaseReceiptInfoService.selectMaxReceiptId();
+        if (maxReceiptInfo == null) {
+            purchaseReceiptInfo.setReceiptId("SH00000000");
+        } else {
+            String maxReceiptId = maxReceiptInfo.getReceiptId();
+            String id = maxReceiptId.substring(2, maxReceiptId.length());
+            int maxId = Integer.parseInt(id) + 1;
+            purchaseReceiptInfo.setReceiptId("SH" + StringUtils.padl(maxId, 8));
+        }
 
         purchaseReceiptInfo.setBizVersion(1L);
         purchaseReceiptInfo.setCreateTime(DateUtils.getNowDate());

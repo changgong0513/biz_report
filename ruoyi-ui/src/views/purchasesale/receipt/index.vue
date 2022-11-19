@@ -138,9 +138,32 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <!-- 收货编号 -->
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="收货编号" prop="receiptId">
               <el-input v-model="form.receiptId" placeholder="请输入收货编号" :disabled="this.isUpdate" style="width: 240px" />
+            </el-form-item>
+          </el-col> -->
+          <!-- 采购合同编号 -->
+          <el-col :span="8">
+            <el-form-item label="采购合同编号" prop="purchaseContractId">
+              <el-select
+                v-model="form.purchaseContractId"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入采购合同编号关键字"
+                style="width: 240px"
+                :remote-method="remoteMethodPurchaseContract"
+                :loading="remoteLoadingPurchaseContract"
+                @change="selChangePurchaseContract">
+                <el-option
+                  v-for="item in optionsPurchaseContract"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 采购订单编号 -->
@@ -154,6 +177,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入采购订单编号关键字"
+                style="width: 240px"
                 :remote-method="remoteMethod"
                 :loading="remoteLoading"
                 @change="selChange">
@@ -166,16 +190,12 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- 采购合同编号 -->
+          <!-- 经办人 -->
           <el-col :span="8">
-            <el-form-item label="采购合同编号" prop="purchaseContractId">{{form.purchaseContractId}}</el-form-item>
+            <el-form-item label="经办人" prop="handledBy" style="width: 240px">{{form.handledBy}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 经办人 -->
-          <el-col :span="8">
-            <el-form-item label="经办人" prop="handledBy">{{form.handledBy}}</el-form-item>
-          </el-col>
           <!-- 收货日期 -->
           <el-col :span="8">
             <el-form-item label="收货日期" prop="receiptDate">
@@ -190,14 +210,14 @@
           </el-col>
           <!-- 供应商名称 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="handledBy">{{form.supplierName}}</el-form-item>
+            <el-form-item label="供应商名称" prop="handledBy" style="width: 240px">{{form.supplierName}}</el-form-item>
+          </el-col>
+          <!-- 物料名称 -->
+          <el-col :span="8">
+            <el-form-item label="物料名称" prop="materialName" style="width: 240px">{{form.materialName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 物料名称 -->
-          <el-col :span="8">
-            <el-form-item label="物料名称" prop="handledBy">{{form.materialName}}</el-form-item>
-          </el-col>
           <!-- 仓库编号 -->
           <el-col :span="8">
             <el-form-item label="仓库编号" prop="warehouseCode">
@@ -209,6 +229,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入仓库编号关键字"
+                style="width: 240px"
                 :remote-method="remoteWarehouseCode"
                 :loading="remoteLoadingWarehouse"
                 @change="selChangeWarehouse">
@@ -223,16 +244,16 @@
           </el-col>
           <!-- 仓库名称 -->
           <el-col :span="8">
-            <el-form-item label="仓库名称" prop="warehouseName">{{form.warehouseName}}</el-form-item>
+            <el-form-item label="仓库名称" prop="warehouseName" style="width: 240px">{{form.warehouseName}}</el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 批次号 -->
           <el-col :span="8">
             <el-form-item label="批次号" prop="batchNo">
               <el-input v-model="form.batchNo" placeholder="请输入批次号" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 车船编号 -->
           <el-col :span="8">
             <el-form-item label="车船编号" prop="ccbh">
@@ -257,14 +278,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
               <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 卸货数量 -->
           <el-col :span="8">
             <el-form-item label="卸货数量" prop="expectReceiptQuantity">
@@ -277,23 +298,27 @@
               <el-input v-model="form.checkQuantity" placeholder="请输入核算数量" style="width: 240px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 核算单价 -->
           <el-col :span="8">
             <el-form-item label="核算单价" prop="checkPrice">
               <el-input v-model="form.checkPrice" placeholder="核算单价" style="width: 240px" />
             </el-form-item>
           </el-col>
-          <!-- 核算金额 -->
-          <el-col :span="8">
-            <el-form-item label="核算金额" prop="checkMoney">{{calCheckMoney}}</el-form-item>
-          </el-col>
+        </el-row>
+        <el-row>
           <!-- 合同单价 -->
           <el-col :span="8">
             <el-form-item label="合同单价" prop=" htdj">
               <el-input v-model="form.htdj" placeholder="请输入核算数量" style="width: 240px" />
             </el-form-item>
+          </el-col>
+          <!-- 核算金额 -->
+          <el-col :span="8">
+            <el-form-item label="核算金额" prop="checkMoney" style="width: 240px">{{calCheckMoney}}</el-form-item>
+          </el-col>
+          <!-- 货损金额 -->
+          <el-col :span="8">
+            <el-form-item label="货损金额" prop="cargoDamageMoney" style="width: 240px">{{calCargoDamageMoney}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -301,10 +326,8 @@
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">{{calCargoDamageQuantity}}</el-form-item>
           </el-col>
-          <!-- 货损金额 -->
-          <el-col :span="8">
-            <el-form-item label="货损金额" prop="cargoDamageMoney">{{calCargoDamageMoney}}</el-form-item>
-          </el-col>
+        </el-row>
+        <el-row>
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="receiptRemark">
@@ -525,6 +548,7 @@ export default {
         receiptDate: null,
         supplierName: null,
         warehouseName: null,
+        contractId: null,
         contractType: null
       },
       // 表单参数
@@ -565,12 +589,18 @@ export default {
       isUpdate: false,
       formDetail: {},
       openDetail: false,
+      // 采购订单编号选择用
+      remoteLoading: false,
       purchaseOptions: [],
       purchaseOrderList: [],
-      remoteLoading: false,
+      // 仓库编号选择用
       remoteLoadingWarehouse: false,
       purchaseOptionsWarehouse: [],
-      purchaseOrderListWarehouse: []
+      purchaseOrderListWarehouse: [],
+      // 采购合同编号选择用
+      optionsPurchaseContract: [],
+      listPurchaseContract: [],
+      remoteLoadingPurchaseContract: false
     };
   },
   created() {
@@ -587,8 +617,8 @@ export default {
     },
     /** 货损金额 */
     calCargoDamageMoney: function () {
-      if (this.form.checkPrice && this.form.cargoDamageQuantity) {
-        return Number(this.form.checkPrice) * Number(this.form.cargoDamageQuantity)
+      if (this.form.checkPrice && this.form.expectReceiptQuantity && this.form.checkQuantity) {
+        return Number(this.form.checkPrice) * Number(this.form.expectReceiptQuantity) * Number(this.form.checkQuantity)
       }
       
       return 0;
@@ -643,6 +673,27 @@ export default {
         this.purchaseOptionsWarehouse = [];
       }
     },
+    /** 根据输入采购合同编号关键字，取得订单编号列表 */
+    remoteMethodPurchaseContract(query) {
+      if (query !== '') {
+        this.remoteLoadingPurchaseContract = true;
+        this.queryParams.contractId = query;
+        this.queryParams.contractType = "P";
+        console.log("select远程方法调用" + JSON.stringify(this.queryParams));
+        listPurchase(this.queryParams).then(response => {
+          this.remoteLoadingPurchaseContract = false;
+          this.listPurchaseContract = response.rows;
+          this.optionsPurchaseContract = response.rows.map(item => {
+            return { value: `${item.orderId}`, label: `${item.orderId}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsPurchaseContract = [];
+      }
+    },
     /** 订单编号下拉列表框，选择值改变后回调方法 */
     selChange(selValue) {
       console.log("选择的订单编号是：" + selValue);
@@ -666,6 +717,21 @@ export default {
       });
 
       this.form.warehouseName = warehouse.warehouseName; // 仓库名称
+    },
+    /** 合同编号下拉列表框，选择值改变后回调方法 */
+    selChangePurchaseContract(selValue) {
+      console.log("选择的合同编号是：" + selValue);
+
+      let purchaseContract = this.listPurchaseContract.find(item => {
+        return item.contractId === selValue;
+      });
+      console.log("选择的合同数据是：" + JSON.stringify(purchaseContract));
+
+      this.form.purchaseOrderId = purchaseContract.orderId; // 订单编号
+      this.form.handledBy = purchaseContract.handledBy;  // 经办人
+      this.form.supplierName = purchaseContract.supplierName;  // 供应商名称
+      this.form.materialName = purchaseContract.materialName;  // 物料名称
+      this.form.checkPrice = purchaseContract.unitPrice; // 核算单价
     },
     /** 查询采购收货销售发货管理列表 */
     getList() {
@@ -711,7 +777,9 @@ export default {
         dryCalWaterValue: null,
         dryCalDryingRate: null,
         dryCalScaleRange: null,
-        dryCalResult: null
+        dryCalResult: null,
+        ccbh: null,
+        htdj: null
       };
       this.resetForm("form");
     },
@@ -755,16 +823,18 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
-            this.form.checkMoney = this.calCheckMoney;
-            this.form.cargoDamageMoney = this.calCargoDamageMoney;
+            this.form.checkMoney = this.calCheckMoney; // 核算金额
+            this.form.cargoDamageMoney = this.calCargoDamageMoney; // 货损金额
+            this.form.cargoDamageQuantity = this.calCargoDamageQuantity; // 货损数量
             updateReceipt(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            this.form.checkMoney = this.calCheckMoney;
-            this.form.cargoDamageMoney = this.calCargoDamageMoney;
+            this.form.checkMoney = this.calCheckMoney; // 核算金额
+            this.form.cargoDamageMoney = this.calCargoDamageMoney; // 货损金额
+            this.form.cargoDamageQuantity = this.calCargoDamageQuantity; // 货损数量
             addReceipt(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

@@ -20,6 +20,13 @@ public interface PurchaseReceiptInfoMapper
     public PurchaseReceiptInfo selectPurchaseReceiptInfoByReceiptId(String receiptId);
 
     /**
+     * 取得最大的收货编号
+     *
+     * @return 收货管理
+     */
+    public PurchaseReceiptInfo selectMaxReceiptId();
+
+    /**
      * 查询收货管理列表
      * 
      * @param purchaseReceiptInfo 收货管理
