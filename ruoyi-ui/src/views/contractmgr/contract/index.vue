@@ -181,7 +181,24 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="货物名称" prop="goodsName">
-              <el-input v-model="form.goodsName" placeholder="请输入货物名称" style="width: 280px" />
+              <!-- <el-input v-model="form.goodsName" placeholder="请输入货物名称" style="width: 280px" /> -->
+              <el-select
+                v-model="form.goodsName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                style="width: 280px"
+                placeholder="请输入货物名称关键字"
+                :remote-method="remoteMethodGoodsName"
+                :loading="remoteLoadingGoodsName">
+                <el-option
+                  v-for="item in contractOptionsGoodsName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -323,9 +340,8 @@
 </template>
 
 <script>
-import { listContract, getContract, addContract, delContract, updateContract, 
-  syncContract, uploadFile, getContractAdditional, delteFile } from "@/api/contract/contract";
-
+import { listContract, getContract, addContract, delContract, updateContract, syncContract, uploadFile, getContractAdditional, delteFile } from "@/api/contract/contract";
+import { listMaterialData } from "@/api/masterdata/material";
 import { download } from "@/utils/request";
 
 export default {
@@ -366,7 +382,8 @@ export default {
         signDate: null,
         oppositeCompanyName: null,
         leftContractTotal: null,
-        rightContractTotal: null
+        rightContractTotal: null,
+        materialName: null
       },
       // 表单参数
       form: {},
@@ -397,7 +414,10 @@ export default {
       ],
       isUpdate: false,
       // 合同附件列表
-      contractAdditionalList: []
+      contractAdditionalList: [],
+      remoteLoadingGoodsName: false,
+      contractOptionsGoodsName: [],
+      contractListGoodsName: []
     };
   },
   filters:{
@@ -412,6 +432,26 @@ export default {
     console.log(process.env.VUE_APP_BASE_API);
   },
   methods: {
+    /** 根据输入货物名称关键字，取得货物名称列表 */
+    remoteMethodGoodsName(query) {
+      if (query !== '') {
+        this.remoteLoadingGoodsName = true;
+        this.queryParams.materialName = query;
+        console.log("取得货物名称远程方法调用查询参数：" + JSON.stringify(this.queryParams));
+        listMaterialData(this.queryParams).then(response => {
+          this.remoteLoadingGoodsName = false;
+          this.contractListGoodsName = response.rows;
+          this.contractOptionsGoodsName = response.rows.map(item => {
+            return { value: `${item.materialId}`, label: `${item.materialName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.contractOptionsGoodsName = [];
+      }
+    },
     /** 查询合同管理列表 */
     getList() {
       this.loading = true;
