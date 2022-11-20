@@ -167,7 +167,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="订单编号" prop="orderId">
               <el-input v-model="form.orderId" 
                 placeholder="请输入订单编号" 
@@ -175,6 +175,16 @@
                 style="width: 240px"
                 maxlength="32"
                 show-word-limit />
+            </el-form-item>
+          </el-col> -->
+          <!-- 合同编号 -->
+          <el-col :span="8">
+            <el-form-item label="合同编号" prop="contractId">
+              <el-input 
+                v-model="form.contractId" 
+                placeholder="请输入合同编号" 
+                style="width: 240px"
+                :disabled="true" />
             </el-form-item>
           </el-col>
           <!-- 采购类型 -->
@@ -186,7 +196,7 @@
                 style="width: 240px"
               >
                 <el-option
-                  v-for="dict in dict.type.purchasesale_purchase_type"
+                  v-for="dict in dict.type.contractmgr_contract_type"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -194,25 +204,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- 合同编号 -->
-          <el-col :span="8">
-            <el-form-item label="合同编号" prop="contractId">
-              <el-input 
-                v-model="form.contractId" 
-                placeholder="请输入合同编号" 
-                style="width: 240px"
-                maxlength="32"
-                show-word-limit />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
               <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 所属部门 -->
           <el-col :span="8">
             <el-form-item label="所属部门" prop="belongDept">
@@ -242,8 +241,6 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 物料名称 -->
           <el-col :span="8">
             <el-form-item label="物料名称" prop="materialName">
@@ -255,6 +252,8 @@
                 show-word-limit />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 采购数量 -->
           <el-col :span="8">
             <el-form-item label="采购数量" prop="purchaseQuantity">
@@ -272,14 +271,14 @@
                 show-word-limit />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 单价 -->
           <el-col :span="8">
             <el-form-item label="单价" prop="unitPrice">
               <el-input v-model="form.unitPrice" placeholder="请输入单价" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 计量单位 -->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="meteringUnit">
@@ -310,8 +309,6 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 要求交货期 -->
           <el-col :span="8">
             <el-form-item label="要求交货期" prop="requiredDeliveryDate">
@@ -324,6 +321,8 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 账期 -->
           <el-col :span="8">
             <el-form-item label="账期" prop="accountPeriod">
@@ -350,8 +349,6 @@
               <el-input v-model="form.arrivalTermsValue" placeholder="天数" style="margin-left: 10px; width: 60px" />（天）
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 结算方式 -->
           <el-col :span="8">
             <el-form-item label="结算方式" prop="settlementMethod">
@@ -370,6 +367,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 是否开票 -->
           <el-col :span="16">
             <el-form-item label="是否开票" prop="isInvoicing">
@@ -465,7 +464,7 @@
           <el-col :span="8">
             <el-form-item label="采购类型">
               <template>
-                <dict-tag :options="dict.type.purchasesale_purchase_type" :value="formDetail.purchaseType"/>
+                <dict-tag :options="dict.type.contractmgr_contract_type" :value="formDetail.purchaseType"/>
               </template>
             </el-form-item>
           </el-col>
@@ -645,7 +644,7 @@ import { getToken } from "@/utils/auth";
 
 export default {
   name: "Purchase",
-  dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
+  dicts: ['contractmgr_contract_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status', 
           'purchase_mgr_order_status', 'purchasesale_transport_mode'],
   // 文件上传用
