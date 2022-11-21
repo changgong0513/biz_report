@@ -109,6 +109,17 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 完成率（计算属性） */
     private String completionRate;
 
+    /** 合同数量 */
+    private int htsl;
+
+    public int getHtsl() {
+        return htsl;
+    }
+
+    public void setHtsl(int htsl) {
+        this.htsl = htsl;
+    }
+
     public void setOrderId(String orderId) { this.orderId = orderId; }
     public String getOrderId() { return orderId; }
 

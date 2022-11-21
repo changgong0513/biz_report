@@ -1,7 +1,12 @@
 package com.ruoyi.purchase.sale.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.ruoyi.common.utils.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper;
@@ -49,9 +54,28 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * @return 采购收货集合
      */
     @Override
-    public List<PurchaseSaleOrderInfo> selectPurchaseOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
-        return purchaseSaleOrderInfoMapper.selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
+    public List<PurchaseSaleOrderInfo> selectPurchaseOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+
+        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoMapper
+                .selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
+        Map<String, List<PurchaseSaleOrderInfo>> map = list.stream()
+                .collect(Collectors.groupingBy(element -> element.getSupplierName()));
+
+        List<PurchaseSaleOrderInfo> findPurchaseOrderList = new ArrayList<>();
+
+        // 查询条件：合同数量
+        int htslCounts = purchaseSaleOrderInfo.getHtsl();
+        if (htslCounts > 0) {
+            for (Map.Entry<String, List<PurchaseSaleOrderInfo>> entry:map.entrySet()){
+                if (entry.getValue() != null && entry.getValue().size() == htslCounts) {
+                    findPurchaseOrderList = entry.getValue();
+                }
+            }
+        } else {
+            findPurchaseOrderList = list;
+        }
+
+        return findPurchaseOrderList;
     }
 
     /**

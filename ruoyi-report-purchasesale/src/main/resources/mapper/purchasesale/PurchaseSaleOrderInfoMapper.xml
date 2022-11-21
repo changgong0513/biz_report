@@ -75,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             tt1.purchase_quantity, tt1.supplier_name, tt1.unit_price, tt1.metering_unit,
             tt1.arrival_date, tt1.required_delivery_date, tt1.account_period, tt1.arrival_terms,
             tt1.arrival_terms_value, tt1.settlement_method, tt1.is_invoicing, tt1.order_remark,
+            tt1.supplier_name, tt1.unit_price,
             ifnull(tt2.check_quantity, 0) as check_quantity,
             ifnull(tt2.check_money, 0) as check_money
         from (
@@ -149,6 +150,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="materialName != null  and materialName != ''"> and tt1.material_name like concat('%', #{materialName}, '%')</if>
             <if test="purchaseType != null  and purchaseType != ''"> and tt1.purchase_type = #{purchaseType}</if>
             <if test="checkMoneyMin != null  and checkMoneyMin != '' and checkMoneyMax != null  and checkMoneyMax != ''"> and tt2.check_money between #{checkMoneyMin} and #{checkMoneyMax}</if>
+            <if test="supplierName != null  and supplierName != ''"> and tt1.supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="unitPrice != null  and unitPrice != ''"> and tt1.unit_price = #{unitPrice}</if>
         </where>
     </select>
 

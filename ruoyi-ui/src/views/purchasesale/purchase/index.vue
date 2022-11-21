@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <!-- 查询表单 -->
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <!-- 订单编号 -->
-      <el-form-item label="订单编号" prop="contractId">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
+      <!-- 合同编号 -->
+      <el-form-item label="合同编号" prop="contractId">
         <el-input
           v-model="queryParams.contractId"
-          placeholder="请输入订单编号"
+          placeholder="请输入合同编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -27,38 +27,27 @@
           />
         </el-select>
       </el-form-item>
-      <!-- 经办人 -->
-      <el-form-item label="经办人" prop="handledBy">
+      <!-- 供应商名称 -->
+      <el-form-item label="供应商名称" prop="supplierName">
         <el-input
-          v-model="queryParams.handledBy"
-          placeholder="请输入经办人"
+          v-model="queryParams.supplierName"
+          placeholder="请输入供应商名称"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 物料名称 -->
-      <el-form-item label="物料名称" prop="materialName">
+      <!-- 合同数量 -->
+      <el-form-item label="合同数量" prop="htsl">
         <el-input
-          v-model="queryParams.materialName"
-          placeholder="请输入物料名称"
+          v-model="queryParams.htsl"
+          placeholder="请输入合同数量"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- 核算金额min -->
-      <el-form-item label="核算金额" prop="checkMoneyMin">
+      <!-- 合同单价 -->
+      <el-form-item label="合同单价" prop="unitPrice">
         <el-input
-          v-model="queryParams.checkMoneyMin"
-          placeholder="请输入核算金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <!-- 核算金额max -->
-      <el-form-item label="~" prop="checkMoneyMax" label-width="15px">
-        <el-input
-          v-model="queryParams.checkMoneyMax"
-          placeholder="请输入核算金额"
+          v-model="queryParams.unitPrice"
+          placeholder="请输入合同单价"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -716,7 +705,8 @@ export default {
         startBusinessDate: null,
         endbusinessDate: null,
         checkMoneyMin: null,
-        checkMoneyMax: null
+        checkMoneyMax: null,
+        htsl: null
       },
       // 表单参数
       form: {},
