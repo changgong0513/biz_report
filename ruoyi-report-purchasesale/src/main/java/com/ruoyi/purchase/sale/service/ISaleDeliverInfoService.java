@@ -28,6 +28,13 @@ public interface ISaleDeliverInfoService
     public List<SaleDeliverInfo> selectSaleDeliverInfoList(SaleDeliverInfo saleDeliverInfo);
 
     /**
+     * 取得最大的发货编号
+     *
+     * @return 发货管理
+     */
+    public SaleDeliverInfo selectMaxDeliverId();
+
+    /**
      * 新增发货管理
      * 
      * @param saleDeliverInfo 发货管理

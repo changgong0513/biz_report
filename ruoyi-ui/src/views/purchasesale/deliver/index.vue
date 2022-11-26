@@ -151,28 +151,36 @@
 
     <!-- 添加或修改采购收货销售发货管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <!-- 发货编号 -->
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="发货编号" prop="deliverId">
               <el-input v-model="form.deliverId" :disabled="this.isUpdate" placeholder="请输入发货编号" style="width: 240px" />
             </el-form-item>
-          </el-col>
-          <!-- 销售订单编号 -->
-          <el-col :span="8">
-            <el-form-item label="销售订单编号" prop="saleOrderId">
-              <el-input v-model="form.saleOrderId" placeholder="请输入销售订单编号" style="width: 240px" />
-            </el-form-item>
-          </el-col>
+          </el-col> -->
           <!-- 销售合同编号 -->
           <el-col :span="8">
             <el-form-item label="销售合同编号" prop="saleContractId">
-              <el-input v-model="form.saleContractId" placeholder="请输入销售合同编号" style="width: 240px" />
+              <el-select
+                v-model="form.saleContractId"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入销售合同编号关键字"
+                style="width: 240px"
+                :remote-method="remoteMethodSaleContract"
+                :loading="remoteLoadingSaleContract">
+                <el-option
+                  v-for="item in optionsSaleContract"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
@@ -191,34 +199,83 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <!-- 客户编号 -->
-          <el-col :span="8">
-            <el-form-item label="客户编号" prop="clientId">
-              <el-input v-model="form.clientId" placeholder="请输入客户编号" style="width: 240px" />
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
+          <!-- 客户编号 -->
+          <el-col :span="8">
+            <el-form-item label="客户编号" prop="clientId">{{form.clientId}}</el-form-item>
+          </el-col>
           <!-- 客户姓名 -->
           <el-col :span="8">
             <el-form-item label="客户姓名" prop="clientName">
-              <el-input v-model="form.clientName" placeholder="请输入客户姓名" style="width: 240px" />
+              <el-select
+                v-model="form.clientName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入客户编号关键字"
+                style="width: 240px"
+                :remote-method="remoteMethodClientName"
+                :loading="remoteLoadingSClientName"
+                @change="selChangeClientName">
+                <el-option
+                  v-for="item in optionsClientName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 物料编号 -->
           <el-col :span="8">
             <el-form-item label="物料编号" prop="materialId">
-              <el-input v-model="form.materialId" placeholder="请输入物料编号" style="width: 240px" />
-            </el-form-item>
-          </el-col>
-          <!-- 物料名称 -->
-          <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">
-              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" />
+              <el-select
+                v-model="form.materialId"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                style="width: 240px"
+                placeholder="请输入物料编号关键字"
+                :remote-method="remoteMethodMaterialId"
+                :loading="remoteLoadingMaterialId"
+                @change="selChangeMaterialId">
+                <el-option
+                  v-for="item in optionsMaterialId"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
+          <!-- 物料名称 -->
+          <el-col :span="8">
+            <el-form-item label="物料名称" prop="materialName">
+              <el-select
+                v-model="form.materialName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                style="width: 240px"
+                placeholder="请输入物料名称关键字"
+                :remote-method="remoteMethodMaterialName"
+                :loading="remoteLoadingMaterialName"
+                @change="selChangeMaterialName">
+                <el-option
+                  v-for="item in optionsMaterialName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <!-- 合同单价 -->
           <el-col :span="8">
             <el-form-item label="合同单价" prop="contractPrice">
@@ -228,9 +285,23 @@
           <!-- 计量单位 -->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="measurementUnit">
-              <el-input v-model="form.measurementUnit" placeholder="请输入计量单位" style="width: 240px" />
+              <el-select
+                v-model="form.measurementUnit"
+                placeholder="计量单位"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 发货方式 -->
           <el-col :span="8">
             <el-form-item label="发货方式" prop="deliverMode">
@@ -249,28 +320,60 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 仓库编号 -->
           <el-col :span="8">
             <el-form-item label="仓库编号" prop="warehouseCode">
-              <el-input v-model="form.warehouseCode" placeholder="请输入仓库编号" style="width: 240px" />
+              <el-select
+                v-model="form.warehouseCode"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入仓库编号关键字"
+                style="width: 240px"
+                :remote-method="remoteWarehouseCode"
+                :loading="remoteLoadingWarehouse"
+                @change="selChangeWarehouse">
+                <el-option
+                  v-for="item in purchaseOptionsWarehouse"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 仓库名称 -->
           <el-col :span="8">
             <el-form-item label="仓库名称" prop="warehouseName">
-              <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" style="width: 240px" />
+              <el-select
+                v-model="form.warehouseName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入仓库名称关键字"
+                style="width: 240px"
+                :remote-method="remoteWarehouseName"
+                :loading="remoteLoadingWarehouseName"
+                @change="selChangeWarehouseId">
+                <el-option
+                  v-for="item in optionsWarehouseName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 发货数量 -->
           <el-col :span="8">
             <el-form-item label="发货数量" prop="deliverQuantity">
               <el-input v-model="form.deliverQuantity" placeholder="请输入发货数量" style="width: 240px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 核算数量 -->
           <el-col :span="8">
             <el-form-item label="核算数量" prop="checkQuantity">
@@ -283,14 +386,14 @@
               <el-input v-model="form.checkPrice" placeholder="请输入核算单价" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 核算金额 -->
           <el-col :span="8">
             <el-form-item label="核算金额" prop="checkMoney">
               <el-input v-model="form.checkMoney" placeholder="请输入核算金额" style="width: 240px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">
@@ -303,6 +406,8 @@
               <el-input v-model="form.cargoDamageMoney" placeholder="请输入货损金额" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 运输方式 -->
           <el-col :span="8">
             <el-form-item label="运输方式" prop="transportMode">
@@ -321,8 +426,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
@@ -335,14 +438,14 @@
               <el-input v-model="form.transportMoney" placeholder="请输入运输金额" style="width: 240px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 其他金额 -->
           <el-col :span="8">
             <el-form-item label="其他金额" prop="otherMoney">
               <el-input v-model="form.otherMoney" placeholder="请输入其他金额" style="width: 240px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 预期到货日期 -->
           <el-col :span="8">
             <el-form-item label="预期到货日期" prop="expectArrivalDate">
@@ -367,6 +470,8 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 账期（关联采购（销售）订单信息表的账期） -->
           <el-col :span="8">
             <el-form-item label="账期" prop="accountPeriod">
@@ -544,12 +649,16 @@
 <script>
 
 import { listDeliver, getDeliver, delDeliver, addDeliver, updateDeliver } from "@/api/purchasesale/deliver";
+import { listPurchase } from "@/api/purchasesale/purchasesale";
+import { listClient } from "@/api/masterdata/client";
+import { listMaterialData } from "@/api/masterdata/material";
+import { listWarehouse } from "@/api/masterdata/warehouse";
 
 export default {
   name: "Deliver",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'purchasesale_receipt_order_status', 
-          'purchasesale_transport_mode', 'purchasesale_deliver_mode'],
+          'purchasesale_transport_mode', 'purchasesale_deliver_mode', 'masterdata_warehouse_measurement_unit'],
   data() {
     return {
       // 遮罩层
@@ -582,85 +691,246 @@ export default {
         deliverDate: null,
         materialName: null,
         warehouseName: null,
+        saleContractId: null,
+        companyName: null,
+        recordFlag: null
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
-      // rules: {
-      //   purchaseType: [
-      //     { required: true, message: "采购类型不能为空", trigger: "change" }
-      //   ],
-      //   contractId: [
-      //     { required: true, message: "合同编号不能为空", trigger: "blur" }
-      //   ],
-      //   handledBy: [
-      //     { required: true, message: "经办人不能为空", trigger: "blur" }
-      //   ],
-      //   belongDept: [
-      //     { required: true, message: "所属部门不能为空", trigger: "blur" }
-      //   ],
-      //   businessDate: [
-      //     { required: true, message: "业务日期不能为空", trigger: "blur" }
-      //   ],
-      //   materialName: [
-      //     { required: true, message: "物料名称不能为空", trigger: "blur" }
-      //   ],
-      //   purchaseQuantity: [
-      //     { required: true, message: "采购数量不能为空", trigger: "blur" }
-      //   ],
-      //   supplierName: [
-      //     { required: true, message: "供应商名称不能为空", trigger: "blur" }
-      //   ],
-      //   unitPrice: [
-      //     { required: true, message: "单价不能为空", trigger: "blur" }
-      //   ],
-      //   meteringUnit: [
-      //     { required: true, message: "计量单位不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalDate: [
-      //     { required: true, message: "预计到货期不能为空", trigger: "blur" }
-      //   ],
-      //   requiredDeliveryDate: [
-      //     { required: true, message: "要求交货期不能为空", trigger: "blur" }
-      //   ],
-      //   accountPeriod: [
-      //     { required: true, message: "账期不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTerms: [
-      //     { required: true, message: "到账条件不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTermsValue: [
-      //     { required: true, message: "到账条件值不能为空", trigger: "blur" }
-      //   ],
-      //   settlementMethod: [
-      //     { required: true, message: "结算方式不能为空", trigger: "blur" }
-      //   ],
-      //   createBy: [
-      //     { required: true, message: "创建者不能为空", trigger: "blur" }
-      //   ],
-      //   createTime: [
-      //     { required: true, message: "创建时间不能为空", trigger: "blur" }
-      //   ],
-      //   updateBy: [
-      //     { required: true, message: "更新者不能为空", trigger: "blur" }
-      //   ],
-      //   updateTime: [
-      //     { required: true, message: "更新时间不能为空", trigger: "blur" }
-      //   ],
-      //   bizVersion: [
-      //     { required: true, message: "版本号不能为空", trigger: "blur" }
-      //   ]
-      // },
+      rules: {
+        saleContractId: [
+          { required: true, message: "销售合同编号不能为空", trigger: "change" }
+        ],
+        clientId: [
+          { required: true, message: "客户编号不能为空", trigger: "blur" }
+        ],
+        clientName: [
+          { required: true, message: "客户姓名不能为空", trigger: "blur" }
+        ],
+        materialId: [
+          { required: true, message: "物料编号不能为空", trigger: "blur" }
+        ],
+        materialName: [
+          { required: true, message: "物料名称不能为空", trigger: "blur" }
+        ],
+        warehouseCode: [
+          { required: true, message: "仓库编号不能为空", trigger: "blur" }
+        ],
+        warehouseName: [
+          { required: true, message: "仓库名称不能为空", trigger: "blur" }
+        ],
+        handledBy: [
+          { required: true, message: "经办人不能为空", trigger: "blur" }
+        ],
+        deliverDate: [
+          { required: true, message: "发货日期不能为空", trigger: "blur" }
+        ],
+        contractPrice: [
+          { required: true, message: "合同单价不能为空", trigger: "blur" }
+        ],
+        measurementUnit: [
+          { required: true, message: "计量单位不能为空", trigger: "blur" }
+        ],
+        deliverMode: [
+          { required: true, message: "发货方式不能为空", trigger: "change" }
+        ],
+      },
       isUpdate: false,
       formDetail: {},
-      openDetail: false
+      openDetail: false,
+      // 采购合同编号选择用
+      optionsSaleContract: [],
+      listSaleContract: [],
+      remoteLoadingSaleContract: false,
+      // 客户编号选择用
+      optionsClientName: [],
+      listClientName: [],
+      remoteLoadingSClientName: false,
+      // 物料编号选择用
+      optionsMaterialId: [],
+      listMaterialId: [],
+      remoteLoadingMaterialId: false,
+      // 物料名称选择用
+      optionsMaterialName: [],
+      listMaterialName: [],
+      remoteLoadingMaterialName: false,
+      // 仓库编号选择用
+      purchaseOptionsWarehouse: [],
+      purchaseOrderListWarehouse: [],
+      remoteLoadingWarehouse: false,
+      // 仓库名称选择用
+      optionsWarehouseName: [],
+      ListWarehouseName: [],
+      remoteLoadingWarehouseName: false
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    /** 根据输入销售合同编号关键字，取得合同编号列表 */
+    remoteMethodSaleContract(query) {
+      if (query !== '') {
+        this.remoteLoadingSaleContract = true;
+        this.queryParams.saleContractId = query;
+        this.queryParams.contractType = "S";
+        console.log("select远程方法调用" + JSON.stringify(this.queryParams));
+        listPurchase(this.queryParams).then(response => {
+          this.remoteLoadingSaleContract = false;
+          this.listSaleContract = response.rows;
+          this.optionsSaleContract = response.rows.map(item => {
+            return { value: `${item.contractId}`, label: `${item.contractId}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsSaleContract = [];
+      }
+    },
+    /** 根据输入客户姓名关键字，取得客户姓名列表 */
+    remoteMethodClientName(query) {
+      if (query !== '') {
+        this.remoteLoadingSClientName = true;
+        this.queryParams.companyName = query;
+        this.queryParams.recordFlag = 2;
+        console.log("select远程方法调用" + JSON.stringify(this.queryParams));
+        listClient(this.queryParams).then(response => {
+          this.remoteLoadingSClientName = false;
+          this.listClientName = response.rows;
+          this.optionsClientName = response.rows.map(item => {
+            return { value: `${item.baseId}`, label: `${item.companyName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsClientName = [];
+      }
+    },
+    /** 根据输入物料编号关键字，取得物料编号列表 */
+    remoteMethodMaterialId(query) {
+      if (query !== '') {
+        this.remoteLoadingMaterialId = true;
+        this.queryParams.materialId = query;
+        console.log("取得物料名称远程方法调用查询参数：" + JSON.stringify(this.queryParams));
+        listMaterialData(this.queryParams).then(response => {
+          this.remoteLoadingMaterialId = false;
+          this.listMaterialId = response.rows;
+          this.optionsMaterialId = response.rows.map(item => {
+            return { value: `${item.materialId}`, label: `${item.materialId}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsMaterialId = [];
+      }
+    },
+    /** 根据输入物料名称关键字，取得物料名称列表 */
+    remoteMethodMaterialName(query) {
+      if (query !== '') {
+        this.remoteLoadingMaterialName = true;
+        this.queryParams.materialName = query;
+        console.log("取得物料名称远程方法调用查询参数：" + JSON.stringify(this.queryParams));
+        listMaterialData(this.queryParams).then(response => {
+          this.remoteLoadingMaterialName = false;
+          this.listMaterialName = response.rows;
+          this.optionsMaterialName = response.rows.map(item => {
+            return { value: `${item.materialId}`, label: `${item.materialName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsClientName = [];
+      }
+    },
+    /** 根据输入仓库编号关键字，取得订单编号列表 */
+    remoteWarehouseCode(query) {
+      if (query !== '') {
+        this.remoteLoadingWarehouse = true;
+        this.queryParams.warehouseCode = query;
+        listWarehouse(this.queryParams).then(response => {
+          this.remoteLoadingWarehouse = false;
+          console.log(JSON.stringify(response.rows));
+          this.purchaseOrderListWarehouse = response.rows;
+          this.purchaseOptionsWarehouse = response.rows.map(item => {
+            return { value: `${item.warehouseCode}`, label: `${item.warehouseCode}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.purchaseOptionsWarehouse = [];
+      }
+    },
+    /** 根据输入仓库名称关键字，取得仓库名称列表 */
+    remoteWarehouseName(query) {
+      if (query !== '') {
+        this.remoteLoadingWarehouseName = true;
+        this.queryParams.warehouseName = query;
+        listWarehouse(this.queryParams).then(response => {
+          this.remoteLoadingWarehouseName = false;
+          console.log(JSON.stringify(response.rows));
+          this.ListWarehouseName = response.rows;
+          this.optionsWarehouseName = response.rows.map(item => {
+            return { value: `${item.warehouseCode}`, label: `${item.warehouseName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsWarehouseName = [];
+      }
+    },
+    /** 客户姓名下拉列表框，选择值改变后回调方法 */
+    selChangeClientName(selValue) {
+      console.log("输入的客户姓名关键字是：" + selValue);
+
+      let selClient = this.listClientName.find(item => {
+        return item.baseId === selValue;
+      });
+      
+      console.log("选择的客户数据是：" + JSON.stringify(selClient));
+
+      this.form.clientId = selClient.baseId; // 客户编号
+    },
+     /** 物料编号下拉列表框，选择值改变后回调方法 */
+    selChangeMaterialId(selValue) {
+
+      let selMaterialData = this.listMaterialId.find(item => {
+        return item.materialId == selValue;
+      });
+
+      this.form.materialName = selMaterialData.materialName; // 物料名称
+    },
+    /** 物料名称下拉列表框，选择值改变后回调方法 */
+    selChangeMaterialName(selValue) {
+      this.form.materialId = selValue; // 物料编号
+    },
+    /** 仓库编号下拉列表框，选择值改变后回调方法 */
+    selChangeWarehouse(selValue) {
+      console.log("选择的仓库编号是：" + selValue);
+
+      let warehouse = this.purchaseOrderListWarehouse.find(item => {
+        return item.warehouseCode === selValue;
+      });
+
+      this.form.warehouseName = warehouse.warehouseName; // 仓库名称
+    },
+    /** 仓库编号下拉列表框，选择值改变后回调方法 */
+    selChangeWarehouseId(selValue) {
+      console.log("选择的仓库编号是：" + selValue);
+      this.form.warehouseCode = selValue; // 仓库名称
+    },
     /** 查询采购收货销售发货管理列表 */
     getList() {
       this.loading = true;
@@ -758,6 +1028,7 @@ export default {
               this.getList();
             });
           } else {
+            console.log("新增" + JSON.stringify(this.form))
             addDeliver(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

@@ -184,4 +184,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{deliverId}
         </foreach>
     </delete>
+
+    <!-- 取得最大的发货编号 -->
+    <select id="selectMaxDeliverId" resultMap="SaleDeliverInfoResult">
+        SELECT max(t.deliver_id) as deliver_id FROM sale_deliver_info t
+    </select>
 </mapper>

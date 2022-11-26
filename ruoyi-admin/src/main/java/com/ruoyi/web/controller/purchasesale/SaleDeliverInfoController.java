@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,6 +80,17 @@ public class SaleDeliverInfoController extends BaseController
     @Log(title = "发货管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SaleDeliverInfo saleDeliverInfo) {
+
+        SaleDeliverInfo maxSaleDeliverInfo = saleDeliverInfoService.selectMaxDeliverId();
+        if (maxSaleDeliverInfo == null) {
+            saleDeliverInfo.setDeliverId("ASN00000000");
+        } else {
+            String maxDeliverId = maxSaleDeliverInfo.getDeliverId();
+            String id = maxDeliverId.substring(2, maxDeliverId.length());
+            int maxId = Integer.parseInt(id) + 1;
+            saleDeliverInfo.setDeliverId("ASN" + StringUtils.padl(maxId, 8));
+        }
+
         saleDeliverInfo.setBizVersion(1L);
         saleDeliverInfo.setCreateTime(DateUtils.getNowDate());
         saleDeliverInfo.setUpdateTime(DateUtils.getNowDate());

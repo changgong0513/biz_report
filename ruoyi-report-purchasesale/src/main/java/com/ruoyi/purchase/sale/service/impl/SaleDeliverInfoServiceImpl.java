@@ -45,6 +45,15 @@ public class SaleDeliverInfoServiceImpl implements ISaleDeliverInfoService
     }
 
     /**
+     * 取得最大的发货编号
+     *
+     * @return 发货管理
+     */
+    public SaleDeliverInfo selectMaxDeliverId() {
+        return saleDeliverInfoMapper.selectMaxDeliverId();
+    }
+
+    /**
      * 新增发货管理
      * 
      * @param saleDeliverInfo 发货管理

@@ -22,8 +22,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectMasterDataMaterialInfoList" parameterType="MasterDataMaterialInfo" resultMap="MasterDataMaterialInfoResult">
         <include refid="selectMasterDataMaterialInfoVo"/>
-        <where>  
-            <if test="materialId != null  and materialId != ''"> and material_id = #{materialId}</if>
+        <where>
+            <if test="materialId != null  and materialId != ''"> and material_id like concat('%', #{materialId}, '%')</if>
             <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
             <if test="materialUnit != null "> and material_unit = #{materialUnit}</if>
             <if test="billingAlias != null  and billingAlias != ''"> and billing_alias like concat('%', #{billingAlias}, '%')</if>
