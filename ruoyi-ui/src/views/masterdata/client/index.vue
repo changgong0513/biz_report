@@ -572,7 +572,8 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+      showDetail: false
     };
   },
   created() {

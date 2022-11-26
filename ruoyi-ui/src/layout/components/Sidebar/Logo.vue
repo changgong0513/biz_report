@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: '业务报表系统',
+      title: '中粟业务管理系统',
       logo: logoImg
     }
   }
