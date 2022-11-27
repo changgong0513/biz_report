@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,6 +80,18 @@ public class KcdbMainInfoController extends BaseController
     @Log(title = "存库调拨", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody KcdbMainInfo kcdbMainInfo) {
+
+        KcdbMainInfo maxKcdbMainInfo = kcdbMainInfoService.selectMaxDhForDc();
+        if (maxKcdbMainInfo == null) {
+            kcdbMainInfo.setDh("DH00000000");
+        } else {
+            String maxDcdh = maxKcdbMainInfo.getDh();
+            String id = maxDcdh.substring(2, maxDcdh.length());
+            int maxId = Integer.parseInt(id) + 1;
+            kcdbMainInfo.setDh("DH" + StringUtils.padl(maxId, 8));
+        }
+
+        kcdbMainInfo.setRecordFlag("dc"); // 库存调出
         kcdbMainInfo.setBizVersion(1L);
         kcdbMainInfo.setCreateTime(DateUtils.getNowDate());
         kcdbMainInfo.setUpdateTime(DateUtils.getNowDate());

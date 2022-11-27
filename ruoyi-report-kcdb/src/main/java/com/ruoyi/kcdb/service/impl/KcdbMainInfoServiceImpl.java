@@ -45,6 +45,15 @@ public class KcdbMainInfoServiceImpl implements IKcdbMainInfoService
     }
 
     /**
+     * 取得库存调出最大的调拨单号
+     *
+     * @return
+     */
+    public KcdbMainInfo selectMaxDhForDc() {
+        return kcdbMainInfoMapper.selectMaxDhForDc();
+    }
+
+    /**
      * 新增存库调拨
      * 
      * @param kcdbMainInfo 存库调拨

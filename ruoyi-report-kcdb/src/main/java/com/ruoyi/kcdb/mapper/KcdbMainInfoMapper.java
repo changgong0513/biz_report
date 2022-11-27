@@ -29,6 +29,13 @@ public interface KcdbMainInfoMapper
     public List<KcdbMainInfo> selectKcdbMainInfoList(KcdbMainInfo kcdbMainInfo);
 
     /**
+     * 取得库存调出最大的调拨单号
+     *
+     * @return
+     */
+    public KcdbMainInfo selectMaxDhForDc();
+
+    /**
      * 新增存库调拨
      * 
      * @param kcdbMainInfo 存库调拨

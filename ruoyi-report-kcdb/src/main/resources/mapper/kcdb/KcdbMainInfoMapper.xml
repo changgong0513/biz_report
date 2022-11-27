@@ -19,6 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="xhsl"    column="xhsl"    />
         <result property="dbrq"    column="dbrq"    />
         <result property="bz"    column="bz"    />
+        <result property="pch"    column="pch"    />
+        <result property="dbje"    column="dbje"    />
+        <result property="recordFlag"    column="record_flag"    />
+        <result property="nqry"    column="nqry"    />
+        <result property="fhckmc"    column="warehouse_name"    />
+        <result property="materialName"    column="material_name"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -27,12 +33,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectKcdbMainInfoVo">
-        select dh, lx, fhck, shck, fhbm, shbm, wlmc, dbsl, ysfs, jsfs, jsdj, xhsl, dbrq, bz, create_by, create_time, update_by, update_time, biz_version from kcdb_main_info
+        select
+            dh, lx, fhck, shck, fhbm, shbm,
+            wlmc, dbsl, ysfs, jsfs, jsdj, xhsl,
+            dbrq, bz, pch, dbje, record_flag, nqry,
+            warehouse_name, material_name
+        from
+            kcdb_main_info t1, master_data_warehouse_base_info t2, master_data_material_info t3
     </sql>
 
     <select id="selectKcdbMainInfoList" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
         <include refid="selectKcdbMainInfoVo"/>
-        <where>  
+        <where>
+            t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id
             <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
             <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
             <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
@@ -44,6 +57,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectKcdbMainInfoByDh" parameterType="String" resultMap="KcdbMainInfoResult">
         <include refid="selectKcdbMainInfoVo"/>
         where dh = #{dh}
+    </select>
+
+    <!-- 取得库存调出最大的调拨单号 -->
+    <select id="selectMaxDhForDc" resultMap="KcdbMainInfoResult">
+        SELECT max(t.dh) as dh FROM kcdb_main_info t WHERE t.record_flag = 'dc'
     </select>
         
     <insert id="insertKcdbMainInfo" parameterType="KcdbMainInfo">
@@ -63,6 +81,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="xhsl != null">xhsl,</if>
             <if test="dbrq != null">dbrq,</if>
             <if test="bz != null">bz,</if>
+            <if test="pch != null">pch,</if>
+            <if test="dbje != null">dbje,</if>
+            <if test="recordFlag != null">record_flag,</if>
+            <if test="nqry != null">nqry,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -84,6 +106,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="xhsl != null">#{xhsl},</if>
             <if test="dbrq != null">#{dbrq},</if>
             <if test="bz != null">#{bz},</if>
+            <if test="pch != null">#{pch},</if>
+            <if test="dbje != null">#{dbje},</if>
+            <if test="recordFlag != null">#{recordFlag},</if>
+            <if test="nqry != null">#{nqry},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
