@@ -30,6 +30,10 @@ public class KcdbMainInfo extends BaseEntity
     @Excel(name = "发货仓库")
     private String fhck;
 
+    /** 发货仓库名称 */
+    @Excel(name = "发货仓库名称")
+    private String fhckmc;
+
     /** 收货仓库 */
     @Excel(name = "收货仓库")
     private String shck;
@@ -42,8 +46,11 @@ public class KcdbMainInfo extends BaseEntity
     @Excel(name = "收货部门", dictType = "purchasesale_belong_dept")
     private String shbm;
 
-    /** 物料名称 */
+    /** 物料编号 */
     private String wlmc;
+
+    /** 物料名称 */
+    private String materialName;
 
     /** 调拨数量 */
     private BigDecimal dbsl;
@@ -67,6 +74,18 @@ public class KcdbMainInfo extends BaseEntity
 
     /** 备注 */
     private String bz;
+
+    /** 批次号 */
+    private int pch;
+
+    /** 调拨金额 */
+    private BigDecimal dbje;
+
+    /** 调拨方向（dr: 调入 dc: 调出） */
+    private String recordFlag;
+
+    /** 内勤人员 */
+    private String nqry;
 
     /** 版本号 */
     private Long bizVersion;
@@ -205,6 +224,54 @@ public class KcdbMainInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public int getPch() {
+        return pch;
+    }
+
+    public void setPch(int pch) {
+        this.pch = pch;
+    }
+
+    public BigDecimal getDbje() {
+        return dbje;
+    }
+
+    public void setDbje(BigDecimal dbje) {
+        this.dbje = dbje;
+    }
+
+    public String getRecordFlag() {
+        return recordFlag;
+    }
+
+    public void setRecordFlag(String recordFlag) {
+        this.recordFlag = recordFlag;
+    }
+
+    public String getNqry() {
+        return nqry;
+    }
+
+    public void setNqry(String nqry) {
+        this.nqry = nqry;
+    }
+
+    public String getFhckmc() {
+        return fhckmc;
+    }
+
+    public void setFhckmc(String fhckmc) {
+        this.fhckmc = fhckmc;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
     }
 
     @Override
