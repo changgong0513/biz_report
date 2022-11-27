@@ -525,6 +525,7 @@ export default {
     /** 查询存库调拨列表 */
     getList() {
       this.loading = true;
+      this.queryParams.recordFlag = "dc";
       listKcdb(this.queryParams).then(response => {
         this.kcdbList = response.rows;
         this.total = response.total;

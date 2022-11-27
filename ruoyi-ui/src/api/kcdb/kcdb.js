@@ -10,9 +10,9 @@ export function listKcdb(query) {
 }
 
 // 查询存库调拨详细
-export function getKcdb(dh) {
+export function getKcdb(dbId) {
   return request({
-    url: '/kcdb/mgr/' + dh,
+    url: '/kcdb/mgr/' + dbId,
     method: 'get'
   })
 }

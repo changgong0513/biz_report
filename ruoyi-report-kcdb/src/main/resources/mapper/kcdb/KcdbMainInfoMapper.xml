@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="nqry"    column="nqry"    />
         <result property="fhckmc"    column="warehouse_name"    />
         <result property="materialName"    column="material_name"    />
+        <result property="dbId"    column="id"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -37,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             dh, lx, fhck, shck, fhbm, shbm,
             wlmc, dbsl, ysfs, jsfs, jsdj, xhsl,
             dbrq, bz, pch, dbje, record_flag, nqry,
-            warehouse_name, material_name
+            warehouse_name, material_name, id
         from
             kcdb_main_info t1, master_data_warehouse_base_info t2, master_data_material_info t3
     </sql>
@@ -45,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectKcdbMainInfoList" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
         <include refid="selectKcdbMainInfoVo"/>
         <where>
-            t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id
+            t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id and t1.record_flag = #{recordFlag}
             <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
             <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
             <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
@@ -56,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectKcdbMainInfoByDh" parameterType="String" resultMap="KcdbMainInfoResult">
         <include refid="selectKcdbMainInfoVo"/>
-        where dh = #{dh}
+        where t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id and id = #{dbId}
     </select>
 
     <!-- 取得库存调出最大的调拨单号 -->
@@ -140,7 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="bizVersion != null">biz_version = #{bizVersion},</if>
         </trim>
-        where dh = #{dh}
+        where id = #{dbId}
     </update>
 
     <delete id="deleteKcdbMainInfoByDh" parameterType="String">

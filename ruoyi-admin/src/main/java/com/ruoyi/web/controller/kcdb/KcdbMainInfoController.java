@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.kcdb;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,10 +68,16 @@ public class KcdbMainInfoController extends BaseController
      * 获取存库调拨详细信息
      */
     @PreAuthorize("@ss.hasPermi('kcdb:kcdb:query')")
-    @GetMapping(value = "/{dh}")
-    public AjaxResult getInfo(@PathVariable("dh") String dh)
-    {
-        return AjaxResult.success(kcdbMainInfoService.selectKcdbMainInfoByDh(dh));
+    @GetMapping(value = "/{dbId}")
+    public AjaxResult getInfo(@PathVariable("dbId") String dbId) {
+        KcdbMainInfo selKcdbMainInfo = kcdbMainInfoService.selectKcdbMainInfoByDh(dbId);
+        if (selKcdbMainInfo.getXhsl() != null && selKcdbMainInfo.getDbsl() != null) {
+            long xhsl = selKcdbMainInfo.getXhsl();
+            BigDecimal dbsl = selKcdbMainInfo.getDbsl();
+            selKcdbMainInfo.setDbsl(dbsl.subtract(new BigDecimal(xhsl)));
+        }
+
+        return AjaxResult.success(selKcdbMainInfo);
     }
 
     /**
@@ -81,17 +88,36 @@ public class KcdbMainInfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody KcdbMainInfo kcdbMainInfo) {
 
-        KcdbMainInfo maxKcdbMainInfo = kcdbMainInfoService.selectMaxDhForDc();
-        if (maxKcdbMainInfo == null) {
-            kcdbMainInfo.setDh("DH00000000");
+        if (StringUtils.equals(kcdbMainInfo.getRecordFlag(), "dc")) {
+            KcdbMainInfo maxKcdbMainInfo = kcdbMainInfoService.selectMaxDhForDc();
+            if (maxKcdbMainInfo == null) {
+                kcdbMainInfo.setDh("DH00000000");
+            } else {
+                String maxDcdh = maxKcdbMainInfo.getDh();
+                String id = maxDcdh.substring(2, maxDcdh.length());
+                int maxId = Integer.parseInt(id) + 1;
+                kcdbMainInfo.setDh("DH" + StringUtils.padl(maxId, 8));
+            }
+
+            kcdbMainInfo.setRecordFlag("dc"); // 库存调出
         } else {
-            String maxDcdh = maxKcdbMainInfo.getDh();
-            String id = maxDcdh.substring(2, maxDcdh.length());
-            int maxId = Integer.parseInt(id) + 1;
-            kcdbMainInfo.setDh("DH" + StringUtils.padl(maxId, 8));
+            // 更新库存调出卸货数量
+            KcdbMainInfo selectKcdbMainInfo = kcdbMainInfoService.selectKcdbMainInfoByDh(kcdbMainInfo.getDbId());
+            long xhsl = 0;
+            if (selectKcdbMainInfo != null) {
+                if (selectKcdbMainInfo.getXhsl() != null) {
+                    xhsl = selectKcdbMainInfo.getXhsl();
+                }
+            }
+
+            KcdbMainInfo updateKcdbMainInfo = new KcdbMainInfo();
+            updateKcdbMainInfo.setDbId(kcdbMainInfo.getDbId());
+            updateKcdbMainInfo.setXhsl(kcdbMainInfo.getXhsl() + xhsl);
+            kcdbMainInfoService.updateKcdbMainInfo(updateKcdbMainInfo);
+
+            kcdbMainInfo.setDbId(null);
         }
 
-        kcdbMainInfo.setRecordFlag("dc"); // 库存调出
         kcdbMainInfo.setBizVersion(1L);
         kcdbMainInfo.setCreateTime(DateUtils.getNowDate());
         kcdbMainInfo.setUpdateTime(DateUtils.getNowDate());

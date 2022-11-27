@@ -18,6 +18,9 @@ public class KcdbMainInfo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    /** 调拨编号（无业务含义） */
+    private String dbId;
+
     /** 调拨单号 */
     @Excel(name = "调拨单号")
     private String dh;
@@ -272,6 +275,14 @@ public class KcdbMainInfo extends BaseEntity
 
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
+    }
+
+    public String getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(String dbId) {
+        this.dbId = dbId;
     }
 
     @Override
