@@ -4,7 +4,7 @@
       <!-- 发货部门（库存调出） -->
       <el-form-item label="所属部门" prop="fhbm">
         <el-select
-          v-model="form.fhbm"
+          v-model="queryParams.fhbm"
           placeholder="请输入所属部门"
           style="width: 240px"
         >
@@ -526,6 +526,7 @@ export default {
     getList() {
       this.loading = true;
       this.queryParams.recordFlag = "dc";
+      console.log(JSON.stringify(this.queryParams));
       listKcdb(this.queryParams).then(response => {
         this.kcdbList = response.rows;
         this.total = response.total;
