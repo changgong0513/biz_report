@@ -22,9 +22,11 @@ public class ContractContentInfo extends BaseEntity
     private String goodsId;
 
     /** 货物名称 */
+    @Excel(name = "货物名称")
     private String goodsName;
 
     /** 合同类型 */
+    @Excel(name = "合同类型", dictType = "contractmgr_contract_type")
     private String contractType;
 
     /** 合同名称 */
@@ -46,9 +48,11 @@ public class ContractContentInfo extends BaseEntity
     private Date deliveryDate;
 
     /** 我方单位名称 */
+    @Excel(name = "我方单位名称")
     private String ourCompanyName;
 
     /** 我方负责人 */
+    @Excel(name = "我方负责人")
     private String ourPrincipal;
 
     /** 对方单位名称 */
@@ -56,12 +60,15 @@ public class ContractContentInfo extends BaseEntity
     private String oppositeCompanyName;
 
     /** 对方负责人 */
+    @Excel(name = "对方负责人")
     private String oppositePrincipal;
 
     /** 合同数量 */
+    @Excel(name = "合同数量")
     private String contractQuantity;
 
     /** 合同单价 */
+    @Excel(name = "合同单价")
     private BigDecimal contractPrice;
 
     /** 合同总价 */
@@ -75,24 +82,35 @@ public class ContractContentInfo extends BaseEntity
     private BigDecimal rightContractTotal;
 
     /** 账期 */
+    @Excel(name = "账期方式")
     private String accountingPeriod;
 
+    /** 账期期限 */
+    @Excel(name = "账期期限")
+    private String accountingPeriodTerm;
+
     /** 交货方式 */
+    @Excel(name = "交货方式")
     private String deliveryMethod;
 
     /** 港口到厂运费 */
+    @Excel(name = "港口到厂运费")
     private BigDecimal portToFactoryFare;
 
     /** 港口到港口运费 */
+    @Excel(name = "港口到港口运费")
     private BigDecimal portToPortFare;
 
     /** 其他 */
+    @Excel(name = "其他")
     private String contractOther;
 
     /** 代理或合作方 */
+    @Excel(name = "代理或合作方")
     private String contractAgent;
 
     /** 合同备注 */
+    @Excel(name = "备注")
     private String contractRemark;
 
     /** 合同状态 */
@@ -103,6 +121,9 @@ public class ContractContentInfo extends BaseEntity
 
     /** 在采购或销售表是否存在 */
     private int constractIsExist;
+
+    /** 针对合同动作类型（1：保存 2：生成） */
+    private String contractActionType;
 
     public int getConstractIsExist() {
         return constractIsExist;
@@ -336,6 +357,22 @@ public class ContractContentInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public String getContractActionType() {
+        return contractActionType;
+    }
+
+    public void setContractActionType(String contractActionType) {
+        this.contractActionType = contractActionType;
+    }
+
+    public String getAccountingPeriodTerm() {
+        return accountingPeriodTerm;
+    }
+
+    public void setAccountingPeriodTerm(String accountingPeriodTerm) {
+        this.accountingPeriodTerm = accountingPeriodTerm;
     }
 
     @Override

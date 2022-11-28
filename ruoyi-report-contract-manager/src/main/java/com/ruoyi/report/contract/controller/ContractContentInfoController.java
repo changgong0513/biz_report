@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
@@ -20,6 +21,7 @@ import com.ruoyi.report.contract.domain.ContractAdditionalInfo;
 import com.ruoyi.report.contract.domain.UploadData;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -83,13 +85,27 @@ public class ContractContentInfoController extends BaseController
     @Log(title = "合同管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ContractContentInfo contractContentInfo) {
+
+        int retCode = 1;
+
         contractContentInfo.setGoodsId(UUID.randomUUID().toString().replace("-", ""));
-        contractContentInfo.setBizVersion(1L);
-        contractContentInfo.setCreateTime(DateUtils.getNowDate());
-        contractContentInfo.setUpdateTime(DateUtils.getNowDate());
-        contractContentInfo.setCreateBy(SecurityUtils.getUsername());
-        contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
-        return toAjax(contractContentInfoService.insertContractContentInfo(contractContentInfo));
+
+        String actionType = contractContentInfo.getContractActionType();
+        if (StringUtils.equals(actionType, "1")) {
+            // 保存合同合同数据
+            contractContentInfo.setBizVersion(1L);
+            contractContentInfo.setCreateTime(DateUtils.getNowDate());
+            contractContentInfo.setUpdateTime(DateUtils.getNowDate());
+            contractContentInfo.setCreateBy(SecurityUtils.getUsername());
+            contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
+            retCode = contractContentInfoService.insertContractContentInfo(contractContentInfo);
+        } else {
+            // 根据合同数据，导入到采购表或者销售表
+            retCode = contractContentInfoService
+                    .importContractDataIntoPurchaseSaleTable(contractContentInfo);
+        }
+
+        return toAjax(retCode);
     }
 
     /**
@@ -98,7 +114,22 @@ public class ContractContentInfoController extends BaseController
     @Log(title = "合同管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ContractContentInfo contractContentInfo) {
-        return toAjax(contractContentInfoService.updateContractContentInfo(contractContentInfo));
+
+        int retCode = 1;
+
+        contractContentInfo.setUpdateTime(DateUtils.getNowDate());
+        contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
+
+        String actionType = contractContentInfo.getContractActionType();
+        if (StringUtils.equals(actionType, "1")) {
+            retCode = contractContentInfoService
+                    .updateContractContentInfo(contractContentInfo);
+        } else {
+            retCode = contractContentInfoService
+                    .importContractDataIntoPurchaseSaleTable(contractContentInfo);
+        }
+
+        return toAjax(retCode);
     }
 
     /**
@@ -195,7 +226,35 @@ public class ContractContentInfoController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 导入合同模板下载。
+     *
+     * @param response
+     */
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<ContractContentInfo> util = new ExcelUtil<ContractContentInfo>(ContractContentInfo.class);
+        util.importTemplateExcel(response, "合同数据");
+    }
 
+    /**
+     * 导入合同数据.
+     *
+     * @param file
+     * @param updateSupport
+     * @return
+     * @throws Exception
+     */
+    @Log(title = "合同管理", businessType = BusinessType.IMPORT)
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+        ExcelUtil<ContractContentInfo> util = new ExcelUtil<ContractContentInfo>(ContractContentInfo.class);
+        List<ContractContentInfo> contractList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = contractContentInfoService.importContract(contractList, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
 
     private static final File createAbsoluteFile(String uploadDir, String fileName)
             throws IOException {

@@ -15,18 +15,27 @@ import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiGettokenRequest;
 import com.dingtalk.api.response.OapiGettokenResponse;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
 import com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper;
+import com.ruoyi.system.service.impl.SysUserServiceImpl;
 import com.taobao.api.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.report.contract.mapper.ContractContentInfoMapper;
 import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.ruoyi.report.contract.service.IContractContentInfoService;
+
+import javax.validation.Validator;
 
 /**
  * 合同管理Service业务层处理
@@ -35,13 +44,18 @@ import com.ruoyi.report.contract.service.IContractContentInfoService;
  * @date 2022-10-30
  */
 @Service
-public class ContractContentInfoServiceImpl implements IContractContentInfoService 
-{
+public class ContractContentInfoServiceImpl implements IContractContentInfoService {
+
+    private static final Logger log = LoggerFactory.getLogger(ContractContentInfoServiceImpl.class);
+
     @Autowired
     private ContractContentInfoMapper contractContentInfoMapper;
 
     @Autowired
     private PurchaseSaleOrderInfoMapper purchaseSaleOrderInfoMapper;
+
+    @Autowired
+    protected Validator validator;
 
     private static com.aliyun.dingtalkworkflow_1_0.Client client = null;
 
@@ -172,44 +186,110 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             System.out.println("审批实例ID：" + id);
             ContractContentInfo contract = getContractData(accessToken, id);
 
-            if (contract != null) {
-                contract.setBizVersion(1L);
-                contract.setCreateTime(DateUtils.getNowDate());
-                contract.setUpdateTime(DateUtils.getNowDate());
-                contract.setCreateBy(SecurityUtils.getUsername());
-                contract.setUpdateBy(SecurityUtils.getUsername());
-                System.out.println("------从钉钉同步合同数据：" + contract);
-
-                ContractContentInfo selectContract = null;
-                selectContract = contractContentInfoMapper.selectContractContentInfoByContractId(contract.getContractId());
-                if (selectContract == null) {
-                    contractContentInfoMapper.insertContractContentInfo(contract);
-                } else {
-                    System.out.println("------从钉钉同步的合同编号为：" + selectContract.getContractId() + "已经同步完成");
-                }
-
-                PurchaseSaleOrderInfo purchaseInfo = purchaseSaleOrderInfoMapper
-                        .selectPurchaseSaleOrderInfoByContractId(contract.getContractId());
-                if (purchaseInfo == null) {
-                    purchaseInfo = new PurchaseSaleOrderInfo();
-                    purchaseInfo.setOrderId(contract.getContractId());
-                    purchaseInfo.setBizVersion(1L);
-                    purchaseInfo.setCreateTime(DateUtils.getNowDate());
-                    purchaseInfo.setUpdateTime(DateUtils.getNowDate());
-                    purchaseInfo.setCreateBy(SecurityUtils.getUsername());
-                    purchaseInfo.setUpdateBy(SecurityUtils.getUsername());
-
-                    fillPurchaseInfoFromContract(contract, purchaseInfo);
-
-                    purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseInfo);
-                } else {
-                    fillPurchaseInfoFromContract(contract, purchaseInfo);
-                    purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
-                }
+            // 检查合同是否已经导入合同表
+            ContractContentInfo selectContract = null;
+            selectContract = contractContentInfoMapper
+                    .selectContractContentInfoByContractId(contract.getContractId());
+            if (selectContract == null) {
+                contractContentInfoMapper.insertContractContentInfo(contract);
             }
+
+//            if (contract != null) {
+//                contract.setBizVersion(1L);
+//                contract.setCreateTime(DateUtils.getNowDate());
+//                contract.setUpdateTime(DateUtils.getNowDate());
+//                contract.setCreateBy(SecurityUtils.getUsername());
+//                contract.setUpdateBy(SecurityUtils.getUsername());
+//                System.out.println("------从钉钉同步合同数据：" + contract);
+//
+//                ContractContentInfo selectContract = null;
+//                selectContract = contractContentInfoMapper.selectContractContentInfoByContractId(contract.getContractId());
+//                if (selectContract == null) {
+//                    contractContentInfoMapper.insertContractContentInfo(contract);
+//                } else {
+//                    System.out.println("------从钉钉同步的合同编号为：" + selectContract.getContractId() + "已经同步完成");
+//                }
+//
+//                PurchaseSaleOrderInfo purchaseInfo = purchaseSaleOrderInfoMapper
+//                        .selectPurchaseSaleOrderInfoByContractId(contract.getContractId());
+//                if (purchaseInfo == null) {
+//                    purchaseInfo = new PurchaseSaleOrderInfo();
+//                    purchaseInfo.setOrderId(contract.getContractId());
+//                    purchaseInfo.setBizVersion(1L);
+//                    purchaseInfo.setCreateTime(DateUtils.getNowDate());
+//                    purchaseInfo.setUpdateTime(DateUtils.getNowDate());
+//                    purchaseInfo.setCreateBy(SecurityUtils.getUsername());
+//                    purchaseInfo.setUpdateBy(SecurityUtils.getUsername());
+//
+//                    fillPurchaseInfoFromContract(contract, purchaseInfo);
+//
+//                    purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseInfo);
+//                } else {
+//                    fillPurchaseInfoFromContract(contract, purchaseInfo);
+//                    purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
+//                }
+//            }
         }
 
         return 1;
+    }
+
+    @Override
+    public String importContract(List<ContractContentInfo> contractList, Boolean isUpdateSupport,
+                                 String operName) {
+
+        if (StringUtils.isNull(contractList) || contractList.size() == 0) {
+            throw new ServiceException("导入合同数据不能为空！");
+        }
+
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+
+        for (ContractContentInfo contract : contractList) {
+            try {
+                ContractContentInfo selContract = contractContentInfoMapper
+                        .selectContractContentInfoByContractId(contract.getContractId());
+                if (StringUtils.isNull(selContract)) {
+                    BeanValidators.validateWithException(validator, contract);
+                    contract.setBizVersion(1L);
+                    contract.setCreateTime(DateUtils.getNowDate());
+                    contract.setUpdateTime(DateUtils.getNowDate());
+                    contract.setCreateBy(operName);
+                    contract.setUpdateBy(operName);
+                    insertContractContentInfo(contract);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、账号 " + contract.getContractName() + " 导入成功");
+                } else if (isUpdateSupport) {
+                    BeanValidators.validateWithException(validator, contract);
+                    contract.setBizVersion(1L);
+                    contract.setUpdateTime(DateUtils.getNowDate());
+                    contract.setUpdateBy(operName);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、合同 " + contract.getContractName() + " 更新成功");
+                } else {
+                    failureNum++;
+                    failureMsg.append("<br/>" + failureNum + "、合同 " + contract.getContractName() + " 已存在");
+                }
+            } catch (Exception e) {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、合同 " + contract.getContractName() + " 导入失败：";
+                failureMsg.append(msg + e.getMessage());
+                log.error(msg, e);
+            }
+        }
+
+        if (failureNum > 0)
+        {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new ServiceException(failureMsg.toString());
+        }
+        else
+        {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+        }
+        return successMsg.toString();
     }
 
     private static com.aliyun.dingtalkworkflow_1_0.Client createClient() throws Exception {
@@ -513,5 +593,46 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         }
 
         purchaseInfo.setOrderStatus(contractInfo.getContractStatus());
+    }
+
+    /**
+     * 导入合同数据到采购表或者销售表
+     *
+     * @return 结果
+     */
+    public int importContractDataIntoPurchaseSaleTable(ContractContentInfo contract) {
+
+        if (contract == null) {
+            return 0;
+        }
+
+        contract.setBizVersion(1L);
+        contract.setCreateTime(DateUtils.getNowDate());
+        contract.setUpdateTime(DateUtils.getNowDate());
+        contract.setCreateBy(SecurityUtils.getUsername());
+        contract.setUpdateBy(SecurityUtils.getUsername());
+
+        // 检查是否已经导入采购表和销售表
+        PurchaseSaleOrderInfo purchaseInfo = purchaseSaleOrderInfoMapper
+                .selectPurchaseSaleOrderInfoByContractId(contract.getContractId());
+        if (purchaseInfo == null) {
+            purchaseInfo = new PurchaseSaleOrderInfo();
+            purchaseInfo.setOrderId(contract.getContractId());
+            purchaseInfo.setBizVersion(1L);
+            purchaseInfo.setCreateTime(DateUtils.getNowDate());
+            purchaseInfo.setUpdateTime(DateUtils.getNowDate());
+            purchaseInfo.setCreateBy(SecurityUtils.getUsername());
+            purchaseInfo.setUpdateBy(SecurityUtils.getUsername());
+
+            fillPurchaseInfoFromContract(contract, purchaseInfo);
+
+            purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseInfo);
+        } else {
+            fillPurchaseInfoFromContract(contract, purchaseInfo);
+
+            purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
+        }
+
+        return 1;
     }
 }

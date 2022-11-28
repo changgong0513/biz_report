@@ -1,6 +1,8 @@
 package com.ruoyi.report.contract.service;
 
 import java.util.List;
+
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.taobao.api.ApiException;
 
@@ -65,4 +67,21 @@ public interface IContractContentInfoService {
      * @return 结果
      */
     public int syncContractContentInfo() throws Exception;
+
+    /**
+     * 导入合同数据到采购表或者销售表
+     *
+     * @return 结果
+     */
+    public int importContractDataIntoPurchaseSaleTable(ContractContentInfo contract);
+
+    /**
+     * 导入合同数据
+     *
+     * @param contractList 合同数据列表
+     * @param isUpdateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @param operName 操作用户
+     * @return 结果
+     */
+    public String importContract(List<ContractContentInfo> contractList, Boolean isUpdateSupport, String operName);
 }

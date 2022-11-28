@@ -130,6 +130,15 @@
           @click="handleExport"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="info"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImport"
+        >导入</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -330,12 +339,41 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button type="success" @click="submitForm" v-show="this.isUpdate">保 存</el-button>
-        <el-button type="warning" @click="submitForm" v-show="this.isUpdate" :disabled="form.constractIsExist == 1">生 成</el-button>
+        <el-button type="primary" @click="submitForm('1')" :disabled="form.constractIsExist == 1">保 存</el-button>
+        <el-button type="warning" @click="submitForm('2')" :disabled="form.constractIsExist == 1">生 成</el-button>
         <el-button @click="cancel(1)">取 消</el-button>
       </div>
     </el-dialog> 
+
+    <!-- 合同导入对话框 -->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url + '?updateSupport=' + upload.updateSupport"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <div class="el-upload__tip" slot="tip">
+            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的用户数据
+          </div>
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -343,6 +381,7 @@
 import { listContract, getContract, addContract, delContract, updateContract, syncContract, uploadFile, getContractAdditional, delteFile } from "@/api/contract/contract";
 import { listMaterialData } from "@/api/masterdata/material";
 import { download } from "@/utils/request";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "Contract",
@@ -373,6 +412,21 @@ export default {
       open: false,
       // 是否显示和合同详细弹出层
       openDetail: false,
+      // 用户导入参数
+      upload: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/contract/mgr/importData"
+      },
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -413,6 +467,7 @@ export default {
         'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
       ],
       isUpdate: false,
+      isSave: false, // 是否单选保存按钮
       // 合同附件列表
       contractAdditionalList: [],
       remoteLoadingGoodsName: false,
@@ -540,16 +595,19 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm() {
+    submitForm(actionType) {
+      return false;
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
+            this.form.contractActionType = actionType;
             updateContract(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
+            this.form.contractActionType = actionType;
             addContract(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
@@ -647,7 +705,17 @@ export default {
           console.log(JSON.stringify(response.rows));
           this.contractAdditionalList = response.rows;
       });
-    }
+    },
+    /** 导入按钮操作 */
+    handleImport() {
+      this.upload.title = "合同导入";
+      this.upload.open = true;
+    },
+       /** 下载模板操作 */
+    importTemplate() {
+      this.download('/contract/mgr/importTemplate', {
+      }, `合同模板_${new Date().getTime()}.xlsx`)
+    },
   }
 };
 </script>
