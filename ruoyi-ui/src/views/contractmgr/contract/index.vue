@@ -338,6 +338,53 @@
           </el-col>
         </el-row>
       </el-form>
+      <el-divider />
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="12">
+          <h3 style="display:inline; margin-right: 15px">合同审批信息</h3>
+          <el-switch
+            v-model="showApproval"
+            active-color="#13ce66">
+          </el-switch>
+        </el-col>
+      </el-row>
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px" v-show="showApproval">
+        <el-row>
+          <el-col :span="8"><el-form-item label="合同编号">{{form.contractId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批编号">{{form.approvalId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="标题">{{form.approvalTitle}}</el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="审批状态">{{form.approvalStatus}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批结果">{{form.approvalResult}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起时间">{{form.launchTime}}</el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="完成时间">{{form.completeTime}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="耗时">{{form.takeupTime}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人工号">{{form.launchJobId}}</el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="发起人ID">{{form.launchId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人姓名">{{form.launchName}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人部门">{{form.launchDepartment}}</el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8"><el-form-item label="审批人姓名">{{form.approvalName}}</el-form-item></el-col>
+          <el-col :span="16"><el-form-item label="当前处理人姓名">{{form.processorName}}</el-form-item></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="审批记录">
+              <el-input
+                type="textarea"
+                :rows="6"
+                v-model="form.approvalRecords">
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm('1')" :disabled="form.constractIsExist == 1">保 存</el-button>
         <el-button type="warning" @click="submitForm('2')" :disabled="form.constractIsExist == 1">生 成</el-button>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.contract.mapper.ContractApprovalInfoMapper">
+    
+    <resultMap type="ContractApprovalInfo" id="ContractApprovalInfoResult">
+        <result property="contractId"    column="contract_id"    />
+        <result property="approvalId"    column="approval_id"    />
+        <result property="approvalTitle"    column="approval_title"    />
+        <result property="approvalStatus"    column="approval_status"    />
+        <result property="approvalResult"    column="approval_result"    />
+        <result property="launchTime"    column="launch_time"    />
+        <result property="completeTime"    column="complete_time"    />
+        <result property="takeupTime"    column="takeup_time"    />
+        <result property="launchJobId"    column="launch_job_id"    />
+        <result property="launchId"    column="launch_id"    />
+        <result property="launchName"    column="launch_name"    />
+        <result property="launchDepartment"    column="launch_department"    />
+        <result property="approvalName"    column="approval_name"    />
+        <result property="processorName"    column="processor_name"    />
+        <result property="approvalRecords"    column="approval_records"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectContractApprovalInfoVo">
+        select contract_id, approval_id, approval_title, approval_status, approval_result, launch_time, complete_time, takeup_time, launch_job_id, launch_id, launch_name, launch_department, approval_name, processor_name, approval_records, create_by, create_time, update_by, update_time, biz_version from contract_approval_info
+    </sql>
+
+    <select id="selectContractApprovalInfoList" parameterType="ContractApprovalInfo" resultMap="ContractApprovalInfoResult">
+        <include refid="selectContractApprovalInfoVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectContractApprovalInfoByApprovalId" parameterType="String" resultMap="ContractApprovalInfoResult">
+        <include refid="selectContractApprovalInfoVo"/>
+        where approval_id = #{approvalId}
+    </select>
+        
+    <insert id="insertContractApprovalInfo" parameterType="ContractApprovalInfo">
+        insert into contract_approval_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractId != null and contractId != ''">contract_id,</if>
+            <if test="approvalId != null and approvalId != ''">approval_id,</if>
+            <if test="approvalTitle != null and approvalTitle != ''">approval_title,</if>
+            <if test="approvalStatus != null and approvalStatus != ''">approval_status,</if>
+            <if test="approvalResult != null">approval_result,</if>
+            <if test="launchTime != null">launch_time,</if>
+            <if test="completeTime != null">complete_time,</if>
+            <if test="takeupTime != null">takeup_time,</if>
+            <if test="launchJobId != null">launch_job_id,</if>
+            <if test="launchId != null">launch_id,</if>
+            <if test="launchName != null">launch_name,</if>
+            <if test="launchDepartment != null">launch_department,</if>
+            <if test="approvalName != null">approval_name,</if>
+            <if test="processorName != null">processor_name,</if>
+            <if test="approvalRecords != null">approval_records,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractId != null and contractId != ''">#{contractId},</if>
+            <if test="approvalId != null and approvalId != ''">#{approvalId},</if>
+            <if test="approvalTitle != null and approvalTitle != ''">#{approvalTitle},</if>
+            <if test="approvalStatus != null and approvalStatus != ''">#{approvalStatus},</if>
+            <if test="approvalResult != null">#{approvalResult},</if>
+            <if test="launchTime != null">#{launchTime},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+            <if test="takeupTime != null">#{takeupTime},</if>
+            <if test="launchJobId != null">#{launchJobId},</if>
+            <if test="launchId != null">#{launchId},</if>
+            <if test="launchName != null">#{launchName},</if>
+            <if test="launchDepartment != null">#{launchDepartment},</if>
+            <if test="approvalName != null">#{approvalName},</if>
+            <if test="processorName != null">#{processorName},</if>
+            <if test="approvalRecords != null">#{approvalRecords},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractApprovalInfo" parameterType="ContractApprovalInfo">
+        update contract_approval_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractId != null and contractId != ''">contract_id = #{contractId},</if>
+            <if test="approvalTitle != null and approvalTitle != ''">approval_title = #{approvalTitle},</if>
+            <if test="approvalStatus != null and approvalStatus != ''">approval_status = #{approvalStatus},</if>
+            <if test="approvalResult != null">approval_result = #{approvalResult},</if>
+            <if test="launchTime != null">launch_time = #{launchTime},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+            <if test="takeupTime != null">takeup_time = #{takeupTime},</if>
+            <if test="launchJobId != null">launch_job_id = #{launchJobId},</if>
+            <if test="launchId != null">launch_id = #{launchId},</if>
+            <if test="launchName != null">launch_name = #{launchName},</if>
+            <if test="launchDepartment != null">launch_department = #{launchDepartment},</if>
+            <if test="approvalName != null">approval_name = #{approvalName},</if>
+            <if test="processorName != null">processor_name = #{processorName},</if>
+            <if test="approvalRecords != null">approval_records = #{approvalRecords},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where approval_id = #{approvalId}
+    </update>
+
+    <delete id="deleteContractApprovalInfoByApprovalId" parameterType="String">
+        delete from contract_approval_info where approval_id = #{approvalId}
+    </delete>
+
+    <delete id="deleteContractApprovalInfoByApprovalIds" parameterType="String">
+        delete from contract_approval_info where approval_id in 
+        <foreach item="approvalId" collection="array" open="(" separator="," close=")">
+            #{approvalId}
+        </foreach>
+    </delete>
+</mapper>

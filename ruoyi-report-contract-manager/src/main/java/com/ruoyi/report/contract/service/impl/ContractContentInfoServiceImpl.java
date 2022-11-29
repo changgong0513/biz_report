@@ -1,7 +1,10 @@
 package com.ruoyi.report.contract.service.impl;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -184,6 +187,75 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         for (int i = 0; i < size; i++) {
             String id = ids.get(i);
             System.out.println("审批实例ID：" + id);
+
+            com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders getProcessInstanceHeaders = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders();
+            getProcessInstanceHeaders.xAcsDingtalkAccessToken = accessToken;
+            com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest getProcessInstanceRequest = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest()
+                    .setProcessInstanceId(id);
+
+            try {
+                com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceResponse rsp = null;
+                rsp = client.getProcessInstanceWithOptions(getProcessInstanceRequest,
+                        getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+
+                List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> valuesList = null;
+                valuesList = rsp.getBody().getResult().formComponentValues;
+                String contractId = valuesList.get(3).value; // 合同编号
+                String businessId = rsp.getBody().getResult().businessId; // 审批编号
+                String title = rsp.getBody().getResult().title;
+                String status = rsp.getBody().getResult().status;
+                String result = rsp.getBody().getResult().result;
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                String fqsj = rsp.getBody().getResult().createTime;
+                Date fqsjFormat = null;
+                try {
+                    fqsjFormat = sdf.parse(fqsj);//拿到Date对象
+                    fqsj = sdf2.format(fqsjFormat);//输出格式：2017-01-22 09:28:33
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String wcsj = rsp.getBody().getResult().finishTime;
+                Date wcsjFormat = null;
+                try {
+                    wcsjFormat = sdf.parse(wcsj);//拿到Date对象
+                    wcsj = sdf2.format(wcsjFormat);//输出格式：2017-01-22 09:28:33
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String spend = DateUtils.getDatePoor(DateUtils.parseDate(wcsj), DateUtils.parseDate(fqsj));
+                String fqrgh = "";
+                String fqrid = rsp.getBody().getResult().originatorUserId;
+                String fqrxm = rsp.getBody().getResult().originatorUserId;
+                String fqrbm = rsp.getBody().getResult().originatorDeptName;
+
+                List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords> list = null;
+                list = rsp.getBody().getResult().operationRecords;
+                List<String> sprxmList = new ArrayList<>();
+                for(GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords record: list) {
+                    sprxmList.add(record.getUserId());
+                }
+                String sprxm = StringUtils.join(sprxmList, ",");
+                String dqclr = sprxmList.get(sprxmList.size() - 1);
+
+                System.out.println(rsp.getBody().success);
+            } catch (TeaException err) {
+                if (!com.aliyun.teautil.Common.empty(err.code)
+                        && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                }
+
+            } catch (Exception _err) {
+                TeaException err = new TeaException(_err.getMessage(), _err);
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                }
+            }
+
             ContractContentInfo contract = getContractData(accessToken, id);
 
             // 检查合同是否已经导入合同表
