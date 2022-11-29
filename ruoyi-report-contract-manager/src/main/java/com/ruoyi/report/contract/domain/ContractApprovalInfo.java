@@ -1,6 +1,8 @@
 package com.ruoyi.report.contract.domain;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -39,7 +41,7 @@ public class ContractApprovalInfo extends BaseEntity
     private Date completeTime;
 
     /** 耗时 */
-    private Long takeupTime;
+    private String takeupTime;
 
     /** 发起人工号 */
     private String launchJobId;
@@ -64,6 +66,9 @@ public class ContractApprovalInfo extends BaseEntity
 
     /** 版本号 */
     private Long bizVersion;
+
+    /** 审批记录 */
+    List<ContractApprovalRecordsInfo> approvalRecordList;
 
     public void setContractId(String contractId) 
     {
@@ -128,12 +133,12 @@ public class ContractApprovalInfo extends BaseEntity
     {
         return completeTime;
     }
-    public void setTakeupTime(Long takeupTime) 
+    public void setTakeupTime(String takeupTime)
     {
         this.takeupTime = takeupTime;
     }
 
-    public Long getTakeupTime() 
+    public String getTakeupTime()
     {
         return takeupTime;
     }
@@ -208,6 +213,14 @@ public class ContractApprovalInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public List<ContractApprovalRecordsInfo> getApprovalRecordList() {
+        return approvalRecordList;
+    }
+
+    public void setApprovalRecordList(List<ContractApprovalRecordsInfo> approvalRecordList) {
+        this.approvalRecordList = approvalRecordList;
     }
 
     @Override

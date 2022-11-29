@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
 import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
@@ -16,18 +14,16 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.common.utils.uuid.UUID;
-import com.ruoyi.framework.config.ServerConfig;
-import com.ruoyi.report.contract.domain.ContractAdditionalInfo;
-import com.ruoyi.report.contract.domain.UploadData;
+import com.ruoyi.report.contract.domain.*;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
+import com.ruoyi.report.contract.service.IContractApprovalInfoService;
+import com.ruoyi.report.contract.service.IContractApprovalRecordsInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.ruoyi.report.contract.service.IContractContentInfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -48,6 +44,12 @@ public class ContractContentInfoController extends BaseController
 
     @Autowired
     private IContractAdditionalInfoService contractAdditionalInfoService;
+
+    @Autowired
+    private IContractApprovalInfoService contractApprovalInfoService;
+
+    @Autowired
+    private IContractApprovalRecordsInfoService contractApprovalRecordsInfoService;
 
     /**
      * 查询合同管理列表
@@ -254,6 +256,32 @@ public class ContractContentInfoController extends BaseController
         String operName = getUsername();
         String message = contractContentInfoService.importContract(contractList, updateSupport, operName);
         return AjaxResult.success(message);
+    }
+
+    /**
+     * 根据合同编号，取得合同审批审批数据
+     */
+    @GetMapping(value = "/approval/{contractId}")
+    public AjaxResult getContractApprovalInfoByContractId(@PathVariable("contractId") String contractId) {
+
+        ContractApprovalInfo contractApprovalInfo = contractApprovalInfoService
+                .getContractApprovalInfoByContractId(contractId);
+
+        List<ContractApprovalRecordsInfo> list = contractApprovalRecordsInfoService
+                .getContractApprovalRecordsByApprovalId(contractApprovalInfo.getApprovalId());
+        contractApprovalInfo.setApprovalRecordList(list);
+
+        return AjaxResult.success(contractApprovalInfo);
+    }
+
+    /**
+     * 根据审批编号，取得审批记录数据
+     */
+    @GetMapping(value = "/approval/record/{approvalId}")
+    public TableDataInfo getContractApprovalRecordsByApprovalId(@PathVariable("approvalId") String approvalId) {
+        List<ContractApprovalRecordsInfo> list = contractApprovalRecordsInfoService
+                .getContractApprovalRecordsByApprovalId(approvalId);
+        return getDataTable(list);
     }
 
     private static final File createAbsoluteFile(String uploadDir, String fileName)

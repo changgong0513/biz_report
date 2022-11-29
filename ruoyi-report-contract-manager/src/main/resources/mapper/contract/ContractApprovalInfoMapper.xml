@@ -41,6 +41,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContractApprovalInfoVo"/>
         where approval_id = #{approvalId}
     </select>
+
+    <!-- 根据合同编号，取得合同审批数据 -->
+    <select id="getContractApprovalInfoByContractId" parameterType="String" resultMap="ContractApprovalInfoResult">
+        <include refid="selectContractApprovalInfoVo"/>
+        where contract_id = #{contractId}
+    </select>
         
     <insert id="insertContractApprovalInfo" parameterType="ContractApprovalInfo">
         insert into contract_approval_info

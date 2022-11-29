@@ -348,30 +348,30 @@
           </el-switch>
         </el-col>
       </el-row>
-      <el-form ref="form" :model="form" :rules="rules" label-width="110px" v-show="showApproval">
+      <el-form ref="formApproval" :model="formApproval" label-width="110px" v-show="showApproval">
         <el-row>
-          <el-col :span="8"><el-form-item label="合同编号">{{form.contractId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批编号">{{form.approvalId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="标题">{{form.approvalTitle}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="合同编号">{{formApproval.contractId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批编号">{{formApproval.approvalId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="标题">{{formApproval.approvalTitle}}</el-form-item></el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="审批状态">{{form.approvalStatus}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="审批结果">{{form.approvalResult}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起时间">{{form.launchTime}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批状态">{{formApproval.approvalStatus}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批结果">{{formApproval.approvalResult}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起时间">{{formApproval.launchTime}}</el-form-item></el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="完成时间">{{form.completeTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="耗时">{{form.takeupTime}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人工号">{{form.launchJobId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="完成时间">{{formApproval.completeTime}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="耗时">{{formApproval.takeupTime}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人工号">{{formApproval.launchJobId}}</el-form-item></el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="发起人ID">{{form.launchId}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人姓名">{{form.launchName}}</el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="发起人部门">{{form.launchDepartment}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人ID">{{formApproval.launchId}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人姓名">{{formApproval.launchName}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="发起人部门">{{formApproval.launchDepartment}}</el-form-item></el-col>
         </el-row>
         <el-row>
-          <el-col :span="8"><el-form-item label="审批人姓名">{{form.approvalName}}</el-form-item></el-col>
-          <el-col :span="16"><el-form-item label="当前处理人姓名">{{form.processorName}}</el-form-item></el-col>
+          <el-col :span="8"><el-form-item label="审批人姓名">{{formApproval.approvalName}}</el-form-item></el-col>
+          <el-col :span="16"><el-form-item label="当前处理人姓名">{{formApproval.processorName}}</el-form-item></el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -379,7 +379,7 @@
               <el-input
                 type="textarea"
                 :rows="6"
-                v-model="form.approvalRecords">
+                v-model="formApproval.approvalRecords">
               </el-input>
             </el-form-item>
           </el-col>
@@ -425,10 +425,13 @@
 </template>
 
 <script>
-import { listContract, getContract, addContract, delContract, updateContract, syncContract, uploadFile, getContractAdditional, delteFile } from "@/api/contract/contract";
+import { listContract, getContract, addContract, delContract, updateContract, 
+  syncContract, uploadFile, getContractAdditional, delteFile, getContractApprovalInfoByContractId, 
+  getContractApprovalRecordsByApprovalId } from "@/api/contract/contract";
 import { listMaterialData } from "@/api/masterdata/material";
 import { download } from "@/utils/request";
 import { getToken } from "@/utils/auth";
+import { converTDateToDate } from "@/utils/xmy";
 
 export default {
   name: "Contract",
@@ -490,6 +493,7 @@ export default {
       form: {},
       // 合同详细表单
       formDetail: {},
+      formApproval: {},
       // 表单校验
       rules: {
         goodsId: [
@@ -517,6 +521,8 @@ export default {
       isSave: false, // 是否单选保存按钮
       // 合同附件列表
       contractAdditionalList: [],
+      // 合同审批记录
+      contractApprovalRecordList: [],
       remoteLoadingGoodsName: false,
       contractOptionsGoodsName: [],
       contractListGoodsName: []
@@ -559,7 +565,7 @@ export default {
       this.loading = true;
       listContract(this.queryParams).then(response => {
         this.contractList = response.rows;
-        console.log(response.rows);
+        // console.log(response.rows);
         this.total = response.total;
         this.loading = false;
       });
@@ -636,8 +642,32 @@ export default {
       });
 
       getContractAdditional(row.contractId).then(response => {
-        console.log(JSON.stringify(response.rows));
+        // console.log(JSON.stringify(response.rows));
         this.contractAdditionalList = response.rows;
+      });
+    
+      // 根据合同编号，取得合同审批数据
+      getContractApprovalInfoByContractId(row.contractId).then(response => {
+          // console.log("根据合同编号，取得合同审批数据" + JSON.stringify(response.data));
+          this.formApproval = response.data;
+          // console.log("取得审批编号对应的审批记录数据" + JSON.stringify( response.data.approvalRecordList));
+          response.data.approvalRecordList.forEach((element, index) => {
+            // 审批人姓名 | 审批记录 | 完成时间 | 审批结果
+            if (index == 0) {
+              this.formApproval.approvalRecords = 
+              element.approvalName + " | " + 
+              element.approvalRecord + " | " + 
+              converTDateToDate(element.completeTime) + " | " + 
+              element.approvalResult + "\n";
+            } else {
+              this.formApproval.approvalRecords += 
+              element.approvalName + " | " + 
+              element.approvalRecord + " | " + 
+              converTDateToDate(element.completeTime) + " | " + 
+              element.approvalResult + "\n";
+            }
+        });
+
         this.open = true;
       });
     },
@@ -763,6 +793,22 @@ export default {
       this.download('/contract/mgr/importTemplate', {
       }, `合同模板_${new Date().getTime()}.xlsx`)
     },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      this.upload.open = false;
+      this.upload.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileForm() {
+      this.$refs.upload.submit();
+    }
   }
 };
 </script>

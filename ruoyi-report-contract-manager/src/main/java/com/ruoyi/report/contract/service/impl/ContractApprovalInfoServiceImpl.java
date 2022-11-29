@@ -45,6 +45,16 @@ public class ContractApprovalInfoServiceImpl implements IContractApprovalInfoSer
     }
 
     /**
+     * 合同管理-根据合同编号，取得合同审批数据
+     *
+     * @param contractId 合同管理-合同编号
+     * @return 合同管理-审批管理
+     */
+    public ContractApprovalInfo getContractApprovalInfoByContractId(String contractId) {
+        return contractApprovalInfoMapper.getContractApprovalInfoByContractId(contractId);
+    }
+
+    /**
      * 新增合同管理-审批管理
      * 
      * @param contractApprovalInfo 合同管理-审批管理

@@ -45,6 +45,27 @@ public class ContractApprovalRecordsInfoServiceImpl implements IContractApproval
     }
 
     /**
+     * 根据审批编号和用户编号，取得审批记录
+     *
+     * @param contractApprovalRecordsInfo
+     * @return
+     */
+    @Override
+    public ContractApprovalRecordsInfo selectContractApprovalRecordsInfoByApprovalIdAndUserId(ContractApprovalRecordsInfo contractApprovalRecordsInfo) {
+        return contractApprovalRecordsInfoMapper.selectContractApprovalRecordsInfoByApprovalIdAndUserId(contractApprovalRecordsInfo);
+    }
+
+    /**
+     * 查询合同管理-根据审批编号，取得审批记录数据
+     *
+     * @param approvalId 审批编号
+     * @return 合同管理-审批记录集合
+     */
+    public List<ContractApprovalRecordsInfo> getContractApprovalRecordsByApprovalId(String approvalId) {
+        return contractApprovalRecordsInfoMapper.getContractApprovalRecordsByApprovalId(approvalId);
+    }
+
+    /**
      * 新增合同管理-审批记录
      * 
      * @param contractApprovalRecordsInfo 合同管理-审批记录

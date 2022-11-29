@@ -28,6 +28,10 @@ import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
 import com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper;
+import com.ruoyi.report.contract.domain.ContractApprovalInfo;
+import com.ruoyi.report.contract.domain.ContractApprovalRecordsInfo;
+import com.ruoyi.report.contract.mapper.ContractApprovalInfoMapper;
+import com.ruoyi.report.contract.mapper.ContractApprovalRecordsInfoMapper;
 import com.ruoyi.system.service.impl.SysUserServiceImpl;
 import com.taobao.api.ApiException;
 import org.slf4j.Logger;
@@ -56,6 +60,12 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     @Autowired
     private PurchaseSaleOrderInfoMapper purchaseSaleOrderInfoMapper;
+
+    @Autowired
+    private ContractApprovalInfoMapper contractApprovalInfoMapper;
+
+    @Autowired
+    private ContractApprovalRecordsInfoMapper contractApprovalRecordsInfoMapper;
 
     @Autowired
     protected Validator validator;
@@ -188,74 +198,6 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             String id = ids.get(i);
             System.out.println("审批实例ID：" + id);
 
-            com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders getProcessInstanceHeaders = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders();
-            getProcessInstanceHeaders.xAcsDingtalkAccessToken = accessToken;
-            com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest getProcessInstanceRequest = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest()
-                    .setProcessInstanceId(id);
-
-            try {
-                com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceResponse rsp = null;
-                rsp = client.getProcessInstanceWithOptions(getProcessInstanceRequest,
-                        getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
-
-                List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> valuesList = null;
-                valuesList = rsp.getBody().getResult().formComponentValues;
-                String contractId = valuesList.get(3).value; // 合同编号
-                String businessId = rsp.getBody().getResult().businessId; // 审批编号
-                String title = rsp.getBody().getResult().title;
-                String status = rsp.getBody().getResult().status;
-                String result = rsp.getBody().getResult().result;
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-                String fqsj = rsp.getBody().getResult().createTime;
-                Date fqsjFormat = null;
-                try {
-                    fqsjFormat = sdf.parse(fqsj);//拿到Date对象
-                    fqsj = sdf2.format(fqsjFormat);//输出格式：2017-01-22 09:28:33
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                String wcsj = rsp.getBody().getResult().finishTime;
-                Date wcsjFormat = null;
-                try {
-                    wcsjFormat = sdf.parse(wcsj);//拿到Date对象
-                    wcsj = sdf2.format(wcsjFormat);//输出格式：2017-01-22 09:28:33
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                String spend = DateUtils.getDatePoor(DateUtils.parseDate(wcsj), DateUtils.parseDate(fqsj));
-                String fqrgh = "";
-                String fqrid = rsp.getBody().getResult().originatorUserId;
-                String fqrxm = rsp.getBody().getResult().originatorUserId;
-                String fqrbm = rsp.getBody().getResult().originatorDeptName;
-
-                List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords> list = null;
-                list = rsp.getBody().getResult().operationRecords;
-                List<String> sprxmList = new ArrayList<>();
-                for(GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords record: list) {
-                    sprxmList.add(record.getUserId());
-                }
-                String sprxm = StringUtils.join(sprxmList, ",");
-                String dqclr = sprxmList.get(sprxmList.size() - 1);
-
-                System.out.println(rsp.getBody().success);
-            } catch (TeaException err) {
-                if (!com.aliyun.teautil.Common.empty(err.code)
-                        && !com.aliyun.teautil.Common.empty(err.message)) {
-                    // err 中含有 code 和 message 属性，可帮助开发定位问题
-                }
-
-            } catch (Exception _err) {
-                TeaException err = new TeaException(_err.getMessage(), _err);
-                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
-                    // err 中含有 code 和 message 属性，可帮助开发定位问题
-                }
-            }
-
             ContractContentInfo contract = getContractData(accessToken, id);
 
             // 检查合同是否已经导入合同表
@@ -266,41 +208,25 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 contractContentInfoMapper.insertContractContentInfo(contract);
             }
 
-//            if (contract != null) {
-//                contract.setBizVersion(1L);
-//                contract.setCreateTime(DateUtils.getNowDate());
-//                contract.setUpdateTime(DateUtils.getNowDate());
-//                contract.setCreateBy(SecurityUtils.getUsername());
-//                contract.setUpdateBy(SecurityUtils.getUsername());
-//                System.out.println("------从钉钉同步合同数据：" + contract);
-//
-//                ContractContentInfo selectContract = null;
-//                selectContract = contractContentInfoMapper.selectContractContentInfoByContractId(contract.getContractId());
-//                if (selectContract == null) {
-//                    contractContentInfoMapper.insertContractContentInfo(contract);
-//                } else {
-//                    System.out.println("------从钉钉同步的合同编号为：" + selectContract.getContractId() + "已经同步完成");
-//                }
-//
-//                PurchaseSaleOrderInfo purchaseInfo = purchaseSaleOrderInfoMapper
-//                        .selectPurchaseSaleOrderInfoByContractId(contract.getContractId());
-//                if (purchaseInfo == null) {
-//                    purchaseInfo = new PurchaseSaleOrderInfo();
-//                    purchaseInfo.setOrderId(contract.getContractId());
-//                    purchaseInfo.setBizVersion(1L);
-//                    purchaseInfo.setCreateTime(DateUtils.getNowDate());
-//                    purchaseInfo.setUpdateTime(DateUtils.getNowDate());
-//                    purchaseInfo.setCreateBy(SecurityUtils.getUsername());
-//                    purchaseInfo.setUpdateBy(SecurityUtils.getUsername());
-//
-//                    fillPurchaseInfoFromContract(contract, purchaseInfo);
-//
-//                    purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseInfo);
-//                } else {
-//                    fillPurchaseInfoFromContract(contract, purchaseInfo);
-//                    purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
-//                }
-//            }
+            // 取得审批数据，添加到审批表和审批记录表
+            ContractApprovalInfo ccontractApprovalInfo = getContractApprovaData(accessToken, id);
+
+            // 检查审批数据是否已经导入合同审批信息表
+            ContractApprovalInfo selContractApprovalInfo = null;
+            selContractApprovalInfo = contractApprovalInfoMapper.selectContractApprovalInfoByApprovalId(ccontractApprovalInfo.getApprovalId());
+            if (selContractApprovalInfo == null) {
+                ccontractApprovalInfo.setBizVersion(1L);
+                ccontractApprovalInfo.setCreateTime(DateUtils.getNowDate());
+                ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
+                ccontractApprovalInfo.setCreateBy(SecurityUtils.getUsername());
+                ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
+                contractApprovalInfoMapper.insertContractApprovalInfo(ccontractApprovalInfo);
+            } else {
+                ccontractApprovalInfo.setBizVersion(1L);
+                ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
+                ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
+                contractApprovalInfoMapper.updateContractApprovalInfo(ccontractApprovalInfo);
+            }
         }
 
         return 1;
@@ -668,6 +594,167 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     }
 
     /**
+     * 根据实例ID，获取合同审批数据(测试用)
+     *
+     * @param accessToken
+     * @param id
+     * @return
+     */
+    private ContractApprovalInfo getContractApprovaData(final String accessToken, final String id) {
+
+        com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders getProcessInstanceHeaders =
+                new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders();
+        getProcessInstanceHeaders.xAcsDingtalkAccessToken = accessToken;
+        com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest getProcessInstanceRequest =
+                new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest()
+                .setProcessInstanceId(id);
+
+        ContractApprovalInfo contractApprovalInfo = new ContractApprovalInfo();
+
+        try {
+            com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceResponse rsp = null;
+            rsp = client.getProcessInstanceWithOptions(getProcessInstanceRequest,
+                    getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+
+            List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> valuesList = null;
+
+            // 合同编号
+            valuesList = rsp.getBody().getResult().formComponentValues;
+            String contractId = valuesList.get(3).value;
+            contractApprovalInfo.setContractId(contractId);
+
+            // 审批编号
+            String businessId = rsp.getBody().getResult().businessId;
+            contractApprovalInfo.setApprovalId(businessId);
+
+            // 审批合同标题
+            String title = rsp.getBody().getResult().title;
+            contractApprovalInfo.setApprovalTitle(title);
+
+            // 审批状态
+            String status = rsp.getBody().getResult().status;
+            if (StringUtils.isBlank(status)) {
+                contractApprovalInfo.setApprovalStatus(StringUtils.EMPTY);
+            } else {
+                contractApprovalInfo.setApprovalStatus(status);
+            }
+
+            // 审批结果
+            String result = rsp.getBody().getResult().result;
+            contractApprovalInfo.setApprovalResult(result);
+
+            // 审批发起时间
+            String fqsj = rsp.getBody().getResult().createTime;
+            contractApprovalInfo.setLaunchTime(converTZDate2UTCDate(fqsj));
+
+            // 审批完成时间
+            String wcsj = rsp.getBody().getResult().finishTime;
+            if (StringUtils.isBlank(wcsj)) {
+                contractApprovalInfo.setCompleteTime(DateUtils.parseDate(DateUtils.getTime()));
+                wcsj = DateUtils.getTime();
+            } else {
+                contractApprovalInfo.setCompleteTime(converTZDate2UTCDate(wcsj));
+            }
+
+            // 耗时
+            String takeupTime = StringUtils.EMPTY;
+            if (StringUtils.indexOf(wcsj, "T") == -1
+                    && StringUtils.indexOf(wcsj, "Z") == -1) {
+                takeupTime = DateUtils.getDatePoor(DateUtils.parseDate(wcsj), converTZDate2UTCDate(fqsj));
+            } else {
+                takeupTime = DateUtils.getDatePoor(converTZDate2UTCDate(wcsj), converTZDate2UTCDate(fqsj));
+            }
+            contractApprovalInfo.setTakeupTime(takeupTime);
+
+            // 发起人工号
+            String fqrgh = "";
+            contractApprovalInfo.setLaunchJobId(fqrgh);
+
+            // 发起人ID
+            String fqrid = rsp.getBody().getResult().originatorUserId;
+            contractApprovalInfo.setLaunchId(fqrid);
+
+            // 发起人姓名
+            String fqrxm = rsp.getBody().getResult().originatorUserId;
+            contractApprovalInfo.setLaunchName(fqrxm);
+
+            // 发起人部门
+            String fqrbmId = rsp.getBody().getResult().originatorDeptId;
+            String fqrbm = rsp.getBody().getResult().originatorDeptName;
+            contractApprovalInfo.setLaunchDepartment(fqrbmId);
+
+            // 审批人姓名
+            List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords> list = null;
+            list = rsp.getBody().getResult().operationRecords;
+            List<String> sprxmList = new ArrayList<>();
+            List<ContractApprovalRecordsInfo> listApprovalRecords = new ArrayList<>();
+            for(GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultOperationRecords record: list) {
+
+                sprxmList.add(record.getUserId());
+
+                ContractApprovalRecordsInfo approvalRecords  = new ContractApprovalRecordsInfo();
+                approvalRecords.setApprovalName(record.getUserId());
+                approvalRecords.setCompleteTime(converTZDate2UTCDate(record.getDate()));
+                if (StringUtils.endsWithIgnoreCase(record.getType(), "START_PROCESS_INSTANCE")) {
+                    approvalRecords.setApprovalRecord("提交申请");
+                    approvalRecords.setApprovalResult("提交申请");
+                } else  {
+                    approvalRecords.setApprovalRecord("审批");
+                    approvalRecords.setApprovalResult(record.getResult());
+                }
+
+                approvalRecords.setApprovalId(contractApprovalInfo.getApprovalId());
+                approvalRecords.setBizVersion(1L);
+                approvalRecords.setCreateTime(DateUtils.getNowDate());
+                approvalRecords.setUpdateTime(DateUtils.getNowDate());
+                approvalRecords.setCreateBy(SecurityUtils.getUsername());
+                approvalRecords.setUpdateBy(SecurityUtils.getUsername());
+
+                listApprovalRecords.add(approvalRecords);
+            }
+
+            String sprxm = StringUtils.join(sprxmList, ",");
+            contractApprovalInfo.setApprovalName(sprxm);
+
+            // 当前处理人
+            String dqclr = sprxmList.get(sprxmList.size() - 1);
+            contractApprovalInfo.setProcessorName(dqclr);
+
+            for (ContractApprovalRecordsInfo approvalRecord: listApprovalRecords) {
+
+                ContractApprovalRecordsInfo selRecord = contractApprovalRecordsInfoMapper
+                        .selectContractApprovalRecordsInfoByApprovalIdAndUserId(approvalRecord);
+
+                if (selRecord == null) {
+                    approvalRecord.setApprovalRecordId(UUID.randomUUID().toString().replace("-", ""));
+                    approvalRecord.setBizVersion(1L);
+                    approvalRecord.setCreateTime(DateUtils.getNowDate());
+                    approvalRecord.setUpdateTime(DateUtils.getNowDate());
+                    approvalRecord.setCreateBy(SecurityUtils.getUsername());
+                    approvalRecord.setUpdateBy(SecurityUtils.getUsername());
+                    contractApprovalRecordsInfoMapper.insertContractApprovalRecordsInfo(approvalRecord);
+                } else {
+                    approvalRecord.setUpdateTime(DateUtils.getNowDate());
+                    approvalRecord.setUpdateBy(SecurityUtils.getUsername());
+                    contractApprovalRecordsInfoMapper.updateContractApprovalRecordsInfo(approvalRecord);
+                }
+            }
+        } catch (TeaException err) {
+            System.out.println("TeaException");
+            System.out.println(err.code);
+            System.out.println(err.message);
+        } catch (Exception _err) {
+            TeaException err = new TeaException(_err.getMessage(), _err);
+            // err 中含有 code 和 message 属性，可帮助开发定位问题
+            System.out.println("Exception");
+            System.out.println(err.code);
+            System.out.println(err.message);
+        }
+
+        return contractApprovalInfo;
+    }
+
+    /**
      * 导入合同数据到采购表或者销售表
      *
      * @return 结果
@@ -706,5 +793,31 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         }
 
         return 1;
+    }
+
+    /**
+     * // 将日期字符串（包含T,Z）转化为Date类型.
+     *
+     * @param utDate
+     * @return
+     */
+    private Date converTZDate2UTCDate(final String utDate) {
+
+        SimpleDateFormat sdfTZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        SimpleDateFormat sdfUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date tempDate = null;
+        Date targetDate = null;
+        try {
+            // 解析到Date对象
+            tempDate = sdfTZ.parse(utDate);
+
+            // 输出UTC格式：2017-01-22 09:28:33字符串
+            String utcDate  = sdfUTC.format(tempDate);
+            targetDate = DateUtils.parseDate(utcDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return targetDate;
     }
 }

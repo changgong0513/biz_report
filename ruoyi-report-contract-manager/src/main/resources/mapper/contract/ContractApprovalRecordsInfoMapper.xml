@@ -33,6 +33,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContractApprovalRecordsInfoVo"/>
         where approval_record_id = #{approvalRecordId}
     </select>
+
+    <!-- 根据审批编号和用户编号，取得审批记录 -->
+    <select id="selectContractApprovalRecordsInfoByApprovalIdAndUserId" parameterType="ContractApprovalRecordsInfo" resultMap="ContractApprovalRecordsInfoResult">
+        <include refid="selectContractApprovalRecordsInfoVo"/>
+        where approval_id = #{approvalId} and approval_name = #{approvalName}
+    </select>
+
+    <!-- 根据审批编号，取得审批记录数据 -->
+    <select id="getContractApprovalRecordsByApprovalId" parameterType="String" resultMap="ContractApprovalRecordsInfoResult">
+        <include refid="selectContractApprovalRecordsInfoVo"/>
+        where approval_id = #{approvalId}
+    </select>
         
     <insert id="insertContractApprovalRecordsInfo" parameterType="ContractApprovalRecordsInfo">
         insert into contract_approval_records_info

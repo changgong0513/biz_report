@@ -27,6 +27,7 @@ public class ContractApprovalRecordsInfo extends BaseEntity
     private String approvalResult;
 
     /** 完成时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date completeTime;
 
     /** 审批人姓名 */
