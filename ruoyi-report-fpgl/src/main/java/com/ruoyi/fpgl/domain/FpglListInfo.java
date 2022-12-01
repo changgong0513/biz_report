@@ -51,6 +51,10 @@ public class FpglListInfo extends BaseEntity
     @Excel(name = "发票状态", dictType = "fpgl_fp_status")
     private String fpglFpzt;
 
+    /** 我方单位名称 */
+    @Excel(name = "我方单位名称")
+    private String ourCompanyName;
+
     public String getOrderId() {
         return orderId;
     }
@@ -113,6 +117,14 @@ public class FpglListInfo extends BaseEntity
 
     public void setFpglFpzt(String fpglFpzt) {
         this.fpglFpzt = fpglFpzt;
+    }
+
+    public String getOurCompanyName() {
+        return ourCompanyName;
+    }
+
+    public void setOurCompanyName(String ourCompanyName) {
+        this.ourCompanyName = ourCompanyName;
     }
 
     @Override

@@ -51,3 +51,12 @@ export function delMain(fpglId) {
     method: 'delete'
   })
 }
+
+// 查询申请开票列表
+export function listSqkp(query) {
+  return request({
+    url: '/fpgl/mgr/sqkp/list',
+    method: 'get',
+    params: query
+  })
+}

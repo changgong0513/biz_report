@@ -183,4 +183,39 @@ public class FpglMainInfoController extends BaseController
     {
         return toAjax(fpglMainInfoService.deleteFpglMainInfoByFpglIds(fpglIds));
     }
+
+    /**
+     * 开票申请
+     *
+     * @param fpglListInfo
+     * @return
+     */
+    @GetMapping("/sqkp/list")
+    public TableDataInfo sqkplist(FpglListInfo fpglListInfo) {
+
+        startPage();
+        List<FpglListInfo> list = fpglMainInfoService.selectFpglList(fpglListInfo);
+        for (FpglListInfo item : list) {
+            BigDecimal total = item.getContractTotal();
+            BigDecimal kpje = item.getFpglKpje();
+            if (kpje.compareTo(total) == 0) {
+                item.setFpglFpzt("1");
+            } else if (kpje.compareTo(new BigDecimal("0")) == 0) {
+                item.setFpglFpzt("3");
+            } else {
+                item.setFpglFpzt("2");
+            }
+        }
+
+        List<FpglListInfo> filterList = null;
+        if (StringUtils.isNotBlank(fpglListInfo.getFpglFpzt())) {
+            filterList = list.stream()
+                    .filter(item -> item.getFpglFpzt().equals(fpglListInfo.getFpglFpzt()))
+                    .collect(Collectors.toList());
+        } else {
+            filterList = list;
+        }
+
+        return getDataTable(filterList);
+    }
 }
