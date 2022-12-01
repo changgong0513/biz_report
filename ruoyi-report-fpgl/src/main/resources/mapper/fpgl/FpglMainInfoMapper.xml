@@ -30,6 +30,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fpglKpje"    column="fpgl_kpje"    />
         <result property="taxNumber"    column="tax_number"    />
         <result property="ourCompanyName"    column="our_company_name"    />
+        <result property="fpglKpsl"    column="fpgl_kpsl"    />
+        <result property="fpglKpdj"    column="fpgl_kpdj"    />
+        <result property="fpglKpje"    column="fpgl_kpje"    />
+        <result property="fpglFpno"    column="fpgl_fpno"    />
     </resultMap>
 
     <sql id="selectFpglMainInfoVo">
@@ -49,7 +53,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             t2.contract_type as contract_type,
             t2.our_company_name as our_company_name,
             ifnull(t2.contract_total, 0) as contract_total,
+            ifnull(t3.fpgl_kpsl, 0) as fpgl_kpsl,
+            ifnull(t3.fpgl_kpdj, 0) as fpgl_kpdj,
             ifnull(t3.fpgl_kpje, 0) as fpgl_kpje,
+            t3.fpgl_fpno as fpgl_fpno,
             t4.tax_number as tax_number
         FROM
             purchase_sale_order_info t1
@@ -103,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpglSqr != null and fpglSqr != ''">fpgl_sqr,</if>
             <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt,</if>
             <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh,</if>
+            <if test="fpglFpno != null and fpglFpno != ''">fpgl_fpno,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
@@ -138,6 +146,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpglSqr != null and fpglSqr != ''">fpgl_sqr = #{fpglSqr},</if>
             <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt = #{fpglFpzt},</if>
             <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh = #{fpglDdbh},</if>
+            <if test="fpglFpno != null and fpglFpno != ''">fpgl_fpno = #{fpglFpno},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>

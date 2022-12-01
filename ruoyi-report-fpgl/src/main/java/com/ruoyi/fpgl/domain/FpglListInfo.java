@@ -39,6 +39,14 @@ public class FpglListInfo extends BaseEntity
     @Excel(name = "合同金额")
     private BigDecimal contractTotal;
 
+    /** 开票数量 */
+    @Excel(name = "开票数量")
+    private Long fpglKpsl;
+
+    /** 开票单价 */
+    @Excel(name = "开票单价")
+    private BigDecimal fpglKpdj;
+
     /** 开票金额（fpgl_main_info） */
     @Excel(name = "开票金额")
     private BigDecimal fpglKpje;
@@ -54,6 +62,10 @@ public class FpglListInfo extends BaseEntity
     /** 我方单位名称 */
     @Excel(name = "我方单位名称")
     private String ourCompanyName;
+
+    /** 发票号 */
+    @Excel(name = "发票号")
+    private String fpglFpno;
 
     public String getOrderId() {
         return orderId;
@@ -91,6 +103,22 @@ public class FpglListInfo extends BaseEntity
         return contractTotal;
     }
 
+    public Long getFpglKpsl() {
+        return fpglKpsl;
+    }
+
+    public void setFpglKpsl(Long fpglKpsl) {
+        this.fpglKpsl = fpglKpsl;
+    }
+
+    public BigDecimal getFpglKpdj() {
+        return fpglKpdj;
+    }
+
+    public void setFpglKpdj(BigDecimal fpglKpdj) {
+        this.fpglKpdj = fpglKpdj;
+    }
+
     public void setContractTotal(BigDecimal contractTotal) {
         this.contractTotal = contractTotal;
     }
@@ -125,6 +153,14 @@ public class FpglListInfo extends BaseEntity
 
     public void setOurCompanyName(String ourCompanyName) {
         this.ourCompanyName = ourCompanyName;
+    }
+
+    public String getFpglFpno() {
+        return fpglFpno;
+    }
+
+    public void setFpglFpno(String fpglFpno) {
+        this.fpglFpno = fpglFpno;
     }
 
     @Override

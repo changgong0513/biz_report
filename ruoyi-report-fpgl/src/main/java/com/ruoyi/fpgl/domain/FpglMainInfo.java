@@ -54,9 +54,16 @@ public class FpglMainInfo extends BaseEntity
     @Excel(name = "订单编号")
     private String fpglDdbh;
 
+    /** 发票号 */
+    @Excel(name = "发票号")
+    private String fpglFpno;
+
     /** 版本号 */
     @Excel(name = "版本号")
     private Long bizVersion;
+
+    /** 动作标志（1：开具发票 2：申请发票） */
+    private String actionFlag;
 
     public void setFpglId(String fpglId) 
     {
@@ -139,7 +146,16 @@ public class FpglMainInfo extends BaseEntity
     {
         return fpglDdbh;
     }
-    public void setBizVersion(Long bizVersion) 
+
+    public String getFpglFpno() {
+        return fpglFpno;
+    }
+
+    public void setFpglFpno(String fpglFpno) {
+        this.fpglFpno = fpglFpno;
+    }
+
+    public void setBizVersion(Long bizVersion)
     {
         this.bizVersion = bizVersion;
     }
@@ -147,6 +163,14 @@ public class FpglMainInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public String getActionFlag() {
+        return actionFlag;
+    }
+
+    public void setActionFlag(String actionFlag) {
+        this.actionFlag = actionFlag;
     }
 
     @Override

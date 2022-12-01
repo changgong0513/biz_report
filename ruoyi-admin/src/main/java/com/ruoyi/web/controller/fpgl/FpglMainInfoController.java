@@ -165,6 +165,13 @@ public class FpglMainInfoController extends BaseController
     @Log(title = "发票管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo) {
+
+        if (StringUtils.equals(fpglMainInfo.getActionFlag(), "1")) {
+            fpglMainInfo.setFpglKpsl(null);
+            fpglMainInfo.setFpglKpdj(null);
+            fpglMainInfo.setFpglKpje(null);
+        }
+
         fpglMainInfo.setBizVersion(1L);
         fpglMainInfo.setCreateTime(DateUtils.getNowDate());
         fpglMainInfo.setUpdateTime(DateUtils.getNowDate());

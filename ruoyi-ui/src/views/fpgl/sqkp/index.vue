@@ -101,6 +101,17 @@
           <dict-tag :options="dict.type.fpgl_fp_status" :value="scope.row.fpglFpzt"/>
         </template>
       </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            :disabled="scope.row.fpglFpzt === '1'"
+            @click="handleAdd(scope.row)"
+          >开票</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -158,25 +169,27 @@
         <el-divider></el-divider>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="开票明细" prop="fpglKpmx">
-              <!-- <el-input v-model="form.fpglKpmx" placeholder="请输入开票明细" style="width: 240px" /> -->
-              {{form.materialName}}
+            <el-form-item label="开票明细" prop="fpglKpmx">{{form.materialName}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票数量" prop="fpglKpsl">
-              <el-input v-model="form.fpglKpsl" placeholder="请输入开票数量" style="width: 240px" />
+            <el-form-item label="开票数量" prop="fpglKpsl">{{form.fpglKpsl}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票单价" prop="fpglKpdj">
-              <el-input v-model="form.fpglKpdj" placeholder="请输入开票单价" style="width: 240px" />
-            </el-form-item>
+            <el-form-item label="开票单价" prop="fpglKpdj">{{form.fpglKpdj}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="开票金额" prop="fpglKpje">{{calKpje}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="16">
+            <el-form-item label="发票号" prop="fpglFpno">
+              <el-input v-model="form.fpglFpno" placeholder="请输入发票号用,分割，连续的可以使用-连接" />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -226,6 +239,9 @@ export default {
         ],
         fpglKpdj: [
           { required: true, message: "开票单价不能为空", trigger: "blur" }
+        ],
+        fpno: [
+          { required: true, message: "发票号不能为空", trigger: "blur" }
         ]
       },
       // 弹出层标题
@@ -284,6 +300,7 @@ export default {
         fpglKpsl: null,
         fpglKpdj: null,
         fpglKpje: null,
+        fpno: null,
         fpDetailList: [],
       };
       this.resetForm("form");
@@ -300,7 +317,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.fpglId)
+      this.ids = selection.map(item => item.orderId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -310,9 +327,9 @@ export default {
       this.sqkpOrderId = row.orderId;
       listFpmx(row.orderId).then(response => {
         this.open = true;
-        this.title = "申请开票";
+        this.title = "开票";
         this.form = row;
-        this.isUpdate = false;
+        this.isUpdate = true;
       });
     },
     /** 修改按钮操作 */
@@ -330,6 +347,8 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
+            this.form.fpglDdbh = this.form.orderId;
+            this.form.actionFlag = "1"; // 开具发票
             updateMain(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
