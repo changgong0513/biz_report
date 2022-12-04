@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.masterdata.mapper.MasterdataPchInfoMapper">
+    
+    <resultMap type="MasterdataPchInfo" id="MasterdataPchInfoResult">
+        <result property="id"    column="id"    />
+        <result property="pch"    column="pch"    />
+        <result property="pchmc"    column="pchmc"    />
+        <result property="ssnf"    column="ssnf"    />
+        <result property="pchzt"    column="pchzt"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectMasterdataPchInfoVo">
+        select id, pch, pchmc, ssnf, pchzt, create_by, create_time, update_by, update_time, biz_version from masterdata_pch_info
+    </sql>
+
+    <select id="selectMasterdataPchInfoList" parameterType="MasterdataPchInfo" resultMap="MasterdataPchInfoResult">
+        <include refid="selectMasterdataPchInfoVo"/>
+        <where>  
+            <if test="pch != null  and pch != ''"> and pch like concat('%', #{pch}, '%')</if>
+            <if test="pchmc != null  and pchmc != ''"> and pchmc like concat('%', #{pchmc}, '%')</if>
+            <if test="ssnf != null "> and ssnf = #{ssnf}</if>
+            <if test="pchzt != null  and pchzt != ''"> and pchzt = #{pchzt}</if>
+            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
+        </where>
+    </select>
+    
+    <select id="selectMasterdataPchInfoById" parameterType="String" resultMap="MasterdataPchInfoResult">
+        <include refid="selectMasterdataPchInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMasterdataPchInfo" parameterType="MasterdataPchInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into masterdata_pch_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pch != null and pch != ''">pch,</if>
+            <if test="pchmc != null">pchmc,</if>
+            <if test="ssnf != null">ssnf,</if>
+            <if test="pchzt != null and pchzt != ''">pchzt,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pch != null and pch != ''">#{pch},</if>
+            <if test="pchmc != null">#{pchmc},</if>
+            <if test="ssnf != null">#{ssnf},</if>
+            <if test="pchzt != null and pchzt != ''">#{pchzt},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMasterdataPchInfo" parameterType="MasterdataPchInfo">
+        update masterdata_pch_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pch != null and pch != ''">pch = #{pch},</if>
+            <if test="pchmc != null">pchmc = #{pchmc},</if>
+            <if test="ssnf != null">ssnf = #{ssnf},</if>
+            <if test="pchzt != null and pchzt != ''">pchzt = #{pchzt},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMasterdataPchInfoById" parameterType="String">
+        delete from masterdata_pch_info where id = #{id}
+    </delete>
+
+    <delete id="deleteMasterdataPchInfoByIds" parameterType="String">
+        delete from masterdata_pch_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

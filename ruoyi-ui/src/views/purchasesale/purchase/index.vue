@@ -13,7 +13,7 @@
       </el-form-item>
       <!-- 所属部门 -->
       <el-form-item label="所属部门" prop="belongDept">
-        <el-select
+        <!-- <el-select
           v-model="queryParams.belongDept"
           placeholder="请输入所属部门"
           clearable
@@ -25,7 +25,8 @@
             :label="dict.label"
             :value="dict.value"
           />
-        </el-select>
+        </el-select> -->
+        <treeselect v-model="form.belongDept" :options="deptOptions" :show-count="true" placeholder="请选择所属部门" style="width: 240px;" />
       </el-form-item>
       <!-- 供应商名称 -->
       <el-form-item label="供应商名称" prop="supplierName">
@@ -628,14 +629,16 @@
 import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, getOrderAdditional } from "@/api/purchasesale/purchasesale";
 import { listReceipt } from "@/api/purchasesale/receipt";
 import { getToken } from "@/utils/auth";
-
-
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Purchase",
   dicts: ['contractmgr_contract_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'contractmgr_contract_approval_status', 
           'purchase_mgr_order_status', 'purchasesale_transport_mode'],
+  components: { Treeselect },
   // 文件上传用
   props: {
     // 值
@@ -769,11 +772,18 @@ export default {
       openDetail: false,
       fileList: [],
       selRow: {},
-      receiptList: []
+      receiptList: [],
+      // 部门树选项
+      deptOptions: undefined,
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   // 文件上传用
   watch: {
@@ -1067,6 +1077,12 @@ export default {
     viewReceipt(row) {
       // console.log("选择的仓库数据: " + JSON.stringify(row));
       this.$router.push({ path: "/cgmgr/shmgr", query: { selRow: row } });
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   }
 };
