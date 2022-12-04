@@ -212,6 +212,7 @@
         <module>ruoyi-report-purchasesale</module>
         <module>ruoyi-report-kcdb</module>
         <module>ruoyi-report-fpgl</module>
+        <module>ruoyi-report-zjzy</module>
     </modules>
     <packaging>pom</packaging>
 

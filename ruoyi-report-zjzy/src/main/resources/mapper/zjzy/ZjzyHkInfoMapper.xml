@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zjzy.mapper.ZjzyHkInfoMapper">
+    
+    <resultMap type="ZjzyHkInfo" id="ZjzyHkInfoResult">
+        <result property="hkId"    column="hk_id"    />
+        <result property="hkKhbh"    column="hk_khbh"    />
+        <result property="hkKhmc"    column="hk_khmc"    />
+        <result property="hkHkzh"    column="hk_hkzh"    />
+        <result property="hkHkje"    column="hk_hkje"    />
+        <result property="hkHkzt"    column="hk_hkzt"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectZjzyHkInfoVo">
+        select hk_id, hk_khbh, hk_khmc, hk_hkzh, hk_hkje, hk_hkzt, create_by, create_time, update_by, update_time, biz_version from zjzy_hk_info
+    </sql>
+
+    <select id="selectZjzyHkInfoList" parameterType="ZjzyHkInfo" resultMap="ZjzyHkInfoResult">
+        <include refid="selectZjzyHkInfoVo"/>
+        <where>  
+            <if test="hkKhbh != null  and hkKhbh != ''"> and hk_khbh = #{hkKhbh}</if>
+            <if test="hkKhmc != null  and hkKhmc != ''"> and hk_khmc = #{hkKhmc}</if>
+            <if test="hkHkzh != null  and hkHkzh != ''"> and hk_hkzh like concat('%', #{hkHkzh}, '%')</if>
+            <if test="params.beginHkHkje != null and params.beginHkHkje != '' and params.endHkHkje != null and params.endHkHkje != ''"> and hk_hkje between #{params.beginHkHkje} and #{params.endHkHkje}</if>
+            <if test="hkHkzt != null  and hkHkzt != ''"> and hk_hkzt = #{hkHkzt}</if>
+        </where>
+    </select>
+    
+    <select id="selectZjzyHkInfoByHkId" parameterType="String" resultMap="ZjzyHkInfoResult">
+        <include refid="selectZjzyHkInfoVo"/>
+        where hk_id = #{hkId}
+    </select>
+        
+    <insert id="insertZjzyHkInfo" parameterType="ZjzyHkInfo" useGeneratedKeys="true" keyProperty="hkId">
+        insert into zjzy_hk_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hkKhbh != null and hkKhbh != ''">hk_khbh,</if>
+            <if test="hkKhmc != null and hkKhmc != ''">hk_khmc,</if>
+            <if test="hkHkzh != null and hkHkzh != ''">hk_hkzh,</if>
+            <if test="hkHkje != null">hk_hkje,</if>
+            <if test="hkHkzt != null and hkHkzt != ''">hk_hkzt,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hkKhbh != null and hkKhbh != ''">#{hkKhbh},</if>
+            <if test="hkKhmc != null and hkKhmc != ''">#{hkKhmc},</if>
+            <if test="hkHkzh != null and hkHkzh != ''">#{hkHkzh},</if>
+            <if test="hkHkje != null">#{hkHkje},</if>
+            <if test="hkHkzt != null and hkHkzt != ''">#{hkHkzt},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZjzyHkInfo" parameterType="ZjzyHkInfo">
+        update zjzy_hk_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hkKhbh != null and hkKhbh != ''">hk_khbh = #{hkKhbh},</if>
+            <if test="hkKhmc != null and hkKhmc != ''">hk_khmc = #{hkKhmc},</if>
+            <if test="hkHkzh != null and hkHkzh != ''">hk_hkzh = #{hkHkzh},</if>
+            <if test="hkHkje != null">hk_hkje = #{hkHkje},</if>
+            <if test="hkHkzt != null and hkHkzt != ''">hk_hkzt = #{hkHkzt},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where hk_id = #{hkId}
+    </update>
+
+    <delete id="deleteZjzyHkInfoByHkId" parameterType="String">
+        delete from zjzy_hk_info where hk_id = #{hkId}
+    </delete>
+
+    <delete id="deleteZjzyHkInfoByHkIds" parameterType="String">
+        delete from zjzy_hk_info where hk_id in 
+        <foreach item="hkId" collection="array" open="(" separator="," close=")">
+            #{hkId}
+        </foreach>
+    </delete>
+</mapper>

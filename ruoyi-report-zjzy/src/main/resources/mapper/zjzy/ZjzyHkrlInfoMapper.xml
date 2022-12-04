@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zjzy.mapper.ZjzyHkrlInfoMapper">
+    
+    <resultMap type="ZjzyHkrlInfo" id="ZjzyHkrlInfoResult">
+        <result property="hkrlId"    column="hkrl_id"    />
+        <result property="hkrlBmbh"    column="hkrl_bmbh"    />
+        <result property="hkrlPch"    column="hkrl_pch"    />
+        <result property="hkrlHtbh"    column="hkrl_htbh"    />
+        <result property="hkrlJe"    column="hkrl_je"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectZjzyHkrlInfoVo">
+        select hkrl_id, hkrl_bmbh, hkrl_pch, hkrl_htbh, hkrl_je, create_by, create_time, update_by, update_time, biz_version from zjzy_hkrl_info
+    </sql>
+
+    <select id="selectZjzyHkrlInfoList" parameterType="ZjzyHkrlInfo" resultMap="ZjzyHkrlInfoResult">
+        <include refid="selectZjzyHkrlInfoVo"/>
+        <where>  
+            <if test="hkrlBmbh != null  and hkrlBmbh != ''"> and hkrl_bmbh = #{hkrlBmbh}</if>
+            <if test="hkrlPch != null  and hkrlPch != ''"> and hkrl_pch = #{hkrlPch}</if>
+            <if test="hkrlHtbh != null  and hkrlHtbh != ''"> and hkrl_htbh = #{hkrlHtbh}</if>
+            <if test="params.beginHkrlJe != null and params.beginHkrlJe != '' and params.endHkrlJe != null and params.endHkrlJe != ''"> and hkrl_je between #{params.beginHkrlJe} and #{params.endHkrlJe}</if>
+        </where>
+    </select>
+    
+    <select id="selectZjzyHkrlInfoByHkrlId" parameterType="Long" resultMap="ZjzyHkrlInfoResult">
+        <include refid="selectZjzyHkrlInfoVo"/>
+        where hkrl_id = #{hkrlId}
+    </select>
+        
+    <insert id="insertZjzyHkrlInfo" parameterType="ZjzyHkrlInfo">
+        insert into zjzy_hkrl_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hkrlId != null">hkrl_id,</if>
+            <if test="hkrlBmbh != null and hkrlBmbh != ''">hkrl_bmbh,</if>
+            <if test="hkrlPch != null and hkrlPch != ''">hkrl_pch,</if>
+            <if test="hkrlHtbh != null and hkrlHtbh != ''">hkrl_htbh,</if>
+            <if test="hkrlJe != null">hkrl_je,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hkrlId != null">#{hkrlId},</if>
+            <if test="hkrlBmbh != null and hkrlBmbh != ''">#{hkrlBmbh},</if>
+            <if test="hkrlPch != null and hkrlPch != ''">#{hkrlPch},</if>
+            <if test="hkrlHtbh != null and hkrlHtbh != ''">#{hkrlHtbh},</if>
+            <if test="hkrlJe != null">#{hkrlJe},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZjzyHkrlInfo" parameterType="ZjzyHkrlInfo">
+        update zjzy_hkrl_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hkrlBmbh != null and hkrlBmbh != ''">hkrl_bmbh = #{hkrlBmbh},</if>
+            <if test="hkrlPch != null and hkrlPch != ''">hkrl_pch = #{hkrlPch},</if>
+            <if test="hkrlHtbh != null and hkrlHtbh != ''">hkrl_htbh = #{hkrlHtbh},</if>
+            <if test="hkrlJe != null">hkrl_je = #{hkrlJe},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where hkrl_id = #{hkrlId}
+    </update>
+
+    <delete id="deleteZjzyHkrlInfoByHkrlId" parameterType="Long">
+        delete from zjzy_hkrl_info where hkrl_id = #{hkrlId}
+    </delete>
+
+    <delete id="deleteZjzyHkrlInfoByHkrlIds" parameterType="String">
+        delete from zjzy_hkrl_info where hkrl_id in 
+        <foreach item="hkrlId" collection="array" open="(" separator="," close=")">
+            #{hkrlId}
+        </foreach>
+    </delete>
+</mapper>
