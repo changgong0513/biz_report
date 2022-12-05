@@ -20,11 +20,10 @@ public class ZjzyHkInfo extends BaseEntity
     private String hkId;
 
     /** 客户编号 */
-    @Excel(name = "客户编号")
     private String hkKhbh;
 
-    /** 客户名称 */
-    @Excel(name = "客户名称")
+    /** 客户名称（回款单位） */
+    @Excel(name = "回款单位")
     private String hkKhmc;
 
     /** 回款账号 */
@@ -32,12 +31,14 @@ public class ZjzyHkInfo extends BaseEntity
     private String hkHkzh;
 
     /** 回款金额 */
-    @Excel(name = "回款金额")
+    @Excel(name = "回款金额（单位：元）")
     private BigDecimal hkHkje;
 
     /** 回款状态 */
-    @Excel(name = "回款状态")
     private String hkHkzt;
+
+    /** 回款认领金额 */
+    private BigDecimal hkrlJe;
 
     /** 版本号 */
     private Long bizVersion;
@@ -92,10 +93,20 @@ public class ZjzyHkInfo extends BaseEntity
         this.hkHkzt = hkHkzt;
     }
 
-    public String getHkHkzt() 
+    public BigDecimal getHkrlJe() {
+        return hkrlJe;
+    }
+
+    public void setHkrlJe(BigDecimal hkrlJe) {
+        this.hkrlJe = hkrlJe;
+    }
+
+    public String getHkHkzt()
     {
         return hkHkzt;
     }
+
+
     public void setBizVersion(Long bizVersion) 
     {
         this.bizVersion = bizVersion;

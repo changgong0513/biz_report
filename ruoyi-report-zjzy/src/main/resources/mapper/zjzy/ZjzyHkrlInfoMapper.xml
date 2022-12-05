@@ -44,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="hkrlPch != null and hkrlPch != ''">hkrl_pch,</if>
             <if test="hkrlHtbh != null and hkrlHtbh != ''">hkrl_htbh,</if>
             <if test="hkrlJe != null">hkrl_je,</if>
+            <if test="hkId != null">hk_id,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -56,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="hkrlPch != null and hkrlPch != ''">#{hkrlPch},</if>
             <if test="hkrlHtbh != null and hkrlHtbh != ''">#{hkrlHtbh},</if>
             <if test="hkrlJe != null">#{hkrlJe},</if>
+            <if test="hkId != null">#{hkId},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询回款认领列表
 export function listHkrl(query) {
   return request({
-    url: '/system/hkrl/list',
+    url: '/zjzy/hk/list',
     method: 'get',
     params: query
   })
@@ -12,15 +12,24 @@ export function listHkrl(query) {
 // 查询回款认领详细
 export function getHkrl(hkId) {
   return request({
-    url: '/system/hkrl/' + hkId,
+    url: '/zjzy/hk/' + hkId,
     method: 'get'
+  })
+}
+
+// 新增回款
+export function addHk(data) {
+  return request({
+    url: '/zjzy/hk',
+    method: 'post',
+    data: data
   })
 }
 
 // 新增回款认领
 export function addHkrl(data) {
   return request({
-    url: '/system/hkrl',
+    url: '/zjzy/hkrl',
     method: 'post',
     data: data
   })
@@ -29,7 +38,7 @@ export function addHkrl(data) {
 // 修改回款认领
 export function updateHkrl(data) {
   return request({
-    url: '/system/hkrl',
+    url: '/zjzy/hk',
     method: 'put',
     data: data
   })
@@ -38,7 +47,16 @@ export function updateHkrl(data) {
 // 删除回款认领
 export function delHkrl(hkId) {
   return request({
-    url: '/system/hkrl/' + hkId,
+    url: '/zjzy/hk/' + hkId,
     method: 'delete'
+  })
+}
+
+// 查询回款认领合同编号列表
+export function getHkrlHtbh(query) {
+  return request({
+    url: '/zjzy/hkrl/htbh/list',
+    method: 'get',
+    params: query
   })
 }

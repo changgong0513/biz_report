@@ -35,6 +35,9 @@ public class ZjzyHkrlInfo extends BaseEntity
     @Excel(name = "金额")
     private BigDecimal hkrlJe;
 
+    /** 回款编号 */
+    private String hkId;
+
     /** 版本号 */
     private Long bizVersion;
 
@@ -83,7 +86,16 @@ public class ZjzyHkrlInfo extends BaseEntity
     {
         return hkrlJe;
     }
-    public void setBizVersion(Long bizVersion) 
+
+    public String getHkId() {
+        return hkId;
+    }
+
+    public void setHkId(String hkId) {
+        this.hkId = hkId;
+    }
+
+    public void setBizVersion(Long bizVersion)
     {
         this.bizVersion = bizVersion;
     }

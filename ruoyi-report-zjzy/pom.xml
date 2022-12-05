@@ -16,5 +16,9 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.masterdata</artifactId>
+        </dependency>
     </dependencies>
 </project>

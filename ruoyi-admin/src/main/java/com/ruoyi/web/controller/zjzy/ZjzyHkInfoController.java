@@ -1,10 +1,12 @@
 package com.ruoyi.web.controller.zjzy;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.zjzy.domain.ZjzyHkInfo;
 import com.ruoyi.zjzy.service.IZjzyHkInfoService;
+import org.apache.xmlbeans.impl.jam.JElement;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 回款认领Controller
@@ -29,7 +32,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @date 2022-12-04
  */
 @RestController
-@RequestMapping("/system/hkrl")
+@RequestMapping("/zjzy/hk")
 public class ZjzyHkInfoController extends BaseController
 {
     @Autowired
@@ -44,6 +47,17 @@ public class ZjzyHkInfoController extends BaseController
     {
         startPage();
         List<ZjzyHkInfo> list = zjzyHkInfoService.selectZjzyHkInfoList(zjzyHkInfo);
+        list.stream().forEach(hkData -> {
+            if (hkData.getHkHkje() != null && hkData.getHkrlJe() != null) {
+                BigDecimal hkje = hkData.getHkHkje();
+                BigDecimal hkrlje = hkData.getHkrlJe();
+                if (hkje.compareTo(hkrlje) == 0) {
+                    hkData.setHkHkzt("1");
+                } else if (hkje.compareTo(hkrlje) == 1) {
+                    hkData.setHkHkzt("2");
+                }
+            }
+        });
         return getDataTable(list);
     }
 
@@ -101,5 +115,34 @@ public class ZjzyHkInfoController extends BaseController
     public AjaxResult remove(@PathVariable String[] hkIds)
     {
         return toAjax(zjzyHkInfoService.deleteZjzyHkInfoByHkIds(hkIds));
+    }
+
+    /**
+     * 导入回款模板下载。
+     *
+     * @param response
+     */
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response) {
+        ExcelUtil<ZjzyHkInfo> util = new ExcelUtil<ZjzyHkInfo>(ZjzyHkInfo.class);
+        util.importTemplateExcel(response, "回款数据");
+    }
+
+    /**
+     * 导入合同数据.
+     *
+     * @param file
+     * @param updateSupport
+     * @return
+     * @throws Exception
+     */
+    @Log(title = "资金占用", businessType = BusinessType.IMPORT)
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+        ExcelUtil<ZjzyHkInfo> util = new ExcelUtil<ZjzyHkInfo>(ZjzyHkInfo.class);
+        List<ZjzyHkInfo> hkList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = zjzyHkInfoService.importHkData(hkList, updateSupport, operName);
+        return AjaxResult.success(message);
     }
 }

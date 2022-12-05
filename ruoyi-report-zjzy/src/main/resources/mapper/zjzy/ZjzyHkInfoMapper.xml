@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="hkHkzh"    column="hk_hkzh"    />
         <result property="hkHkje"    column="hk_hkje"    />
         <result property="hkHkzt"    column="hk_hkzt"    />
+        <result property="hkrlJe"    column="hkrl_je"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -19,12 +20,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectZjzyHkInfoVo">
-        select hk_id, hk_khbh, hk_khmc, hk_hkzh, hk_hkje, hk_hkzt, create_by, create_time, update_by, update_time, biz_version from zjzy_hk_info
+        select
+            t1.hk_id, t1.hk_khbh, t1.hk_khmc, t1.hk_hkzh, t1.hk_hkje, t1.hk_hkzt,
+            t1.create_by, t1.create_time, t1.update_by, t1.update_time, t1.biz_version,
+            t2.hkrl_je
+        from
+            zjzy_hk_info t1
+        left join
+            ( select hk_id, sum( hkrl_je ) as hkrl_je from zjzy_hkrl_info hkrl group by hk_id ) t2
+        on
+            t1.hk_id = t2.hk_id
     </sql>
 
     <select id="selectZjzyHkInfoList" parameterType="ZjzyHkInfo" resultMap="ZjzyHkInfoResult">
         <include refid="selectZjzyHkInfoVo"/>
-        <where>  
+        <where>
             <if test="hkKhbh != null  and hkKhbh != ''"> and hk_khbh = #{hkKhbh}</if>
             <if test="hkKhmc != null  and hkKhmc != ''"> and hk_khmc = #{hkKhmc}</if>
             <if test="hkHkzh != null  and hkHkzh != ''"> and hk_hkzh like concat('%', #{hkHkzh}, '%')</if>
@@ -37,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectZjzyHkInfoVo"/>
         where hk_id = #{hkId}
     </select>
-        
+
     <insert id="insertZjzyHkInfo" parameterType="ZjzyHkInfo" useGeneratedKeys="true" keyProperty="hkId">
         insert into zjzy_hk_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
