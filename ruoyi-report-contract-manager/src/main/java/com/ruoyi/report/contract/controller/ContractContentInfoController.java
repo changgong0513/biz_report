@@ -152,6 +152,14 @@ public class ContractContentInfoController extends BaseController
     }
 
     /**
+     * 从钉钉同步合同数据
+     */
+    @PostMapping("/fk/sync")
+    public AjaxResult fkSync() throws Exception {
+        return toAjax(contractContentInfoService.syncFkContractInfo());
+    }
+
+    /**
      * 文件上传
      *
      * @param file

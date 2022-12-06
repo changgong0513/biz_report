@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zjzy.mapper.ZjzyFkrlInfoMapper">
+    
+    <resultMap type="ZjzyFkrlInfo" id="ZjzyFkrlInfoResult">
+        <result property="fkrlId"    column="fkrl_id"    />
+        <result property="fkrlBmbh"    column="fkrl_bmbh"    />
+        <result property="fkrlPch"    column="fkrl_pch"    />
+        <result property="fkrlHtbh"    column="fkrl_htbh"    />
+        <result property="fkrlJe"    column="fkrl_je"    />
+        <result property="fkId"    column="fk_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <sql id="selectZjzyFkrlInfoVo">
+        select
+            t.fkrl_id, t.fkrl_bmbh, t.fkrl_pch, t.fkrl_htbh, t.fkrl_je, t.fk_id,
+            t.create_by, t.create_time, t.update_by, t.update_time, t.biz_version,
+            d.dept_name
+        from
+            zjzy_fkrl_info t
+        left join sys_dept d on t.fkrl_bmbh = d.dept_id
+    </sql>
+
+    <select id="selectZjzyFkrlInfoList" parameterType="ZjzyFkrlInfo" resultMap="ZjzyFkrlInfoResult">
+        <include refid="selectZjzyFkrlInfoVo"/>
+        <where>
+            <if test="fkId != null  and fkId != ''"> and fk_id = #{fkId}</if>
+            <if test="fkrlBmbh != null  and fkrlBmbh != ''"> and fkrl_bmbh = #{fkrlBmbh}</if>
+            <if test="fkrlPch != null  and fkrlPch != ''"> and fkrl_pch = #{fkrlPch}</if>
+            <if test="fkrlHtbh != null  and fkrlHtbh != ''"> and fkrl_htbh = #{fkrlHtbh}</if>
+            <if test="fkrlJe != null "> and fkrl_je = #{fkrlJe}</if>
+            <if test="fkId != null "> and fk_id = #{fkId}</if>
+        </where>
+    </select>
+    
+    <select id="selectZjzyFkrlInfoByFkrlId" parameterType="String" resultMap="ZjzyFkrlInfoResult">
+        <include refid="selectZjzyFkrlInfoVo"/>
+        where fkrl_id = #{fkrlId}
+    </select>
+        
+    <insert id="insertZjzyFkrlInfo" parameterType="ZjzyFkrlInfo" useGeneratedKeys="true" keyProperty="fkrlId">
+        insert into zjzy_fkrl_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fkrlBmbh != null and fkrlBmbh != ''">fkrl_bmbh,</if>
+            <if test="fkrlPch != null and fkrlPch != ''">fkrl_pch,</if>
+            <if test="fkrlHtbh != null and fkrlHtbh != ''">fkrl_htbh,</if>
+            <if test="fkrlJe != null">fkrl_je,</if>
+            <if test="fkId != null">fk_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fkrlBmbh != null and fkrlBmbh != ''">#{fkrlBmbh},</if>
+            <if test="fkrlPch != null and fkrlPch != ''">#{fkrlPch},</if>
+            <if test="fkrlHtbh != null and fkrlHtbh != ''">#{fkrlHtbh},</if>
+            <if test="fkrlJe != null">#{fkrlJe},</if>
+            <if test="fkId != null">#{fkId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZjzyFkrlInfo" parameterType="ZjzyFkrlInfo">
+        update zjzy_fkrl_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fkrlBmbh != null and fkrlBmbh != ''">fkrl_bmbh = #{fkrlBmbh},</if>
+            <if test="fkrlPch != null and fkrlPch != ''">fkrl_pch = #{fkrlPch},</if>
+            <if test="fkrlHtbh != null and fkrlHtbh != ''">fkrl_htbh = #{fkrlHtbh},</if>
+            <if test="fkrlJe != null">fkrl_je = #{fkrlJe},</if>
+            <if test="fkId != null">fk_id = #{fkId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where fkrl_id = #{fkrlId}
+    </update>
+
+    <delete id="deleteZjzyFkrlInfoByFkrlId" parameterType="String">
+        delete from zjzy_fkrl_info where fkrl_id = #{fkrlId}
+    </delete>
+
+    <delete id="deleteZjzyFkrlInfoByFkrlIds" parameterType="String">
+        delete from zjzy_fkrl_info where fkrl_id in 
+        <foreach item="fkrlId" collection="array" open="(" separator="," close=")">
+            #{fkrlId}
+        </foreach>
+    </delete>
+</mapper>

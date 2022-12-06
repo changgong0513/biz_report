@@ -69,6 +69,13 @@ public interface IContractContentInfoService {
     public int syncContractContentInfo() throws Exception;
 
     /**
+     * 从钉钉同步付款数据
+     *
+     * @return 结果
+     */
+    public int syncFkContractInfo() throws Exception;
+
+    /**
      * 导入合同数据到采购表或者销售表
      *
      * @return 结果

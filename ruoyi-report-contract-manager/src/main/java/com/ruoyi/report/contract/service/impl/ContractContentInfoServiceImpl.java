@@ -33,6 +33,8 @@ import com.ruoyi.report.contract.domain.ContractApprovalRecordsInfo;
 import com.ruoyi.report.contract.mapper.ContractApprovalInfoMapper;
 import com.ruoyi.report.contract.mapper.ContractApprovalRecordsInfoMapper;
 import com.ruoyi.system.service.impl.SysUserServiceImpl;
+import com.ruoyi.zjzy.domain.ZjzyFkInfo;
+import com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper;
 import com.taobao.api.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +68,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     @Autowired
     private ContractApprovalRecordsInfoMapper contractApprovalRecordsInfoMapper;
+
+    @Autowired
+    private ZjzyFkInfoMapper zjzyFkInfoMapper;
 
     @Autowired
     protected Validator validator;
@@ -229,13 +234,45 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             }
         }
 
+        return 1;
+    }
+
+    /**
+     * 从钉钉同步付款数据
+     *
+     * @return 结果
+     */
+    @Override
+    public int syncFkContractInfo() throws Exception {
+        // 获取当前企业钉钉访问令牌
+        String accessToken = getDingTalkAccessToken();
+
+        // 获取当前企业所有可管理的表单
+        // getCurrentEnterpriseAllMgrForm(accessToken);
+
         // 获取付款合同审批实例ID列表(测试数据用)
         List<String> idsFk = getFkContractForDemo(accessToken);
         for (String idFk : idsFk) {
             System.out.println("审批实例ID：" + idFk);
-            getFkContractData(accessToken, idFk);
-        }
+            ZjzyFkInfo zjzyFkInfo = getFkContractData(accessToken, idFk);
 
+            // 检查合同是否已经导入合同表
+            ZjzyFkInfo selectZjzyFkInfo = zjzyFkInfoMapper
+                    .selectZjzyFkInfoByFkBusinessId(zjzyFkInfo.getFkBusinessId());
+            if (selectZjzyFkInfo == null) {
+                zjzyFkInfo.setBizVersion(1L);
+                zjzyFkInfo.setCreateTime(DateUtils.getNowDate());
+                zjzyFkInfo.setUpdateTime(DateUtils.getNowDate());
+                zjzyFkInfo.setCreateBy(SecurityUtils.getUsername());
+                zjzyFkInfo.setUpdateBy(SecurityUtils.getUsername());
+                zjzyFkInfoMapper.insertZjzyFkInfo(zjzyFkInfo);
+            } else {
+                zjzyFkInfo.setBizVersion(1L);
+                zjzyFkInfo.setUpdateTime(DateUtils.getNowDate());
+                zjzyFkInfo.setUpdateBy(SecurityUtils.getUsername());
+                zjzyFkInfoMapper.updateZjzyFkInfo(zjzyFkInfo);
+            }
+        }
 
         return 1;
     }
@@ -640,129 +677,118 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     }
 
     /**
-     * 根据实例ID，获取合同数据(测试用)
+     * 根据实例ID，获取付款合同数据(测试用)
      *
      * @param accessToken
      * @param id
      */
-    private void getFkContractData(final String accessToken, final String id) {
+    private ZjzyFkInfo getFkContractData(final String accessToken, final String id) {
         com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders getProcessInstanceHeaders = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders();
         getProcessInstanceHeaders.xAcsDingtalkAccessToken = accessToken;
         com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest getProcessInstanceRequest = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest()
                 .setProcessInstanceId(id);
 
-        ContractContentInfo contract = new ContractContentInfo();
+        ZjzyFkInfo fk = new ZjzyFkInfo();
 
         try {
             GetProcessInstanceResponse resp = client.getProcessInstanceWithOptions(getProcessInstanceRequest, getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
             System.out.println("付款合同状态------" + resp.getBody().getResult().status);
-            contract.setContractStatus(resp.getBody().getResult().status);
+            fk.setFkspzt(resp.getBody().getResult().status);
+
+            System.out.println("业务编号------" + resp.getBody().getResult().businessId);
+            fk.setFkBusinessId(resp.getBody().getResult().businessId);
 
             List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> list = resp.getBody().getResult().formComponentValues;
             System.out.println("------付款合同项总数------" + list.size());
             System.out.println("------以下为付款合同项内容------");
-//            for (int i = 0; i < list.size(); i++) {
-//                GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues item = list.get(i);
-//                System.out.println(item.getName() + "------" + item.getValue());
-//                // 货物名称
-//                if (StringUtils.equals(item.getName(), "货物名称")) {
-//                    contract.setGoodsId(UUID.randomUUID().toString().trim().replace("-", ""));
-//                    contract.setGoodsName(item.getValue());
-//                }
-//                // 合同类型
-//                if (StringUtils.equals(item.getName(), "合同类型")) {
-//                    if (StringUtils.contains(item.getValue(), "收购合同")) {
-//                        contract.setContractType("P");
-//                    } else if (StringUtils.contains(item.getValue(), "物流合同") ||
-//                            StringUtils.contains(item.getValue(), "销售合同")) {
-//                        contract.setContractType("S");
-//                    } else {
-//                        // 其他合同类型
-//                        contract.setContractType("Q1");
-//                    }
-//                }
-//                // 合同名称
-//                if (StringUtils.equals(item.getName(), "合同名称")) {
-//                    contract.setContractName(item.getValue());
-//                }
-//                // 合同编号
-//                if (StringUtils.equals(item.getName(), "合同编号")) {
-//                    contract.setContractId(item.getValue());
-//                }
-//                // 签约日期
-//                if (StringUtils.equals(item.getName(), "签约日期")) {
-//                    contract.setSignDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
-//                }
-//                // 交货日期
-//                if (StringUtils.equals(item.getName(), "交货日期")) {
-//                    contract.setDeliveryDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
-//                }
-//                // 我方单位名称
-//                if (StringUtils.equals(item.getName(), "我方单位名称")) {
-//                    contract.setOurCompanyName(item.getValue());
-//                }
-//                // 我方负责人
-//                if (StringUtils.equals(item.getName(), "我方负责人")) {
-//                    contract.setOurPrincipal(item.getValue());
-//                }
-//                // 对方单位名称
-//                if (StringUtils.equals(item.getName(), "对方单位名称")) {
-//                    contract.setOppositeCompanyName(item.getValue());
-//                }
-//                // 对方负责人
-//                if (StringUtils.equals(item.getName(), "对方负责人")) {
-//                    contract.setOppositePrincipal(item.getValue());
-//                }
-//                // 合同数量
-//                if (StringUtils.equals(item.getName(), "合同数量")) {
-//                    contract.setContractQuantity(item.getValue());
-//                }
-//                // 合同单价
-//                if (StringUtils.equals(item.getName(), "合同单价")) {
-//                    if (StringUtils.isNotBlank(item.getValue())) {
-//                        contract.setContractPrice(new BigDecimal(item.getValue()));
-//                    }
-//                }
-//                // 合同总价
-//                if (StringUtils.equals(item.getName(), "合同总价")) {
-//                    if (StringUtils.isNotBlank(item.getValue())) {
-//                        contract.setContractTotal(new BigDecimal(item.getValue()));
-//                    }
-//                }
-//                // 账期方式
-//                if (StringUtils.equals(item.getName(), "账期方式")) {
-//                    contract.setAccountingPeriod(item.getValue());
-//                }
-//                // 账期期限
-//                if (StringUtils.equals(item.getName(), "账期期限")) {
-//                    contract.setAccountingPeriod(contract.getAccountingPeriod() + item.getValue());
-//                }
-//                // 交货方式
-//                if (StringUtils.equals(item.getName(), "交货方式")) {
-//                    contract.setDeliveryMethod(item.getValue());
-//                }
-//                // 港口到厂运费
-//                if (StringUtils.equals(item.getName(), "港口到厂运费")) {
-//                    contract.setPortToFactoryFare(new BigDecimal(item.getValue()));
-//                }
-//                // 港口到港口运费
-//                if (StringUtils.equals(item.getName(), "港口到港口运费")) {
-//                    contract.setPortToPortFare(new BigDecimal(item.getValue()));
-//                }
-//                // 其他
-//                if (StringUtils.equals(item.getName(), "其他")) {
-//                    contract.setContractOther(item.getValue());
-//                }
-//                // 代理或合作方
-//                if (StringUtils.equals(item.getName(), "代理或合作方")) {
-//                    contract.setContractAgent(item.getValue());
-//                }
-//                // 备注
-//                if (StringUtils.equals(item.getName(), "备注")) {
-//                    contract.setContractRemark(item.getValue());
-//                }
-//            }
+            for (int i = 0; i < list.size(); i++) {
+                GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues item = list.get(i);
+                System.out.println(item.getName() + "------" + item.getValue());
+                // 付款事由
+                if (StringUtils.equals(item.getName(), "付款事由")) {
+                    fk.setFkSy(item.getValue());
+                }
+                // 贸易品种
+                if (StringUtils.equals(item.getName(), "贸易品种")) {
+                    //TODO 需要补充
+                    fk.setFkWlbh("");
+                    fk.setFkWlmc(item.getValue());
+                }
+                // 其他品种名称
+                if (StringUtils.equals(item.getName(), "其他品种名称")) {
+                    fk.setFkQtpzmc(item.getValue());
+                }
+                // 资金用途
+                if (StringUtils.equals(item.getName(), "资金用途")) {
+                    if (StringUtils.equals(item.getValue(), "运费")) {
+                        fk.setFkZjyt("1");
+                    } else {
+                        //TODO 需要补充
+                        fk.setFkZjyt("0");
+                    }
+                }
+                // 单价
+                if (StringUtils.equals(item.getName(), "单价")) {
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        fk.setFkDj(new BigDecimal(item.getValue()));
+                    } else {
+                        fk.setFkDj(new BigDecimal(0));
+                    }
+                }
+                // 数量
+                if (StringUtils.equals(item.getName(), "数量")) {
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        fk.setFkSl(Long.parseLong(item.getValue()));
+                    } else {
+                        fk.setFkSl(0L);
+                    }
+                }
+                // 付款金额（元）
+                if (StringUtils.equals(item.getName(), "付款金额（元）")) {
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        fk.setFkJe(new BigDecimal(item.getValue()));
+                    } else {
+                        fk.setFkJe(new BigDecimal(0L));
+                    }
+                }
+                // 付款账户
+                if (StringUtils.equals(item.getName(), "付款账户")) {
+                    //TODO 需要补充
+                    fk.setFkKhbh("");
+                    fk.setFkKhmc(item.getValue());
+                }
+                // 收款账号
+                if (StringUtils.equals(item.getName(), "收款账号")) {
+                    fk.setFkZh(item.getValue());
+                }
+                // 开户银行
+                if (StringUtils.equals(item.getName(), "开户银行")) {
+                    fk.setFkKhyh(item.getValue());
+                }
+                // 银行行号
+                if (StringUtils.equals(item.getName(), "银行行号")) {
+                    fk.setFkYhhh(item.getValue());
+                }
+                // 运输方式
+                if (StringUtils.equals(item.getName(), "运输方式")) {
+                    if (StringUtils.equals(item.getValue(), "铁运")) {
+                        fk.setFkYsfs("1");
+                    } else {
+                        //TODO 需要补充
+                        fk.setFkYsfs("0");
+                    }
+                }
+                // 装车、到货
+                if (StringUtils.equals(item.getName(), "装车、到货")) {
+                    fk.setFkZcdh(item.getValue());
+                }
+                // 备注
+                if (StringUtils.equals(item.getName(), "账期期限")) {
+                    fk.setFkBz(item.getValue());
+                }
+            }
 
+            return fk;
         } catch (TeaException err) {
             // err 中含有 code 和 message 属性，可帮助开发定位问题
             System.out.println("TeaException");
@@ -775,6 +801,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             System.out.println(err.code);
             System.out.println(err.message);
         }
+
+        return null;
     }
 
     /**

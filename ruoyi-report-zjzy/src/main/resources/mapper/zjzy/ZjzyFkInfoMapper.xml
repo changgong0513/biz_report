@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper">
+    
+    <resultMap type="ZjzyFkInfo" id="ZjzyFkInfoResult">
+        <result property="fkId"    column="fk_id"    />
+        <result property="fkKhbh"    column="fk_khbh"    />
+        <result property="fkKhmc"    column="fk_khmc"    />
+        <result property="fkZh"    column="fk_zh"    />
+        <result property="fkJe"    column="fk_je"    />
+        <result property="fkZt"    column="fk_zt"    />
+        <result property="fkSy"    column="fk_sy"    />
+        <result property="fkWlbh"    column="fk_wlbh"    />
+        <result property="fkWlmc"    column="fk_wlmc"    />
+        <result property="fkQtpzmc"    column="fk_qtpzmc"    />
+        <result property="fkZjyt"    column="fk_zjyt"    />
+        <result property="fkDj"    column="fk_dj"    />
+        <result property="fkSl"    column="fk_sl"    />
+        <result property="fkSkzh"    column="fk_skzh"    />
+        <result property="fkKhyh"    column="fk_khyh"    />
+        <result property="fkYhhh"    column="fk_yhhh"    />
+        <result property="fkYsfs"    column="fk_ysfs"    />
+        <result property="fkZcdh"    column="fk_zcdh"    />
+        <result property="fkBz"    column="fk_bz"    />
+        <result property="fkSpzt"    column="fk_spzt"    />
+        <result property="fkBusinessId"    column="fk_business_id"    />
+        <result property="fkrlJe"    column="fkrl_je"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <sql id="selectZjzyFkInfoVo">
+        select
+            t1.fk_id, t1.fk_khbh, t1.fk_khmc, t1.fk_zh, t1.fk_je, t1.fk_zt,
+            t1.fk_sy, t1.fk_wlbh, t1.fk_wlmc, t1.fk_qtpzmc, t1.fk_zjyt, t1.fk_dj,
+            t1.fk_sl, t1.fk_skzh, t1.fk_khyh, t1.fk_yhhh, t1.fk_ysfs, t1.fk_zcdh,
+            t1.fk_bz, t1.fk_spzt, t1.fk_business_id, t2.fkrl_je
+        from
+            zjzy_fk_info t1
+        left join ( select fk_id, sum( fkrl_je ) as fkrl_je from zjzy_fkrl_info hkrl group by fk_id ) t2 on t1.fk_id = t2.fk_id
+    </sql>
+
+    <select id="selectZjzyFkInfoList" parameterType="ZjzyFkInfo" resultMap="ZjzyFkInfoResult">
+        <include refid="selectZjzyFkInfoVo"/>
+        <where>  
+            <if test="fkKhbh != null  and fkKhbh != ''"> and fk_khbh = #{fkKhbh}</if>
+            <if test="fkKhmc != null  and fkKhmc != ''"> and fk_khmc = #{fkKhmc}</if>
+            <if test="fkZh != null  and fkZh != ''"> and fk_zh = #{fkZh}</if>
+            <if test="fkJe != null "> and fk_je = #{fkJe}</if>
+            <if test="fkZt != null  and fkZt != ''"> and fk_zt = #{fkZt}</if>
+            <if test="fkSy != null  and fkSy != ''"> and fk_sy = #{fkSy}</if>
+            <if test="fkWlbh != null  and fkWlbh != ''"> and fk_wlbh = #{fkWlbh}</if>
+            <if test="fkWlmc != null  and fkWlmc != ''"> and fk_wlmc = #{fkWlmc}</if>
+            <if test="fkQtpzmc != null  and fkQtpzmc != ''"> and fk_qtpzmc = #{fkQtpzmc}</if>
+            <if test="fkZjyt != null  and fkZjyt != ''"> and fk_zjyt = #{fkZjyt}</if>
+            <if test="fkDj != null "> and fk_dj = #{fkDj}</if>
+            <if test="fkSl != null "> and fk_sl = #{fkSl}</if>
+            <if test="fkSkzh != null  and fkSkzh != ''"> and fk_skzh = #{fkSkzh}</if>
+            <if test="fkKhyh != null  and fkKhyh != ''"> and fk_khyh = #{fkKhyh}</if>
+            <if test="fkYhhh != null  and fkYhhh != ''"> and fk_yhhh = #{fkYhhh}</if>
+            <if test="fkYsfs != null  and fkYsfs != ''"> and fk_ysfs = #{fkYsfs}</if>
+            <if test="fkZcdh != null  and fkZcdh != ''"> and fk_zcdh = #{fkZcdh}</if>
+            <if test="fkBz != null  and fkBz != ''"> and fk_bz = #{fkBz}</if>
+            <if test="fkSpzt != null  and fkSpzt != ''"> and fk_spzt = #{fkSpzt}</if>
+            <if test="fkBusinessId != null  and fkBusinessId != ''"> and fk_business_id = #{fkBusinessId}</if>
+        </where>
+    </select>
+    
+    <select id="selectZjzyFkInfoByFkId" parameterType="String" resultMap="ZjzyFkInfoResult">
+        <include refid="selectZjzyFkInfoVo"/>
+        where fk_id = #{fkId}
+    </select>
+
+    <select id="selectZjzyFkInfoByFkBusinessId" parameterType="String" resultMap="ZjzyFkInfoResult">
+        <include refid="selectZjzyFkInfoVo"/>
+        where fk_business_id = #{fkBusinessId}
+    </select>
+        
+    <insert id="insertZjzyFkInfo" parameterType="ZjzyFkInfo" useGeneratedKeys="true" keyProperty="fkId">
+        insert into zjzy_fk_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fkKhbh != null and fkKhbh != ''">fk_khbh,</if>
+            <if test="fkKhmc != null and fkKhmc != ''">fk_khmc,</if>
+            <if test="fkZh != null and fkZh != ''">fk_zh,</if>
+            <if test="fkJe != null">fk_je,</if>
+            <if test="fkZt != null and fkZt != ''">fk_zt,</if>
+            <if test="fkSy != null">fk_sy,</if>
+            <if test="fkWlbh != null">fk_wlbh,</if>
+            <if test="fkWlmc != null">fk_wlmc,</if>
+            <if test="fkQtpzmc != null">fk_qtpzmc,</if>
+            <if test="fkZjyt != null">fk_zjyt,</if>
+            <if test="fkDj != null">fk_dj,</if>
+            <if test="fkSl != null">fk_sl,</if>
+            <if test="fkSkzh != null">fk_skzh,</if>
+            <if test="fkKhyh != null">fk_khyh,</if>
+            <if test="fkYhhh != null">fk_yhhh,</if>
+            <if test="fkYsfs != null">fk_ysfs,</if>
+            <if test="fkZcdh != null">fk_zcdh,</if>
+            <if test="fkBz != null">fk_bz,</if>
+            <if test="fkSpzt != null">fk_spzt,</if>
+            <if test="fkBusinessId != null">fk_business_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bizVersion != null">biz_version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fkKhbh != null and fkKhbh != ''">#{fkKhbh},</if>
+            <if test="fkKhmc != null and fkKhmc != ''">#{fkKhmc},</if>
+            <if test="fkZh != null and fkZh != ''">#{fkZh},</if>
+            <if test="fkJe != null">#{fkJe},</if>
+            <if test="fkZt != null and fkZt != ''">#{fkZt},</if>
+            <if test="fkSy != null">#{fkSy},</if>
+            <if test="fkWlbh != null">#{fkWlbh},</if>
+            <if test="fkWlmc != null">#{fkWlmc},</if>
+            <if test="fkQtpzmc != null">#{fkQtpzmc},</if>
+            <if test="fkZjyt != null">#{fkZjyt},</if>
+            <if test="fkDj != null">#{fkDj},</if>
+            <if test="fkSl != null">#{fkSl},</if>
+            <if test="fkSkzh != null">#{fkSkzh},</if>
+            <if test="fkKhyh != null">#{fkKhyh},</if>
+            <if test="fkYhhh != null">#{fkYhhh},</if>
+            <if test="fkYsfs != null">#{fkYsfs},</if>
+            <if test="fkZcdh != null">#{fkZcdh},</if>
+            <if test="fkBz != null">#{fkBz},</if>
+            <if test="fkSpzt != null">#{fkSpzt},</if>
+            <if test="fkBusinessId != null">#{fkBusinessId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+         </trim>
+    </insert>
+
+    <update id="updateZjzyFkInfo" parameterType="ZjzyFkInfo">
+        update zjzy_fk_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fkKhbh != null and fkKhbh != ''">fk_khbh = #{fkKhbh},</if>
+            <if test="fkKhmc != null and fkKhmc != ''">fk_khmc = #{fkKhmc},</if>
+            <if test="fkZh != null and fkZh != ''">fk_zh = #{fkZh},</if>
+            <if test="fkJe != null">fk_je = #{fkJe},</if>
+            <if test="fkZt != null and fkZt != ''">fk_zt = #{fkZt},</if>
+            <if test="fkSy != null">fk_sy = #{fkSy},</if>
+            <if test="fkWlbh != null">fk_wlbh = #{fkWlbh},</if>
+            <if test="fkWlmc != null">fk_wlmc = #{fkWlmc},</if>
+            <if test="fkQtpzmc != null">fk_qtpzmc = #{fkQtpzmc},</if>
+            <if test="fkZjyt != null">fk_zjyt = #{fkZjyt},</if>
+            <if test="fkDj != null">fk_dj = #{fkDj},</if>
+            <if test="fkSl != null">fk_sl = #{fkSl},</if>
+            <if test="fkSkzh != null">fk_skzh = #{fkSkzh},</if>
+            <if test="fkKhyh != null">fk_khyh = #{fkKhyh},</if>
+            <if test="fkYhhh != null">fk_yhhh = #{fkYhhh},</if>
+            <if test="fkYsfs != null">fk_ysfs = #{fkYsfs},</if>
+            <if test="fkZcdh != null">fk_zcdh = #{fkZcdh},</if>
+            <if test="fkBz != null">fk_bz = #{fkBz},</if>
+            <if test="fkSpzt != null">fk_spzt = #{fkSpzt},</if>
+            <if test="fkBusinessId != null">fk_business_id = #{fkBusinessId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where fk_id = #{fkId}
+    </update>
+
+    <delete id="deleteZjzyFkInfoByFkId" parameterType="String">
+        delete from zjzy_fk_info where fk_id = #{fkId}
+    </delete>
+
+    <delete id="deleteZjzyFkInfoByFkIds" parameterType="String">
+        delete from zjzy_fk_info where fk_id in 
+        <foreach item="fkId" collection="array" open="(" separator="," close=")">
+            #{fkId}
+        </foreach>
+    </delete>
+</mapper>
