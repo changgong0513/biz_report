@@ -229,6 +229,14 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             }
         }
 
+        // 获取付款合同审批实例ID列表(测试数据用)
+        List<String> idsFk = getFkContractForDemo(accessToken);
+        for (String idFk : idsFk) {
+            System.out.println("审批实例ID：" + idFk);
+            getFkContractData(accessToken, idFk);
+        }
+
+
         return 1;
     }
 
@@ -368,6 +376,44 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         listProcessInstanceIdsHeaders.xAcsDingtalkAccessToken = accessToken;
         com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest()
                 .setProcessCode("PROC-53AEE967-1CA5-43CF-9489-CAF178BC1E46") // 测试API
+                .setStartTime(1661961600000L)
+                .setNextToken(0L)
+                .setMaxResults(10L);
+        try {
+            ListProcessInstanceIdsResponse resp = client.listProcessInstanceIdsWithOptions(listProcessInstanceIdsRequest, listProcessInstanceIdsHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+            System.out.println("审批实例ID列表：" + resp.getBody().getResult().getList());
+            return resp.getBody().getResult().getList();
+        } catch (TeaException err) {
+            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                // err 中含有 code 和 message 属性，可帮助开发定位问题
+                System.out.println("TeaException");
+                System.out.println(err.code);
+                System.out.println(err.message);
+            }
+        } catch (Exception _err) {
+            TeaException err = new TeaException(_err.getMessage(), _err);
+            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                // err 中含有 code 和 message 属性，可帮助开发定位问题
+                System.out.println("Exception");
+                System.out.println(err.code);
+                System.out.println(err.message);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取付款合同审批实例ID列表(测试用)
+     *
+     * @param accessToken
+     * @throws Exception
+     */
+    private List<String> getFkContractForDemo(final String accessToken) throws Exception {
+        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders listProcessInstanceIdsHeaders = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders();
+        listProcessInstanceIdsHeaders.xAcsDingtalkAccessToken = accessToken;
+        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest()
+                .setProcessCode("PROC-14DEE72E-B6C8-4D18-B684-06A88E4CC714") // 测试API
                 .setStartTime(1661961600000L)
                 .setNextToken(0L)
                 .setMaxResults(10L);
@@ -591,6 +637,144 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         }
 
         purchaseInfo.setOrderStatus(contractInfo.getContractStatus());
+    }
+
+    /**
+     * 根据实例ID，获取合同数据(测试用)
+     *
+     * @param accessToken
+     * @param id
+     */
+    private void getFkContractData(final String accessToken, final String id) {
+        com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders getProcessInstanceHeaders = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceHeaders();
+        getProcessInstanceHeaders.xAcsDingtalkAccessToken = accessToken;
+        com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest getProcessInstanceRequest = new com.aliyun.dingtalkworkflow_1_0.models.GetProcessInstanceRequest()
+                .setProcessInstanceId(id);
+
+        ContractContentInfo contract = new ContractContentInfo();
+
+        try {
+            GetProcessInstanceResponse resp = client.getProcessInstanceWithOptions(getProcessInstanceRequest, getProcessInstanceHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+            System.out.println("付款合同状态------" + resp.getBody().getResult().status);
+            contract.setContractStatus(resp.getBody().getResult().status);
+
+            List<GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues> list = resp.getBody().getResult().formComponentValues;
+            System.out.println("------付款合同项总数------" + list.size());
+            System.out.println("------以下为付款合同项内容------");
+//            for (int i = 0; i < list.size(); i++) {
+//                GetProcessInstanceResponseBody.GetProcessInstanceResponseBodyResultFormComponentValues item = list.get(i);
+//                System.out.println(item.getName() + "------" + item.getValue());
+//                // 货物名称
+//                if (StringUtils.equals(item.getName(), "货物名称")) {
+//                    contract.setGoodsId(UUID.randomUUID().toString().trim().replace("-", ""));
+//                    contract.setGoodsName(item.getValue());
+//                }
+//                // 合同类型
+//                if (StringUtils.equals(item.getName(), "合同类型")) {
+//                    if (StringUtils.contains(item.getValue(), "收购合同")) {
+//                        contract.setContractType("P");
+//                    } else if (StringUtils.contains(item.getValue(), "物流合同") ||
+//                            StringUtils.contains(item.getValue(), "销售合同")) {
+//                        contract.setContractType("S");
+//                    } else {
+//                        // 其他合同类型
+//                        contract.setContractType("Q1");
+//                    }
+//                }
+//                // 合同名称
+//                if (StringUtils.equals(item.getName(), "合同名称")) {
+//                    contract.setContractName(item.getValue());
+//                }
+//                // 合同编号
+//                if (StringUtils.equals(item.getName(), "合同编号")) {
+//                    contract.setContractId(item.getValue());
+//                }
+//                // 签约日期
+//                if (StringUtils.equals(item.getName(), "签约日期")) {
+//                    contract.setSignDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+//                }
+//                // 交货日期
+//                if (StringUtils.equals(item.getName(), "交货日期")) {
+//                    contract.setDeliveryDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+//                }
+//                // 我方单位名称
+//                if (StringUtils.equals(item.getName(), "我方单位名称")) {
+//                    contract.setOurCompanyName(item.getValue());
+//                }
+//                // 我方负责人
+//                if (StringUtils.equals(item.getName(), "我方负责人")) {
+//                    contract.setOurPrincipal(item.getValue());
+//                }
+//                // 对方单位名称
+//                if (StringUtils.equals(item.getName(), "对方单位名称")) {
+//                    contract.setOppositeCompanyName(item.getValue());
+//                }
+//                // 对方负责人
+//                if (StringUtils.equals(item.getName(), "对方负责人")) {
+//                    contract.setOppositePrincipal(item.getValue());
+//                }
+//                // 合同数量
+//                if (StringUtils.equals(item.getName(), "合同数量")) {
+//                    contract.setContractQuantity(item.getValue());
+//                }
+//                // 合同单价
+//                if (StringUtils.equals(item.getName(), "合同单价")) {
+//                    if (StringUtils.isNotBlank(item.getValue())) {
+//                        contract.setContractPrice(new BigDecimal(item.getValue()));
+//                    }
+//                }
+//                // 合同总价
+//                if (StringUtils.equals(item.getName(), "合同总价")) {
+//                    if (StringUtils.isNotBlank(item.getValue())) {
+//                        contract.setContractTotal(new BigDecimal(item.getValue()));
+//                    }
+//                }
+//                // 账期方式
+//                if (StringUtils.equals(item.getName(), "账期方式")) {
+//                    contract.setAccountingPeriod(item.getValue());
+//                }
+//                // 账期期限
+//                if (StringUtils.equals(item.getName(), "账期期限")) {
+//                    contract.setAccountingPeriod(contract.getAccountingPeriod() + item.getValue());
+//                }
+//                // 交货方式
+//                if (StringUtils.equals(item.getName(), "交货方式")) {
+//                    contract.setDeliveryMethod(item.getValue());
+//                }
+//                // 港口到厂运费
+//                if (StringUtils.equals(item.getName(), "港口到厂运费")) {
+//                    contract.setPortToFactoryFare(new BigDecimal(item.getValue()));
+//                }
+//                // 港口到港口运费
+//                if (StringUtils.equals(item.getName(), "港口到港口运费")) {
+//                    contract.setPortToPortFare(new BigDecimal(item.getValue()));
+//                }
+//                // 其他
+//                if (StringUtils.equals(item.getName(), "其他")) {
+//                    contract.setContractOther(item.getValue());
+//                }
+//                // 代理或合作方
+//                if (StringUtils.equals(item.getName(), "代理或合作方")) {
+//                    contract.setContractAgent(item.getValue());
+//                }
+//                // 备注
+//                if (StringUtils.equals(item.getName(), "备注")) {
+//                    contract.setContractRemark(item.getValue());
+//                }
+//            }
+
+        } catch (TeaException err) {
+            // err 中含有 code 和 message 属性，可帮助开发定位问题
+            System.out.println("TeaException");
+            System.out.println(err.code);
+            System.out.println(err.message);
+        } catch (Exception _err) {
+            TeaException err = new TeaException(_err.getMessage(), _err);
+            // err 中含有 code 和 message 属性，可帮助开发定位问题
+            System.out.println("Exception");
+            System.out.println(err.code);
+            System.out.println(err.message);
+        }
     }
 
     /**

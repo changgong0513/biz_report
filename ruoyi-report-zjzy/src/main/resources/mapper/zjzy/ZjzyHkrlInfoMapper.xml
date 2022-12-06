@@ -15,15 +15,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="bizVersion"    column="biz_version"    />
+        <result property="deptName"    column="dept_name"    />
     </resultMap>
 
     <sql id="selectZjzyHkrlInfoVo">
-        select hkrl_id, hkrl_bmbh, hkrl_pch, hkrl_htbh, hkrl_je, create_by, create_time, update_by, update_time, biz_version from zjzy_hkrl_info
+        select
+            t.hkrl_id, t.hkrl_bmbh, t.hkrl_pch, t.hkrl_htbh, t.hkrl_je,
+            t.create_by, t.create_time, t.update_by, t.update_time, t.biz_version,
+            d.dept_name
+        from
+            zjzy_hkrl_info t
+        left join sys_dept d on t.hkrl_bmbh = d.dept_id
+
     </sql>
 
     <select id="selectZjzyHkrlInfoList" parameterType="ZjzyHkrlInfo" resultMap="ZjzyHkrlInfoResult">
         <include refid="selectZjzyHkrlInfoVo"/>
-        <where>  
+        <where>
+            <if test="hkId != null  and hkId != ''"> and hk_id = #{hkId}</if>
             <if test="hkrlBmbh != null  and hkrlBmbh != ''"> and hkrl_bmbh = #{hkrlBmbh}</if>
             <if test="hkrlPch != null  and hkrlPch != ''"> and hkrl_pch = #{hkrlPch}</if>
             <if test="hkrlHtbh != null  and hkrlHtbh != ''"> and hkrl_htbh = #{hkrlHtbh}</if>

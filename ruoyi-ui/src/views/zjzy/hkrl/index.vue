@@ -104,7 +104,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="hkrlList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="hkrlList" @selection-change="handleSelectionChange" 
+      @row-dblclick="handleView">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="客户编号" align="center" prop="hkKhbh" />
       <el-table-column label="客户名称" align="center" prop="hkKhmc" />
@@ -271,11 +272,31 @@
         <el-button @click="cancelHkrl">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :title="titleHkrlDetail" :visible.sync="openHkrlDetail" 
+      width="80%" append-to-body :close-on-click-modal="false">
+      <el-table v-loading="loading" :data="listHkrlDetail">
+      <el-table-column label="认领部门" align="center" prop="deptName" />
+      <el-table-column label="批次号" align="center" prop="hkrlPch" />
+      <el-table-column label="合同编号" align="center" prop="hkrlHtbh" />
+      <el-table-column label="认领金额" align="center" prop="hkrlJe" />
+    </el-table>
+    <pagination
+      v-show="hkrlDetailTotal > 0"
+      :total="hkrlDetailTotal"
+      :page.sync="hkrlDetailPageNum"
+      :limit.sync="hkrlDetailPageSize"
+      @pagination="getHkrlDetailList"
+    />
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="cancelHkrlDetail">关 闭</el-button>
+    </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listHkrl, getHkrl, delHkrl, addHk, updateHkrl, getHkrlHtbh, addHkrl } from "@/api/zjzy/hkrl";
+import { listHkrl, getHkrl, delHkrl, addHk, updateHkrl, getHkrlHtbh, addHkrl, listHkrlDetail } from "@/api/zjzy/hkrl";
 import { listClient } from "@/api/masterdata/client";
 import { listPch } from "@/api/masterdata/pch";
 import { getToken } from "@/utils/auth";
@@ -301,14 +322,21 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 回款认领表格数据
+      hkrlDetailTotal: 0,
+      hkrlDetailPageNum: 1,
+      hkrlDetailPageSize: 10,
+      // 回款表格数据
       hkrlList: [],
+      // 回款认领表格数据
+      listHkrlDetail: [],
       // 弹出层标题
       title: "",
       titleHkrl: "",
+      titleHkrlDetail: "",
       // 是否显示弹出层
       open: false,
       openHkrl: false,
+      openHkrlDetail: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -639,7 +667,27 @@ export default {
       deptTreeSelect().then(response => {
         this.deptOptions = response.data;
       });
-    }
+    },
+    // 回款认领详情取消按钮
+    cancelHkrlDetail() {
+      this.openHkrlDetail = false;
+    },
+    /** 查看回款认领详情 */ 
+    handleView(row) {
+      this.queryParams.hkId = row.hkId;
+      this.getHkrlDetailList();
+    },
+    /** 查询回款认领明细列表 */
+    getHkrlDetailList() {
+      listHkrlDetail(this.queryParams).then(response => {
+        console.log("回款编号" + this.queryParams.hkId);
+        console.log(JSON.stringify(response.rows));
+        this.listHkrlDetail = response.rows;
+        this.hkrlDetailTotal = response.total;
+        this.titleHkrlDetail = "查看回款认领详情";
+        this.openHkrlDetail = true;
+      });
+    },
   }
 };
 </script>

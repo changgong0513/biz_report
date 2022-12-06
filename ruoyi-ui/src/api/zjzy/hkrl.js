@@ -60,3 +60,15 @@ export function getHkrlHtbh(query) {
     params: query
   })
 }
+
+// 查询回款认领详情列表
+export function listHkrlDetail(query) {
+  return request({
+    url: '/zjzy/hkrl/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+

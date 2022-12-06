@@ -41,6 +41,9 @@ public class ZjzyHkrlInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
+    /** 部门名称 */
+    private String deptName;
+
     public void setHkrlId(Long hkrlId) 
     {
         this.hkrlId = hkrlId;
@@ -103,6 +106,14 @@ public class ZjzyHkrlInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     @Override

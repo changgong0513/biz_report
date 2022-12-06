@@ -46,7 +46,6 @@ public class ZjzyHkrlInfoController extends BaseController
     /**
      * 查询回款认领列表
      */
-    @PreAuthorize("@ss.hasPermi('system:hkrl:list')")
     @GetMapping("/list")
     public TableDataInfo list(ZjzyHkrlInfo zjzyHkrlInfo)
     {
