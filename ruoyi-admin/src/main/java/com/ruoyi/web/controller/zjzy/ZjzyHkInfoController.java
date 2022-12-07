@@ -85,6 +85,14 @@ public class ZjzyHkInfoController extends BaseController
     }
 
     /**
+     * 取得回款总金额
+     */
+    @GetMapping(value = "/total")
+    public AjaxResult getHkrlTotal() {
+        return AjaxResult.success(zjzyHkInfoService.getHkrlTotal());
+    }
+
+    /**
      * 新增回款认领
      */
     @PreAuthorize("@ss.hasPermi('system:hkrl:add')")

@@ -43,6 +43,15 @@ public class ZjzyFkInfoServiceImpl implements IZjzyFkInfoService
     }
 
     /**
+     * 取得付款总金额
+     *
+     * @return 结果
+     */
+    public double getFkrlTotal() {
+        return zjzyFkInfoMapper.getFkrlTotal();
+    }
+
+    /**
      * 查询付款列表
      * 
      * @param zjzyFkInfo 付款

@@ -48,6 +48,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where hk_id = #{hkId}
     </select>
 
+    <select id="getHkrlTotal" resultType="java.lang.Double">
+        select sum(hk_hkje) as hk_hkje from zjzy_hk_info
+    </select>
+
     <insert id="insertZjzyHkInfo" parameterType="ZjzyHkInfo" useGeneratedKeys="true" keyProperty="hkId">
         insert into zjzy_hk_info
         <trim prefix="(" suffix=")" suffixOverrides=",">

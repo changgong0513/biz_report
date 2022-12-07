@@ -63,6 +63,15 @@ public class ZjzyHkInfoServiceImpl implements IZjzyHkInfoService {
     }
 
     /**
+     * 取得回款总金额
+     *
+     * @return 结果
+     */
+    public double getHkrlTotal() {
+        return zjzyHkInfoMapper.getHkrlTotal();
+    }
+
+    /**
      * 新增回款认领
      * 
      * @param zjzyHkInfo 回款认领

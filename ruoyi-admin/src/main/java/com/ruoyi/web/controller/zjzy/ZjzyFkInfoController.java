@@ -119,4 +119,9 @@ public class ZjzyFkInfoController extends BaseController
     {
         return toAjax(zjzyFkInfoService.deleteZjzyFkInfoByFkIds(fkIds));
     }
+
+    @GetMapping(value = "/total")
+    public AjaxResult getFkrlTotal() {
+        return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());
+    }
 }

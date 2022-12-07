@@ -28,6 +28,13 @@ public interface IZjzyHkInfoService
     public List<ZjzyHkInfo> selectZjzyHkInfoList(ZjzyHkInfo zjzyHkInfo);
 
     /**
+     * 取得回款总金额
+     *
+     * @return 结果
+     */
+    public double getHkrlTotal();
+
+    /**
      * 新增回款认领
      * 
      * @param zjzyHkInfo 回款认领

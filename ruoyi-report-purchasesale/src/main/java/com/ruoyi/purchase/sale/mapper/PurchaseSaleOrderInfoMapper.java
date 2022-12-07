@@ -44,6 +44,20 @@ public interface PurchaseSaleOrderInfoMapper
     public List<PurchaseSaleOrderInfo> selectSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo);
 
     /**
+     * 取得采购合同总数
+     *
+     * @return 结果
+     */
+    public int getPurchaseContractCounts();
+
+    /**
+     * 取得销售合同总数
+     *
+     * @return 结果
+     */
+    public int getSaleContractCounts();
+
+    /**
      * 新增采购收货销售发货管理
      * 
      * @param purchaseSaleOrderInfo 采购收货销售发货管理

@@ -70,5 +70,13 @@ export function listHkrlDetail(query) {
   })
 }
 
+// 取得回款总金额
+export function getHkrlTotal() {
+  return request({
+    url: '/zjzy/hk/total',
+    method: 'get'
+  })
+}
+
 
 

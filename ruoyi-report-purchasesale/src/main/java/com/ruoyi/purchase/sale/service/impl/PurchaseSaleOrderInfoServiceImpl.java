@@ -91,6 +91,24 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
     }
 
     /**
+     * 取得采购合同总数
+     *
+     * @return 结果
+     */
+    public int getPurchaseContractCounts() {
+        return purchaseSaleOrderInfoMapper.getPurchaseContractCounts();
+    }
+
+    /**
+     * 取得销售合同总数
+     *
+     * @return 结果
+     */
+    public int getSaleContractCounts() {
+        return purchaseSaleOrderInfoMapper.getSaleContractCounts();
+    }
+
+    /**
      * 新增采购收货销售发货管理
      * 
      * @param purchaseSaleOrderInfo 采购收货销售发货管理

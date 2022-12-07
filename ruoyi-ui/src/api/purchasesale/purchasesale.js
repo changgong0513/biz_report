@@ -71,3 +71,19 @@ export function getOrderAdditional(orderId) {
     method: 'get'
   })
 }
+
+// 查询采购合同总数
+export function getPurchaseContractCounts() {
+  return request({
+    url: '/purchase/mgr/purchase/counts',
+    method: 'get'
+  })
+}
+
+// 查询销售合同总数
+export function getSaleContractCounts() {
+  return request({
+    url: '/purchase/mgr/sale/counts',
+    method: 'get'
+  })
+}

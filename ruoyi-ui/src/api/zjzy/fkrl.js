@@ -68,3 +68,11 @@ export function listFkrlDetailList(query) {
     params: query
   })
 }
+
+// 取得付款总金额
+export function getFkrlTotal() {
+  return request({
+    url: '/zjzy/fk/total',
+    method: 'get'
+  })
+}

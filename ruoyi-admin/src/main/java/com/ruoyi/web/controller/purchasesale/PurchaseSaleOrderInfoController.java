@@ -111,6 +111,24 @@ public class PurchaseSaleOrderInfoController extends BaseController
     }
 
     /**
+     * 取得采购合同总数
+     */
+    @GetMapping(value = "/purchase/counts")
+    public AjaxResult getPurchaseContractCounts() {
+        int purchaseCounts = purchaseSaleOrderInfoService.getPurchaseContractCounts();
+        return AjaxResult.success(purchaseCounts);
+    }
+
+    /**
+     * 取得销售合同总数
+     */
+    @GetMapping(value = "/sale/counts")
+    public AjaxResult getSaleContractCounts() {
+        int saleCounts = purchaseSaleOrderInfoService.getSaleContractCounts();
+        return AjaxResult.success(saleCounts);
+    }
+
+    /**
      * 新增采购收货销售发货管理
      */
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")

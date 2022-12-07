@@ -36,6 +36,13 @@ public interface IZjzyFkInfoService
     public List<ZjzyFkInfo> selectZjzyFkInfoList(ZjzyFkInfo zjzyFkInfo);
 
     /**
+     * 取得付款总金额
+     *
+     * @return 结果
+     */
+    public double getFkrlTotal();
+
+    /**
      * 新增付款
      * 
      * @param zjzyFkInfo 付款

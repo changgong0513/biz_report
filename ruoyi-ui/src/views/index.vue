@@ -1,7 +1,13 @@
 <template>
   <div class="dashboard-editor-container">
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <panel-group @handleSetLineChartData="handleSetLineChartData" 
+      :purchaseCounts="purchaseCounts"
+      :saleCounts="saleCounts"
+      :zjzyTotal="calZjzyTotal"
+      :hkrlTotal="hkrlTotal"
+      :fkrlTotal="fkrlTotal"
+     />
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
@@ -36,6 +42,11 @@ import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 
+import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
+import { getHkrlTotal } from "@/api/zjzy/hkrl";
+import { getFkrlTotal } from "@/api/zjzy/fkrl";
+
+
 const lineChartData = {
   newVisitis: {
     expectedData: [100, 120, 161, 134, 105, 160, 165],
@@ -66,12 +77,57 @@ export default {
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      lineChartData: lineChartData.newVisitis,
+      purchaseCounts: 0, // 采购合同数量
+      saleCounts: 0, // 销售合同数量
+      zjzyTotal: 0, // 资金占用总额
+      hkrlTotal: 0, // 回款认领总额
+      fkrlTotal: 0, // 付款认领总额
     }
+  },
+  created() {
+    this.handleSetPanelGroupPurchaseData();
+    this.handleSetPanelGroupSaleData();
+    this.handleSetPanelGroupHkrlData();
+    this.handleSetPanelGroupFkrlData();
+  },
+  computed: {
+    /** 资金占用 */
+    calZjzyTotal: function () {
+      if (this.fkrlTotal && this.hkrlTotal) {
+        return Number(this.fkrlTotal) - Number(this.hkrlTotal)
+      }
+      
+      return 0;
+    },
   },
   methods: {
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
+    },
+    /** 取得采购合同总数 */
+    handleSetPanelGroupPurchaseData() {
+      getPurchaseContractCounts().then(response => {
+        this.purchaseCounts = response.data;
+      });
+    },
+    /** 取得销售合同总数 */
+    handleSetPanelGroupSaleData() {
+      getSaleContractCounts().then(response => {
+        this.saleCounts = response.data;
+      });
+    },
+    /** 取得回款总金额 */
+    handleSetPanelGroupHkrlData() {
+      getHkrlTotal().then(response => {
+        this.hkrlTotal = response.data;
+      });
+    },
+    /** 取得付款总金额 */
+    handleSetPanelGroupFkrlData() {
+      getFkrlTotal().then(response => {
+        this.fkrlTotal = response.data;
+      });
     }
   }
 }
