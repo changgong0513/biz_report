@@ -1,6 +1,8 @@
 package com.ruoyi.zjzy.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.zjzy.domain.ZjzyHkInfo;
 
 /**
@@ -33,6 +35,13 @@ public interface IZjzyHkInfoService
      * @return 结果
      */
     public double getHkrlTotal();
+
+    /**
+     * 根据年月分组，取得年月回款总金额
+     *
+     * @return 结果
+     */
+    public List<ZjzyHkInfo> getHkTotalByYearMonth();
 
     /**
      * 新增回款认领

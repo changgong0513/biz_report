@@ -9,9 +9,9 @@
       :fkrlTotal="fkrlTotal"
      />
 
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
-    </el-row>
+    </el-row> -->
 
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
@@ -26,7 +26,8 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
-          <bar-chart />
+          <!-- 父组件向子组件传递对象步骤2 -->
+          <bar-chart :chart-data="barData" />
         </div>
       </el-col>
     </el-row>
@@ -43,7 +44,7 @@ import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 
 import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
-import { getHkrlTotal } from "@/api/zjzy/hkrl";
+import { getHkrlTotal, getHkTotalByYearMonth } from "@/api/zjzy/hkrl";
 import { getFkrlTotal } from "@/api/zjzy/fkrl";
 
 
@@ -83,6 +84,11 @@ export default {
       zjzyTotal: 0, // 资金占用总额
       hkrlTotal: 0, // 回款认领总额
       fkrlTotal: 0, // 付款认领总额
+      // 父组件向子组件传递对象步骤1
+      barData: {
+        xAxisData: [],
+        yAxisData: []
+      }
     }
   },
   created() {
@@ -90,6 +96,7 @@ export default {
     this.handleSetPanelGroupSaleData();
     this.handleSetPanelGroupHkrlData();
     this.handleSetPanelGroupFkrlData();
+    this.handleSetPanelGroupHkTotalData();
   },
   computed: {
     /** 资金占用 */
@@ -127,6 +134,16 @@ export default {
     handleSetPanelGroupFkrlData() {
       getFkrlTotal().then(response => {
         this.fkrlTotal = response.data;
+      });
+    },
+    /** 根据年月分组，取得年月回款总金额 */
+    handleSetPanelGroupHkTotalData() {
+      getHkTotalByYearMonth().then(response => {
+        console.log("根据年月分组，取得年月回款总金额" + JSON.stringify(response.rows))
+        response.rows.forEach(element => {
+          this.barData.xAxisData.push(element.hkYearMonth);
+          this.barData.yAxisData.push(element.hkTotalJe);
+        });
       });
     }
   }

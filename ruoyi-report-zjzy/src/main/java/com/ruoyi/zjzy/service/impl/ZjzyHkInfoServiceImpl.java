@@ -1,6 +1,7 @@
 package com.ruoyi.zjzy.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -69,6 +70,15 @@ public class ZjzyHkInfoServiceImpl implements IZjzyHkInfoService {
      */
     public double getHkrlTotal() {
         return zjzyHkInfoMapper.getHkrlTotal();
+    }
+
+    /**
+     * 根据年月分组，取得年月回款总金额
+     *
+     * @return 结果
+     */
+    public List<ZjzyHkInfo> getHkTotalByYearMonth() {
+        return zjzyHkInfoMapper.getHkTotalByYearMonth();
     }
 
     /**

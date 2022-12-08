@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.zjzy;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.zjzy.domain.ZjzyHkInfo;
@@ -90,6 +91,15 @@ public class ZjzyHkInfoController extends BaseController
     @GetMapping(value = "/total")
     public AjaxResult getHkrlTotal() {
         return AjaxResult.success(zjzyHkInfoService.getHkrlTotal());
+    }
+
+    /**
+     * 根据年月分组，取得年月回款总金额
+     */
+    @GetMapping(value = "/total/ym")
+    public TableDataInfo getHkTotalByYearMonth() {
+        List<ZjzyHkInfo> list = zjzyHkInfoService.getHkTotalByYearMonth();
+        return getDataTable(list);
     }
 
     /**

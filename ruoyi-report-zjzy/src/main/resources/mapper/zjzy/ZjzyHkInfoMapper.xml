@@ -12,6 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="hkHkje"    column="hk_hkje"    />
         <result property="hkHkzt"    column="hk_hkzt"    />
         <result property="hkrlJe"    column="hkrl_je"    />
+        <result property="hkYearMonth"    column="hk_year_month"    />
+        <result property="hkTotalJe"    column="hk_total_je"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -50,6 +52,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getHkrlTotal" resultType="java.lang.Double">
         select sum(hk_hkje) as hk_hkje from zjzy_hk_info
+    </select>
+
+    <!-- 根据年月分组，取得年月回款总金额 -->
+    <select id="getHkTotalByYearMonth" resultMap="ZjzyHkInfoResult">
+        select
+            date_format( create_time, '%Y-%m' ) as hk_year_month,
+            sum( hk_hkje ) as hk_total_je
+        from
+            zjzy_hk_info
+        group by
+            date_format( create_time, '%Y-%m' )
+        order by
+            date_format( create_time, '%Y-%m' )
     </select>
 
     <insert id="insertZjzyHkInfo" parameterType="ZjzyHkInfo" useGeneratedKeys="true" keyProperty="hkId">

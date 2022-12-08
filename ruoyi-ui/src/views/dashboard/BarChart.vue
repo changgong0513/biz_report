@@ -23,6 +23,11 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    // 父组件向子组件传递对象步骤3
+    chartData: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -30,12 +35,20 @@ export default {
       chart: null
     }
   },
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val)
+      }
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.initChart()
     })
   },
-  beforeDestroy() {
+  beforeDestroy() {c
     if (!this.chart) {
       return
     }
@@ -46,6 +59,11 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
 
+      // 父组件向子组件传递对象步骤4
+      this.setOptions(this.chartData)
+    },
+    // 父组件向子组件传递对象步骤5
+    setOptions({ xAxisData, yAxisData } = {}) {
       this.chart.setOption({
         tooltip: {
           trigger: 'axis',
@@ -62,7 +80,7 @@ export default {
         },
         xAxis: [{
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: xAxisData, // 父组件向子组件传递对象步骤7
           axisTick: {
             alignWithLabel: true
           }
@@ -78,23 +96,25 @@ export default {
           type: 'bar',
           stack: 'vistors',
           barWidth: '60%',
-          data: [79, 52, 200, 334, 390, 330, 220],
+          data: yAxisData, // 父组件向子组件传递对象步骤8
           animationDuration
-        }, {
-          name: 'pageB',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [80, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }, {
-          name: 'pageC',
-          type: 'bar',
-          stack: 'vistors',
-          barWidth: '60%',
-          data: [30, 52, 200, 334, 390, 330, 220],
-          animationDuration
-        }]
+        }
+        // , {
+        //   name: 'pageB',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [80, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }, {
+        //   name: 'pageC',
+        //   type: 'bar',
+        //   stack: 'vistors',
+        //   barWidth: '60%',
+        //   data: [30, 52, 200, 334, 390, 330, 220],
+        //   animationDuration
+        // }
+      ]
       })
     }
   }

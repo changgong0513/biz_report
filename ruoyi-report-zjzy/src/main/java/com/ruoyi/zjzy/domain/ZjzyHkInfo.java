@@ -40,6 +40,12 @@ public class ZjzyHkInfo extends BaseEntity
     /** 回款认领金额 */
     private BigDecimal hkrlJe;
 
+    /** 回款年份月份 */
+    private String hkYearMonth;
+
+    /** 按年份月份回款总额 */
+    private BigDecimal hkTotalJe;
+
     /** 版本号 */
     private Long bizVersion;
 
@@ -106,8 +112,23 @@ public class ZjzyHkInfo extends BaseEntity
         return hkHkzt;
     }
 
+    public String getHkYearMonth() {
+        return hkYearMonth;
+    }
 
-    public void setBizVersion(Long bizVersion) 
+    public void setHkYearMonth(String hkYearMonth) {
+        this.hkYearMonth = hkYearMonth;
+    }
+
+    public BigDecimal getHkTotalJe() {
+        return hkTotalJe;
+    }
+
+    public void setHkTotalJe(BigDecimal hkTotalJe) {
+        this.hkTotalJe = hkTotalJe;
+    }
+
+    public void setBizVersion(Long bizVersion)
     {
         this.bizVersion = bizVersion;
     }

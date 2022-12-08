@@ -78,5 +78,13 @@ export function getHkrlTotal() {
   })
 }
 
+// 根据年月分组，取得年月回款总金额
+export function getHkTotalByYearMonth() {
+  return request({
+    url: '/zjzy/hk/total/ym',
+    method: 'get'
+  })
+}
+
 
 
