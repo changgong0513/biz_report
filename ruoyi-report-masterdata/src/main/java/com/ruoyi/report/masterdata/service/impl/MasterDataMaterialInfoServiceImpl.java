@@ -55,6 +55,16 @@ public class MasterDataMaterialInfoServiceImpl implements IMasterDataMaterialInf
     }
 
     /**
+     * 根据导入物料名称，取得物料编码
+     *
+     * @param materialNames 需要取得的物料名称集合
+     * @return 主数据管理集合
+     */
+    public List<MasterDataMaterialInfo> getMaterialIds(String[] materialNames) {
+        return masterDataMaterialInfoMapper.getMaterialIds(materialNames);
+    }
+
+    /**
      * 新增主数据管理
      * 
      * @param masterDataMaterialInfo 主数据管理

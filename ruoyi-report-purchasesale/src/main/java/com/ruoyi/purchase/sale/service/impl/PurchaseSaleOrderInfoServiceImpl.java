@@ -1,5 +1,6 @@
 package com.ruoyi.purchase.sale.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -156,5 +157,59 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
     public int deletePurchaseSaleOrderInfoByOrderId(String orderId)
     {
         return purchaseSaleOrderInfoMapper.deletePurchaseSaleOrderInfoByOrderId(orderId);
+    }
+
+    /**
+     * 设置采购订单状态和完成率
+     *
+     * @param list
+     */
+    @Override
+    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list) {
+
+        if (list == null || list.size() == 0) {
+            return;
+        }
+
+        // 设置订单状态和完成率
+        list.stream().forEach(element -> {
+            // 采购数量（来自于采购管理）
+            long purchaseQuantity = element.getPurchaseQuantity();
+            // 核算数量（来自于收货管理）
+            long checkQuantity = element.getCheckQuantity();
+            if (0 == Long.compare(purchaseQuantity, checkQuantity)) {
+                // 采购数量（来自于采购管理） == 核算数量（来自于收货管理）
+                // 订单状态：已关闭
+                element.setOrderStatus("1");
+                // 完成率：100%
+                element.setCompletionRate(100 + "%");
+            } else {
+                // 采购数量（来自于采购管理） <> 核算数量（来自于收货管理）
+                // 订单状态：待确认
+                element.setOrderStatus("2");
+                if (0 != Long.compare(purchaseQuantity, 0)) {
+                    // 完成率：核算数量（来自于收货管理）/ 采购数量（来自于采购管理）* 100
+                    double completionRate = division(checkQuantity, purchaseQuantity, 2) * 100;
+                    element.setCompletionRate(completionRate + "%");
+                }
+            }
+        });
+    }
+
+    /**
+     * double除法
+     *
+     * @param a
+     * @param b
+     * @param accurate 结果保留位数
+     * @return
+     */
+    private double division(double a, double b, int accurate) {
+        if (accurate < 0) {
+            throw new RuntimeException("精确度必须是正整数或零");
+        }
+        BigDecimal b1 = new BigDecimal(a);
+        BigDecimal b2 = new BigDecimal(b);
+        return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

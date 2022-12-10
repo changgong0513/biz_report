@@ -40,8 +40,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/purchase/mgr")
-public class PurchaseSaleOrderInfoController extends BaseController
-{
+public class PurchaseSaleOrderInfoController extends BaseController {
+
     @Autowired
     private IPurchaseSaleOrderInfoService purchaseSaleOrderInfoService;
 
@@ -51,40 +51,30 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @Autowired
     private ServerConfig serverConfig;
 
+    // 合同类型：采购合同
+    private final static String CONST_CONTRACT_TYPE_PURCHASE = "P";
+
     /**
      * 查询采购收货销售发货管理列表
      */
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
     @GetMapping("/list")
     public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+
         startPage();
+
         List<PurchaseSaleOrderInfo> list = null;
-        if (StringUtils.equals(purchaseSaleOrderInfo.getContractType(), "P")) {
-            // 采购收货
+        if (StringUtils.equals(purchaseSaleOrderInfo.getContractType(), CONST_CONTRACT_TYPE_PURCHASE)) {
+            // 采购订单管理-收货管理
             list = purchaseSaleOrderInfoService.selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
         } else {
-            // 销售发货
+            // 销售订单管理-发货管理
             list = purchaseSaleOrderInfoService.selectSaleOrderInfoUnionList(purchaseSaleOrderInfo);
         }
 
-        list.stream().forEach(element -> {
-            long purchaseQuantity = element.getPurchaseQuantity();
-            long checkQuantity = element.getCheckQuantity();
-            if (0 == Long.compare(purchaseQuantity, checkQuantity)) {
-                // 已关闭
-                element.setOrderStatus("1");
-                element.setCompletionRate(100 + "%");
-            } else {
-                // 待确认
-                element.setOrderStatus("2");
-                if (0 != Long.compare(purchaseQuantity, 0)) {
-                    new Double(purchaseQuantity);
-                    new Double(checkQuantity);
-                    double completionRate = division(checkQuantity, purchaseQuantity, 2) * 100;
-                    element.setCompletionRate(completionRate + "%");
-                }
-            }
-        });
+        // 设置采购订单状态和完成率
+        purchaseSaleOrderInfoService.setPurchaseOrderStatusAndCompletionRate(list);
+
         return getDataTable(list);
     }
 
@@ -210,7 +200,7 @@ public class PurchaseSaleOrderInfoController extends BaseController
     }
 
     /**
-     *
+     * 删除上传文件
      *
      * @param filePath
      * @return
@@ -219,22 +209,5 @@ public class PurchaseSaleOrderInfoController extends BaseController
     @PostMapping("/del/uploadfile")
     public AjaxResult delUploadFile(@RequestBody String filePath) throws Exception {
         return toAjax(contractAdditionalInfoService.deleteUploadFile(filePath));
-    }
-
-    /**
-     * double除法
-     *
-     * @param a
-     * @param b
-     * @param accurate 结果保留位数
-     * @return
-     */
-    private double division(double a, double b, int accurate) {
-        if (accurate < 0) {
-            throw new RuntimeException("精确度必须是正整数或零");
-        }
-        BigDecimal b1 = new BigDecimal(a);
-        BigDecimal b2 = new BigDecimal(b);
-        return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 }

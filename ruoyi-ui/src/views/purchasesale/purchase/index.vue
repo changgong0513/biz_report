@@ -26,7 +26,7 @@
             :value="dict.value"
           />
         </el-select> -->
-        <treeselect v-model="form.belongDept" :options="deptOptions" :show-count="true" placeholder="请选择所属部门" style="width: 240px;" />
+        <treeselect v-model="queryParams.belongDept" :options="deptOptions" :show-count="true" placeholder="请选择所属部门" style="width: 240px;" />
       </el-form-item>
       <!-- 供应商名称 -->
       <el-form-item label="供应商名称" prop="supplierName">
@@ -127,11 +127,7 @@
           <span>{{ parseTime(scope.row.businessDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" align="center" prop="belongDept" width="100">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.purchasesale_belong_dept" :value="scope.row.belongDept"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="所属部门" align="center" prop="deptName" width="100" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="供应商名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="80">
@@ -156,17 +152,6 @@
     <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <!-- 订单编号 -->
-          <!-- <el-col :span="8">
-            <el-form-item label="订单编号" prop="orderId">
-              <el-input v-model="form.orderId" 
-                placeholder="请输入订单编号" 
-                :disabled="this.isUpdate" 
-                style="width: 240px"
-                maxlength="32"
-                show-word-limit />
-            </el-form-item>
-          </el-col> -->
           <!-- 合同编号 -->
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
@@ -184,6 +169,7 @@
                 v-model="form.purchaseType"
                 placeholder="采购类型"
                 style="width: 240px"
+                :disabled="true"
               >
                 <el-option
                   v-for="dict in dict.type.contractmgr_contract_type"
@@ -197,7 +183,11 @@
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
-              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" />
+              <el-input v-model="form.handledBy" 
+                placeholder="请输入经办人" 
+                style="width: 240px" 
+                maxlength="16"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -205,18 +195,11 @@
           <!-- 所属部门 -->
           <el-col :span="8">
             <el-form-item label="所属部门" prop="belongDept">
-              <el-select
-                v-model="form.belongDept"
-                placeholder="所属部门"
-                style="width: 240px"
-              >
-                <el-option
-                  v-for="dict in dict.type.purchasesale_belong_dept"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+              <treeselect v-model="form.belongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门" 
+                style="width: 240px;" />
             </el-form-item>
           </el-col>
           <!-- 业务日期 -->

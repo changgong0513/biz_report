@@ -338,17 +338,17 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-divider />
-      <el-row :gutter="10" class="mb8">
+      <el-row :gutter="10" class="mb8" v-show="showApproval">
+        <el-divider />
         <el-col :span="12">
           <h3 style="display:inline; margin-right: 15px">合同审批信息</h3>
           <el-switch
-            v-model="showApproval"
+            v-model="showApprovalSwitch"
             active-color="#13ce66">
           </el-switch>
         </el-col>
       </el-row>
-      <el-form ref="formApproval" :model="formApproval" label-width="110px" v-show="showApproval">
+      <el-form ref="formApproval" :model="formApproval" label-width="110px" v-show="showApproval && showApprovalSwitch">
         <el-row>
           <el-col :span="8"><el-form-item label="合同编号">{{formApproval.contractId}}</el-form-item></el-col>
           <el-col :span="8"><el-form-item label="审批编号">{{formApproval.approvalId}}</el-form-item></el-col>
@@ -452,6 +452,7 @@ export default {
       showSearch: true,
       // 显示审批详细
       showApproval: true,
+      showApprovalSwitch: true,
       // 总条数
       total: 1,
       // 合同管理表格数据
@@ -641,32 +642,38 @@ export default {
         this.isUpdate = true;
       });
 
-      getContractAdditional(row.contractId).then(response => {
+      getContractAdditional(contractId).then(response => {
         // console.log(JSON.stringify(response.rows));
         this.contractAdditionalList = response.rows;
       });
     
       // 根据合同编号，取得合同审批数据
-      getContractApprovalInfoByContractId(row.contractId).then(response => {
-          // console.log("根据合同编号，取得合同审批数据" + JSON.stringify(response.data));
-          this.formApproval = response.data;
-          // console.log("取得审批编号对应的审批记录数据" + JSON.stringify( response.data.approvalRecordList));
-          response.data.approvalRecordList.forEach((element, index) => {
-            // 审批人姓名 | 审批记录 | 完成时间 | 审批结果
-            if (index == 0) {
-              this.formApproval.approvalRecords = 
-              element.approvalName + " | " + 
-              element.approvalRecord + " | " + 
-              converTDateToDate(element.completeTime) + " | " + 
-              element.approvalResult + "\n";
-            } else {
-              this.formApproval.approvalRecords += 
-              element.approvalName + " | " + 
-              element.approvalRecord + " | " + 
-              converTDateToDate(element.completeTime) + " | " + 
-              element.approvalResult + "\n";
-            }
-        });
+      getContractApprovalInfoByContractId(contractId).then(response => {
+          console.log("根据合同编号，取得合同审批数据" + JSON.stringify(response.data));
+          if (response.data != undefined) {
+            this.formApproval = response.data;
+            // console.log("取得审批编号对应的审批记录数据" + JSON.stringify( response.data.approvalRecordList));
+            response.data.approvalRecordList.forEach((element, index) => {
+              // 审批人姓名 | 审批记录 | 完成时间 | 审批结果
+              if (index == 0) {
+                this.formApproval.approvalRecords = 
+                element.approvalName + " | " + 
+                element.approvalRecord + " | " + 
+                converTDateToDate(element.completeTime) + " | " + 
+                element.approvalResult + "\n";
+              } else {
+                this.formApproval.approvalRecords += 
+                element.approvalName + " | " + 
+                element.approvalRecord + " | " + 
+                converTDateToDate(element.completeTime) + " | " + 
+                element.approvalResult + "\n";
+              }
+            });
+            this.showApproval = true;
+          } else {
+            this.showApproval = false;
+          }
+          
 
         this.open = true;
       });

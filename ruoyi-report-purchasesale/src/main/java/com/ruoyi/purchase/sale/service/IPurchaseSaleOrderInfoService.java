@@ -9,8 +9,7 @@ import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
  * @author changgong0513
  * @date 2022-11-03
  */
-public interface IPurchaseSaleOrderInfoService 
-{
+public interface IPurchaseSaleOrderInfoService {
     /**
      * 查询采购收货销售发货管理
      * 
@@ -88,4 +87,11 @@ public interface IPurchaseSaleOrderInfoService
      * @return 结果
      */
     public int deletePurchaseSaleOrderInfoByOrderId(String orderId);
+
+    /**
+     * 设置采购订单状态和完成率
+     *
+     * @param list
+     */
+    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list);
 }

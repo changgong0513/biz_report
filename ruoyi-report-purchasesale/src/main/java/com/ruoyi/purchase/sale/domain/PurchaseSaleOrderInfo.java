@@ -112,6 +112,9 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 合同数量 */
     private int htsl;
 
+    /** 所属部门名称 */
+    private String deptName;
+
     public int getHtsl() {
         return htsl;
     }
@@ -349,6 +352,14 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     public String getCompletionRate()
     {
         return completionRate;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     @Override

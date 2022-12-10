@@ -39,6 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectMaxMaterialId" resultMap="MasterDataMaterialInfoResult">
         select max(material_id) as material_id from master_data_material_info
     </select>
+
+    <!-- 根据导入物料名称，取得物料编码 -->
+    <select id="getMaterialIds" parameterType="String" resultMap="MasterDataMaterialInfoResult">
+        select material_id, material_name from master_data_material_info where material_name in
+        <foreach item="materialName" collection="array" open="(" separator="," close=")">
+            #{materialName}
+        </foreach>
+    </select>
         
     <insert id="insertMasterDataMaterialInfo" parameterType="MasterDataMaterialInfo">
         insert into master_data_material_info

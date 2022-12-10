@@ -2,7 +2,10 @@ package com.ruoyi.report.contract.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.config.RuoYiConfig;
@@ -18,6 +21,9 @@ import com.ruoyi.report.contract.domain.*;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
 import com.ruoyi.report.contract.service.IContractApprovalInfoService;
 import com.ruoyi.report.contract.service.IContractApprovalRecordsInfoService;
+import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
+import com.ruoyi.report.masterdata.mapper.MasterDataMaterialInfoMapper;
+import com.ruoyi.report.masterdata.service.IMasterDataMaterialInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
@@ -50,6 +56,9 @@ public class ContractContentInfoController extends BaseController
 
     @Autowired
     private IContractApprovalRecordsInfoService contractApprovalRecordsInfoService;
+
+    @Autowired
+    private IMasterDataMaterialInfoService masterDataMaterialInfoService;
 
     /**
      * 查询合同管理列表
@@ -261,6 +270,26 @@ public class ContractContentInfoController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<ContractContentInfo> util = new ExcelUtil<ContractContentInfo>(ContractContentInfo.class);
         List<ContractContentInfo> contractList = util.importExcel(file.getInputStream());
+        List<String> materialNameList = contractList
+                .parallelStream()
+                .filter(element -> StringUtils.isNotBlank(element.getGoodsName()))
+                .map(ContractContentInfo::getGoodsName).collect(Collectors.toList());
+
+        List<MasterDataMaterialInfo> materialIdList =  masterDataMaterialInfoService
+                .getMaterialIds(materialNameList.toArray(new String[materialNameList.size()]));
+
+        Map<String, Integer> materialMap = materialIdList
+                .stream()
+                .collect(Collectors.toMap(MasterDataMaterialInfo::getMaterialName, MasterDataMaterialInfo::getMaterialId));
+
+        contractList.stream().forEach(element -> {
+            if (materialMap.containsKey(element.getGoodsName())) {
+                element.setGoodsId(materialMap.get(element.getGoodsName()).toString());
+            }
+
+            element.setContractStatus("IMPORT");
+        });
+
         String operName = getUsername();
         String message = contractContentInfoService.importContract(contractList, updateSupport, operName);
         return AjaxResult.success(message);
@@ -275,9 +304,13 @@ public class ContractContentInfoController extends BaseController
         ContractApprovalInfo contractApprovalInfo = contractApprovalInfoService
                 .getContractApprovalInfoByContractId(contractId);
 
-        List<ContractApprovalRecordsInfo> list = contractApprovalRecordsInfoService
-                .getContractApprovalRecordsByApprovalId(contractApprovalInfo.getApprovalId());
-        contractApprovalInfo.setApprovalRecordList(list);
+        List<ContractApprovalRecordsInfo> list = null;
+        if (contractApprovalInfo != null && StringUtils.isNotBlank(contractApprovalInfo.getApprovalId())) {
+            list = contractApprovalRecordsInfoService
+                    .getContractApprovalRecordsByApprovalId(contractApprovalInfo.getApprovalId());
+
+            contractApprovalInfo.setApprovalRecordList(list);
+        }
 
         return AjaxResult.success(contractApprovalInfo);
     }
