@@ -125,6 +125,9 @@ public class ContractContentInfo extends BaseEntity
     /** 针对合同动作类型（1：保存 2：生成） */
     private String contractActionType;
 
+    /** 公司名称（我方单位名称、对方单位名称） */
+    private String companyName;
+
     public int getConstractIsExist() {
         return constractIsExist;
     }
@@ -373,6 +376,14 @@ public class ContractContentInfo extends BaseEntity
 
     public void setAccountingPeriodTerm(String accountingPeriodTerm) {
         this.accountingPeriodTerm = accountingPeriodTerm;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     @Override

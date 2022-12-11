@@ -28,6 +28,8 @@ import com.ruoyi.report.contract.domain.ContractApprovalInfo;
 import com.ruoyi.report.contract.domain.ContractApprovalRecordsInfo;
 import com.ruoyi.report.contract.mapper.ContractApprovalInfoMapper;
 import com.ruoyi.report.contract.mapper.ContractApprovalRecordsInfoMapper;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper;
 import com.ruoyi.zjzy.domain.ZjzyFkInfo;
 import com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper;
 import org.slf4j.Logger;
@@ -65,6 +67,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     @Autowired
     private ZjzyFkInfoMapper zjzyFkInfoMapper;
+
+    @Autowired
+    private MasterDataClientInfoMapper masterDataClientInfoMapper;
 
     @Autowired
     protected Validator validator;
@@ -110,6 +115,15 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 .map(PurchaseSaleOrderInfo::getContractId)
                 .collect(Collectors.toList());
 
+        // 取得所有客户主数据
+        MasterDataClientInfo masterDataClientInfo = new MasterDataClientInfo();
+        List<MasterDataClientInfo> clientList =  masterDataClientInfoMapper
+                .selectMasterDataClientInfoList(masterDataClientInfo);
+
+        Map<String, String> clientMap = clientList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
+
         // 取得所有从钉钉同步的合同
         List<ContractContentInfo> contractContentInfoList = contractContentInfoMapper
                 .selectContractContentInfoList(contractContentInfo);
@@ -121,6 +135,10 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 element.setConstractIsExist(1);
             } else {
                 element.setConstractIsExist(0);
+            }
+
+            if (clientMap.containsKey(element.getOppositeCompanyName())) {
+                element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
             }
         });
 
@@ -291,18 +309,18 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 if (StringUtils.isNull(selContract)) {
                     BeanValidators.validateWithException(validator, contract);
                     contract.setBizVersion(1L);
-                    contract.setCreateTime(DateUtils.getNowDate());
-                    contract.setUpdateTime(DateUtils.getNowDate());
                     contract.setCreateBy(operName);
+                    contract.setCreateTime(DateUtils.parseDate(DateUtils.getTime()));
                     contract.setUpdateBy(operName);
+                    contract.setUpdateTime(DateUtils.parseDate(DateUtils.getTime()));
                     insertContractContentInfo(contract);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + contract.getContractName() + " 导入成功");
                 } else if (isUpdateSupport) {
                     BeanValidators.validateWithException(validator, contract);
                     contract.setBizVersion(1L);
-                    contract.setUpdateTime(DateUtils.getNowDate());
                     contract.setUpdateBy(operName);
+                    contract.setUpdateTime(DateUtils.parseDate(DateUtils.getNowDate()));
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、合同 " + contract.getContractName() + " 更新成功");
                 } else {

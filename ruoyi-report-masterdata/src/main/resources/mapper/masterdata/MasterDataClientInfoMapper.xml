@@ -71,6 +71,14 @@
         where base_id = #{baseId}
     </select>
 
+    <!-- 根据导入客户名称，取得客户编码 -->
+    <select id="getClientIds" parameterType="String" resultMap="MasterDataClientInfoResult">
+        select base_id, company_name from master_data_client_info where company_name in
+        <foreach item="companyName" collection="array" open="(" separator="," close=")">
+            #{companyName}
+        </foreach>
+    </select>
+
     <insert id="insertMasterDataClientInfo" parameterType="MasterDataClientInfo">
         insert into master_data_client_info
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -45,6 +45,16 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     }
 
     /**
+     * 根据导入物料名称，取得物料编码
+     *
+     * @param companyNames 需要取得的物料名称集合
+     * @return 主数据管理集合
+     */
+    public List<MasterDataClientInfo> getClientIds(String[] companyNames) {
+        return masterDataClientInfoMapper.getClientIds(companyNames);
+    }
+
+    /**
      * 新增主数据管理
      * 
      * @param masterDataClientInfo 主数据管理

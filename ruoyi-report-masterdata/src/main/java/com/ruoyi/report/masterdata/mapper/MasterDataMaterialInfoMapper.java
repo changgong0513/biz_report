@@ -41,6 +41,7 @@ public interface MasterDataMaterialInfoMapper
      * @return 主数据管理集合
      */
     public List<MasterDataMaterialInfo> getMaterialIds(String[] materialNames);
+
     /**
      * 新增主数据管理
      * 

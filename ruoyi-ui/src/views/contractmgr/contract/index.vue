@@ -152,7 +152,7 @@
         </template>
       </el-table-column>
       <el-table-column label="合同名称" align="center" prop="contractName" width="280" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="oppositeCompanyName" width="280" :show-overflow-tooltip="true" />
+      <el-table-column label="客户名称" align="center" prop="companyName" width="280" :show-overflow-tooltip="true" />
       <el-table-column label="合同总价" align="center" prop="contractTotal" width="80" />
       <el-table-column label="审批状态" align="center" prop="contractStatus" width="80">
         <template slot-scope="scope">
@@ -190,7 +190,6 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="货物名称" prop="goodsName">
-              <!-- <el-input v-model="form.goodsName" placeholder="请输入货物名称" style="width: 280px" /> -->
               <el-select
                 v-model="form.goodsName"
                 filterable
@@ -229,14 +228,17 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同名称" prop="contractName">
-              <el-input v-model="form.contractName" placeholder="请输入合同名称"  style="width: 280px" />
+              <el-input v-model="form.contractName" placeholder="请输入合同名称"  style="width: 280px"
+                maxlength="64" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
-              <el-input v-model="form.contractId" placeholder="请输入合同编号" :disabled="isUpdate" style="width: 280px" />
+              <el-input v-model="form.contractId" placeholder="请输入合同编号" 
+              :disabled="isUpdate" style="width: 280px"
+              maxlength="64" show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -265,24 +267,43 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="我方单位名称" prop="ourCompanyName">
-              <el-input v-model="form.ourCompanyName" placeholder="请输入我方单位名称" style="width: 280px" />
+              <el-input v-model="form.ourCompanyName" placeholder="请输入我方单位名称" style="width: 280px"
+                maxlength="128" show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="我方负责人" prop="ourPrincipal">
-              <el-input v-model="form.ourPrincipal" placeholder="请输入我方负责人" style="width: 280px" />
+              <el-input v-model="form.ourPrincipal" placeholder="请输入我方负责人" style="width: 280px"
+                maxlength="32" show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="对方单位名称" prop="oppositeCompanyName">
-              <el-input v-model="form.oppositeCompanyName" placeholder="请输入对方单位名称" style="width: 280px" />
+              <el-select
+                v-model="form.oppositeCompanyName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入对方单位名称关键字"
+                style="width: 280px"
+                :remote-method="remoteMethodClientName"
+                :loading="remoteLoadingSClientName">
+                <el-option
+                  v-for="item in optionsClientName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="对方负责人" prop="oppositePrincipal">
-              <el-input v-model="form.oppositePrincipal" placeholder="请输入对方负责人" style="width: 280px" />
+              <el-input v-model="form.oppositePrincipal" placeholder="请输入对方负责人" style="width: 280px"
+                maxlength="32" show-word-limit />
             </el-form-item>
         </el-col>
           <el-col :span="8">
@@ -333,7 +354,8 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="合同备注" prop="contractRemark">
-              <el-input v-model="form.contractRemark" placeholder="请输入合同备注" style="width: 720px" />
+              <el-input v-model="form.contractRemark" placeholder="请输入合同备注" style="width: 720px"
+                maxlength="256" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -426,9 +448,9 @@
 
 <script>
 import { listContract, getContract, addContract, delContract, updateContract, 
-  syncContract, uploadFile, getContractAdditional, delteFile, getContractApprovalInfoByContractId, 
-  getContractApprovalRecordsByApprovalId } from "@/api/contract/contract";
+  syncContract, uploadFile, getContractAdditional, delteFile, getContractApprovalInfoByContractId } from "@/api/contract/contract";
 import { listMaterialData } from "@/api/masterdata/material";
+import { listClient } from "@/api/masterdata/client";
 import { download } from "@/utils/request";
 import { getToken } from "@/utils/auth";
 import { converTDateToDate } from "@/utils/xmy";
@@ -526,7 +548,11 @@ export default {
       contractApprovalRecordList: [],
       remoteLoadingGoodsName: false,
       contractOptionsGoodsName: [],
-      contractListGoodsName: []
+      contractListGoodsName: [],
+      // 客户姓名选择用
+      optionsClientName: [],
+      listClientName: [],
+      remoteLoadingSClientName: false,
     };
   },
   filters:{
@@ -559,6 +585,26 @@ export default {
         });
       } else {
         this.contractOptionsGoodsName = [];
+      }
+    },
+    /** 根据输入客户姓名关键字，取得客户姓名列表 */
+    remoteMethodClientName(query) {
+      if (query !== '') {
+        this.remoteLoadingSClientName = true;
+        this.queryParams.companyName = query;
+        this.queryParams.recordFlag = 2;
+        listClient(this.queryParams).then(response => {
+          this.remoteLoadingSClientName = false;
+          this.listClientName = response.rows;
+          this.optionsClientName = response.rows.map(item => {
+            return { value: `${item.baseId}`, label: `${item.companyName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsClientName = [];
       }
     },
     /** 查询合同管理列表 */
@@ -630,6 +676,8 @@ export default {
       this.open = true;
       this.title = "添加合同数据";
       this.isUpdate = false;
+      this.showApproval = false;
+      this.form.contractActionType = '0';
     },
     /** 修改按钮操作 */
     handleUpdate(row) {

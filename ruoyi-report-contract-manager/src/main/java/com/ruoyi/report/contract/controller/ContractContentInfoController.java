@@ -15,15 +15,15 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
-import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
 import com.ruoyi.purchase.sale.service.IPurchaseSaleOrderInfoService;
 import com.ruoyi.report.contract.domain.*;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
 import com.ruoyi.report.contract.service.IContractApprovalInfoService;
 import com.ruoyi.report.contract.service.IContractApprovalRecordsInfoService;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
 import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
-import com.ruoyi.report.masterdata.mapper.MasterDataMaterialInfoMapper;
+import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import com.ruoyi.report.masterdata.service.IMasterDataMaterialInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +60,9 @@ public class ContractContentInfoController extends BaseController
 
     @Autowired
     private IMasterDataMaterialInfoService masterDataMaterialInfoService;
+
+    @Autowired
+    private IMasterDataClientInfoService masterDataClientInfoService;
 
     @Autowired
     private IPurchaseSaleOrderInfoService purchaseSaleOrderInfoService;
@@ -120,22 +123,25 @@ public class ContractContentInfoController extends BaseController
     public AjaxResult add(@RequestBody ContractContentInfo contractContentInfo) {
 
         int retCode = 1;
+        contractContentInfo.setCreateBy(SecurityUtils.getUsername());
+        contractContentInfo.setCreateTime(DateUtils.parseDate(DateUtils.getTime()));
+        contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
+        contractContentInfo.setUpdateTime(DateUtils.parseDate(DateUtils.getTime()));
+        contractContentInfo.setBizVersion(1L);
 
-        contractContentInfo.setGoodsId(UUID.randomUUID().toString().replace("-", ""));
+        MasterDataMaterialInfo material = masterDataMaterialInfoService
+                .selectMasterDataMaterialInfoByMaterialId(contractContentInfo.getGoodsName());
 
+        contractContentInfo.setGoodsId(contractContentInfo.getGoodsName());
+        contractContentInfo.setGoodsName(material.getMaterialName());
         String actionType = contractContentInfo.getContractActionType();
-        if (StringUtils.equals(actionType, "1")) {
-            // 保存合同合同数据
-            contractContentInfo.setBizVersion(1L);
-            contractContentInfo.setCreateTime(DateUtils.getNowDate());
-            contractContentInfo.setUpdateTime(DateUtils.getNowDate());
-            contractContentInfo.setCreateBy(SecurityUtils.getUsername());
-            contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
-            retCode = contractContentInfoService.insertContractContentInfo(contractContentInfo);
+        if (StringUtils.equals(actionType, "2")) {
+            // 根据合同数据，生成到采购表或者销售表的场合
+            retCode = contractContentInfoService.importContractDataIntoPurchaseSaleTable(contractContentInfo);
         } else {
-            // 根据合同数据，导入到采购表或者销售表
-            retCode = contractContentInfoService
-                    .importContractDataIntoPurchaseSaleTable(contractContentInfo);
+            // 新增和首次保存合同的场合
+            contractContentInfo.setContractStatus("MANUALADD");
+            retCode = contractContentInfoService.insertContractContentInfo(contractContentInfo);
         }
 
         return toAjax(retCode);
@@ -149,17 +155,16 @@ public class ContractContentInfoController extends BaseController
     public AjaxResult edit(@RequestBody ContractContentInfo contractContentInfo) {
 
         int retCode = 1;
-
         contractContentInfo.setUpdateTime(DateUtils.getNowDate());
         contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
 
         String actionType = contractContentInfo.getContractActionType();
         if (StringUtils.equals(actionType, "1")) {
-            retCode = contractContentInfoService
-                    .updateContractContentInfo(contractContentInfo);
+            // 更新和非首次保存合同的场合
+            retCode = contractContentInfoService.updateContractContentInfo(contractContentInfo);
         } else {
-            retCode = contractContentInfoService
-                    .importContractDataIntoPurchaseSaleTable(contractContentInfo);
+            // 根据合同数据，生成到采购表或者销售表的场合
+            retCode = contractContentInfoService.importContractDataIntoPurchaseSaleTable(contractContentInfo);
         }
 
         return toAjax(retCode);
@@ -290,23 +295,41 @@ public class ContractContentInfoController extends BaseController
     @Log(title = "合同管理", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+
         ExcelUtil<ContractContentInfo> util = new ExcelUtil<ContractContentInfo>(ContractContentInfo.class);
         List<ContractContentInfo> contractList = util.importExcel(file.getInputStream());
+
         List<String> materialNameList = contractList
                 .parallelStream()
                 .filter(element -> StringUtils.isNotBlank(element.getGoodsName()))
                 .map(ContractContentInfo::getGoodsName).collect(Collectors.toList());
 
+        List<String> companyNameList = contractList
+                .parallelStream()
+                .filter(element -> StringUtils.isNotBlank(element.getOppositeCompanyName()))
+                .map(ContractContentInfo::getOppositeCompanyName).collect(Collectors.toList());
+
         List<MasterDataMaterialInfo> materialIdList =  masterDataMaterialInfoService
                 .getMaterialIds(materialNameList.toArray(new String[materialNameList.size()]));
+
+        List<MasterDataClientInfo> clientIdList =  masterDataClientInfoService
+                .getClientIds(companyNameList.toArray(new String[companyNameList.size()]));
 
         Map<String, Integer> materialMap = materialIdList
                 .stream()
                 .collect(Collectors.toMap(MasterDataMaterialInfo::getMaterialName, MasterDataMaterialInfo::getMaterialId));
 
+        Map<String, String> clientMap = clientIdList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getCompanyName, MasterDataClientInfo::getBaseId));
+
         contractList.stream().forEach(element -> {
             if (materialMap.containsKey(element.getGoodsName())) {
                 element.setGoodsId(materialMap.get(element.getGoodsName()).toString());
+            }
+
+            if (clientMap.containsKey(element.getOppositeCompanyName())) {
+                element.setOppositeCompanyName(clientMap.get(element.getOppositeCompanyName()));
             }
 
             element.setContractStatus("IMPORT");
