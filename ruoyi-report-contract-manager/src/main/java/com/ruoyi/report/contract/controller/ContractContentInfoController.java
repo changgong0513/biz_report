@@ -2,7 +2,6 @@ package com.ruoyi.report.contract.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,6 +16,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
+import com.ruoyi.purchase.sale.service.IPurchaseSaleOrderInfoService;
 import com.ruoyi.report.contract.domain.*;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
 import com.ruoyi.report.contract.service.IContractApprovalInfoService;
@@ -60,6 +61,9 @@ public class ContractContentInfoController extends BaseController
     @Autowired
     private IMasterDataMaterialInfoService masterDataMaterialInfoService;
 
+    @Autowired
+    private IPurchaseSaleOrderInfoService purchaseSaleOrderInfoService;
+
     /**
      * 查询合同管理列表
      */
@@ -87,7 +91,25 @@ public class ContractContentInfoController extends BaseController
      */
     @GetMapping(value = "/{contractId}")
     public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
-        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(contractId));
+        // 取得所有采购销售订单
+        PurchaseSaleOrderInfo purchaseSaleOrderInfo = new PurchaseSaleOrderInfo();
+        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoService
+                .selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+
+        List<String> contractIdList = purchaseSaleOrderInfoList
+                .stream()
+                .map(PurchaseSaleOrderInfo::getContractId)
+                .collect(Collectors.toList());
+
+        ContractContentInfo  contractContentInfo = contractContentInfoService
+                .selectContractContentInfoByContractId(contractId);
+        if (contractIdList.contains(contractContentInfo.getContractId())) {
+            contractContentInfo.setConstractIsExist(1);
+        } else {
+            contractContentInfo.setConstractIsExist(0);
+        }
+
+        return AjaxResult.success(contractContentInfo);
     }
 
     /**

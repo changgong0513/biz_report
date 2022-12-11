@@ -546,7 +546,7 @@ export default {
       if (query !== '') {
         this.remoteLoadingGoodsName = true;
         this.queryParams.materialName = query;
-        console.log("取得货物名称远程方法调用查询参数：" + JSON.stringify(this.queryParams));
+        // console.log("取得货物名称远程方法调用查询参数：" + JSON.stringify(this.queryParams));
         listMaterialData(this.queryParams).then(response => {
           this.remoteLoadingGoodsName = false;
           this.contractListGoodsName = response.rows;
@@ -637,7 +637,11 @@ export default {
       const contractId = row.contractId || this.ids
       getContract(contractId).then(response => {
         this.form = response.data;
-        this.form.constractIsExist = row.constractIsExist;
+        if (row.contractId) {
+          this.form.constractIsExist = row.constractIsExist;
+        } else {
+          this.form.constractIsExist = response.data.constractIsExist;
+        }
         this.title = "修改合同数据";
         this.isUpdate = true;
       });
@@ -649,7 +653,7 @@ export default {
     
       // 根据合同编号，取得合同审批数据
       getContractApprovalInfoByContractId(contractId).then(response => {
-          console.log("根据合同编号，取得合同审批数据" + JSON.stringify(response.data));
+          // console.log("根据合同编号，取得合同审批数据" + JSON.stringify(response.data));
           if (response.data != undefined) {
             this.formApproval = response.data;
             // console.log("取得审批编号对应的审批记录数据" + JSON.stringify( response.data.approvalRecordList));
@@ -680,7 +684,6 @@ export default {
     },
     /** 提交按钮 */
     submitForm(actionType) {
-      return false;
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
