@@ -426,7 +426,7 @@
     </el-dialog>
 
     <!-- 采购管理数据详细 -->
-    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="65%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="75%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
