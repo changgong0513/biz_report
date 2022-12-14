@@ -331,7 +331,7 @@
     </el-dialog>
 
     <!-- 查看存库调拨详细对话框 -->
-    <el-dialog :title="title" :visible.sync="openDetail" width="80%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
         <el-row>
           <el-col :span="8">

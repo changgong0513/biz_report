@@ -426,7 +426,7 @@
     </el-dialog>
 
     <!-- 采购管理数据详细 -->
-    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="80%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="65%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
@@ -569,7 +569,7 @@
               </template>
             </el-table-column>
             <el-table-column label="仓库名称" align="center" prop="warehouseName" width="100" :show-overflow-tooltip="true" />
-            <el-table-column label="批次号" align="center" prop="batchNo" width="240" :show-overflow-tooltip="true" />
+            <el-table-column label="批次号" align="center" prop="batchNo" width="100" :show-overflow-tooltip="true" />
             <el-table-column label="运输方式" align="center" prop="transportMode" width="100">
               <template slot-scope="scope">
                 <dict-tag :options="dict.type.purchasesale_transport_mode" :value="scope.row.transportMode"/>

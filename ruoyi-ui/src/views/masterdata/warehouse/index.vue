@@ -297,7 +297,7 @@
     </el-dialog>
 
     <!-- 仓库数据详细 -->
-    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">

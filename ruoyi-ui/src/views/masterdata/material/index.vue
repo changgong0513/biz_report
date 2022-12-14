@@ -140,7 +140,7 @@
     </el-dialog>
 
     <!-- 物料数据详细 -->
-    <el-dialog title="物料数据详细" :visible.sync="openDetail" append-to-body :close-on-click-modal="false">
+    <el-dialog title="物料数据详细" :visible.sync="openDetail" width="400px" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
         <el-form-item label="物料编码">{{formDetail.materialId}}</el-form-item>
         <el-form-item label="物料名称">{{formDetail.materialName}}</el-form-item>

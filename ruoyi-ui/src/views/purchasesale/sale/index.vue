@@ -359,7 +359,7 @@
     </el-dialog>
 
     <!-- 销售管理数据详细 -->
-    <el-dialog title="销售管理数据详细" :visible.sync="openDetail" width="90%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="销售管理数据详细" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
@@ -722,7 +722,7 @@ export default {
       }, `销售管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     },
      /** 查看合同数据 */ 
-     handleView(row) {
+    handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
     }

@@ -64,28 +64,25 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>report.masterdata</artifactId>
+            <version>3.8.3</version>
         </dependency>
 
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>report.contract.manager</artifactId>
+            <version>3.8.3</version>
         </dependency>
 
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>report.purchase.sale</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>report.purchase.sale</artifactId>
             <version>3.8.3</version>
-            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>report.kcdb</artifactId>
             <version>3.8.3</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ruoyi</groupId>

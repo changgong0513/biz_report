@@ -364,7 +364,7 @@
     <!-- 客户数据详细 -->
     <el-dialog title="客户数据详细" 
       :visible.sync="openDetail" 
-      width="90%" 
+      width="50%" 
       append-to-body 
       v-show="showDetail" 
       :close-on-click-modal="false">
