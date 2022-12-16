@@ -42,7 +42,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 查询存库调拨列表
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:list')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:list')")
     @GetMapping("/list")
     public TableDataInfo list(KcdbMainInfo kcdbMainInfo)
     {
@@ -54,7 +54,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 导出存库调拨列表
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:export')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:export')")
     @Log(title = "存库调拨", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, KcdbMainInfo kcdbMainInfo)
@@ -67,7 +67,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 获取存库调拨详细信息
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:query')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:query')")
     @GetMapping(value = "/{dbId}")
     public AjaxResult getInfo(@PathVariable("dbId") String dbId) {
         KcdbMainInfo selKcdbMainInfo = kcdbMainInfoService.selectKcdbMainInfoByDh(dbId);
@@ -83,7 +83,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 新增存库调拨
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:add')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:add')")
     @Log(title = "存库调拨", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody KcdbMainInfo kcdbMainInfo) {
@@ -129,7 +129,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 修改存库调拨
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:edit')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:edit')")
     @Log(title = "存库调拨", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody KcdbMainInfo kcdbMainInfo) {
@@ -144,7 +144,7 @@ public class KcdbMainInfoController extends BaseController
     /**
      * 删除存库调拨
      */
-    @PreAuthorize("@ss.hasPermi('kcdb:kcdb:remove')")
+    // @PreAuthorize("@ss.hasPermi('kcdb:kcdb:remove')")
     @Log(title = "存库调拨", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{dhs}")
     public AjaxResult remove(@PathVariable String[] dhs)

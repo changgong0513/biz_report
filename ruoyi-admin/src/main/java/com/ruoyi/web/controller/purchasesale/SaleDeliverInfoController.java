@@ -41,7 +41,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 查询发货管理列表
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
     @GetMapping("/list")
     public TableDataInfo list(SaleDeliverInfo saleDeliverInfo)
     {
@@ -53,7 +53,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 导出发货管理列表
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:export')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:export')")
     @Log(title = "发货管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SaleDeliverInfo saleDeliverInfo)
@@ -66,7 +66,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 获取发货管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:query')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:query')")
     @GetMapping(value = "/{deliverId}")
     public AjaxResult getInfo(@PathVariable("deliverId") String deliverId)
     {
@@ -76,7 +76,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 新增发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
     @Log(title = "发货管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SaleDeliverInfo saleDeliverInfo) {
@@ -102,7 +102,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 修改发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
     @Log(title = "发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SaleDeliverInfo saleDeliverInfo) {
@@ -117,7 +117,7 @@ public class SaleDeliverInfoController extends BaseController
     /**
      * 删除发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
     @Log(title = "发货管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{deliverIds}")
     public AjaxResult remove(@PathVariable String[] deliverIds)

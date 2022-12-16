@@ -57,7 +57,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 查询采购收货销售发货管理列表
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:list')")
     @GetMapping("/list")
     public TableDataInfo list(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
 
@@ -81,7 +81,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 导出采购收货销售发货管理列表
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:export')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:export')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PurchaseSaleOrderInfo purchaseSaleOrderInfo)
@@ -94,7 +94,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 获取采购收货销售发货管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:query')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:query')")
     @GetMapping(value = "/{contractId}")
     public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
         return AjaxResult.success(purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoByContractId(contractId));
@@ -121,7 +121,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 新增采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
@@ -136,7 +136,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 修改采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
@@ -151,7 +151,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 删除采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
+    // @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{orderIds}")
     public AjaxResult remove(@PathVariable String[] orderIds)

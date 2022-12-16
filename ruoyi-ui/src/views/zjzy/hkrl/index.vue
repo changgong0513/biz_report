@@ -123,7 +123,6 @@
             type="text"
             icon="el-icon-edit"
             @click="handleHkrl(scope.row)"
-            v-hasPermi="['system:hkrl:edit']"
           >认领</el-button>
         </template>
       </el-table-column>

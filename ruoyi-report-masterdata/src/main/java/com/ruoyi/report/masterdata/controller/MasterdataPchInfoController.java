@@ -38,7 +38,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 查询批次号管理列表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:list')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:list')")
     @GetMapping("/list")
     public TableDataInfo list(MasterdataPchInfo masterdataPchInfo)
     {
@@ -50,7 +50,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 导出批次号管理列表
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:export')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:export')")
     @Log(title = "批次号管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, MasterdataPchInfo masterdataPchInfo)
@@ -63,7 +63,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 获取批次号管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:query')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id)
     {
@@ -73,7 +73,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 新增批次号管理
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:add')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:add')")
     @Log(title = "批次号管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MasterdataPchInfo masterdataPchInfo)
@@ -84,7 +84,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 修改批次号管理
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:edit')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:edit')")
     @Log(title = "批次号管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody MasterdataPchInfo masterdataPchInfo)
@@ -95,7 +95,7 @@ public class MasterdataPchInfoController extends BaseController
     /**
      * 删除批次号管理
      */
-    @PreAuthorize("@ss.hasPermi('masterdata:pch:remove')")
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:remove')")
     @Log(title = "批次号管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable String[] ids)

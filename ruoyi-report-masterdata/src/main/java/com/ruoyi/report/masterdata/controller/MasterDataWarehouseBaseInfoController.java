@@ -40,7 +40,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 查询仓库管理列表
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:list')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:list')")
     @GetMapping("/list")
     public TableDataInfo list(MasterDataWarehouseBaseInfo masterDataWarehouseBaseInfo)
     {
@@ -52,7 +52,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 导出仓库管理列表
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:export')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:export')")
     @Log(title = "仓库管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, MasterDataWarehouseBaseInfo masterDataWarehouseBaseInfo)
@@ -65,7 +65,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 获取仓库管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:query')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:query')")
     @GetMapping(value = "/{warehouseId}")
     public AjaxResult getInfo(@PathVariable("warehouseId") String warehouseId)
     {
@@ -75,7 +75,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 新增仓库管理
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:add')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:add')")
     @Log(title = "仓库管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MasterDataWarehouseBaseInfo masterDataWarehouseBaseInfo)
@@ -92,7 +92,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 修改仓库管理
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:edit')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:edit')")
     @Log(title = "仓库管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody MasterDataWarehouseBaseInfo masterDataWarehouseBaseInfo)
@@ -103,7 +103,7 @@ public class MasterDataWarehouseBaseInfoController extends BaseController
     /**
      * 删除仓库管理
      */
-    @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:remove')")
+    // @PreAuthorize("@ss.hasPermi('report-masterdata:warehouse:remove')")
     @Log(title = "仓库管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{warehouseIds}")
     public AjaxResult remove(@PathVariable String[] warehouseIds)

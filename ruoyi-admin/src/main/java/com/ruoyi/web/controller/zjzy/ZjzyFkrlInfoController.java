@@ -37,7 +37,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 查询付款认领列表
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:list')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:list')")
     @GetMapping("/list")
     public TableDataInfo list(ZjzyFkrlInfo zjzyFkrlInfo)
     {
@@ -49,7 +49,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 导出付款认领列表
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:export')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:export')")
     @Log(title = "付款认领", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ZjzyFkrlInfo zjzyFkrlInfo)
@@ -62,7 +62,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 获取付款认领详细信息
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:query')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:query')")
     @GetMapping(value = "/{fkrlId}")
     public AjaxResult getInfo(@PathVariable("fkrlId") String fkrlId)
     {
@@ -72,7 +72,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 新增付款认领
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:add')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:add')")
     @Log(title = "付款认领", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ZjzyFkrlInfo zjzyFkrlInfo)
@@ -83,7 +83,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 修改付款认领
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:edit')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:edit')")
     @Log(title = "付款认领", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ZjzyFkrlInfo zjzyFkrlInfo)
@@ -94,7 +94,7 @@ public class ZjzyFkrlInfoController extends BaseController
     /**
      * 删除付款认领
      */
-    @PreAuthorize("@ss.hasPermi('fkrl:fkrl:remove')")
+    // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:remove')")
     @Log(title = "付款认领", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{fkrlIds}")
     public AjaxResult remove(@PathVariable String[] fkrlIds)

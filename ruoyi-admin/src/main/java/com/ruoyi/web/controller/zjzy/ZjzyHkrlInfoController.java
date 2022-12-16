@@ -77,7 +77,7 @@ public class ZjzyHkrlInfoController extends BaseController
     /**
      * 导出回款认领列表
      */
-    @PreAuthorize("@ss.hasPermi('system:hkrl:export')")
+    // @PreAuthorize("@ss.hasPermi('system:hkrl:export')")
     @Log(title = "回款认领", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ZjzyHkrlInfo zjzyHkrlInfo)
@@ -90,7 +90,7 @@ public class ZjzyHkrlInfoController extends BaseController
     /**
      * 获取回款认领详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:hkrl:query')")
+    // @PreAuthorize("@ss.hasPermi('system:hkrl:query')")
     @GetMapping(value = "/{hkrlId}")
     public AjaxResult getInfo(@PathVariable("hkrlId") Long hkrlId)
     {
@@ -114,7 +114,7 @@ public class ZjzyHkrlInfoController extends BaseController
     /**
      * 修改回款认领
      */
-    @PreAuthorize("@ss.hasPermi('system:hkrl:edit')")
+    // @PreAuthorize("@ss.hasPermi('system:hkrl:edit')")
     @Log(title = "回款认领", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody ZjzyHkrlInfo zjzyHkrlInfo)
@@ -125,7 +125,7 @@ public class ZjzyHkrlInfoController extends BaseController
     /**
      * 删除回款认领
      */
-    @PreAuthorize("@ss.hasPermi('system:hkrl:remove')")
+    // @PreAuthorize("@ss.hasPermi('system:hkrl:remove')")
     @Log(title = "回款认领", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{hkrlIds}")
     public AjaxResult remove(@PathVariable Long[] hkrlIds)
