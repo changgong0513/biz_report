@@ -757,7 +757,7 @@ export default {
       selRow: {},
       receiptList: [],
       // 部门树选项
-      deptOptions: undefined,
+      deptOptions: [],
       defaultProps: {
         children: "children",
         label: "label"

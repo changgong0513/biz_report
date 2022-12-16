@@ -50,7 +50,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['masterdata:masterdata:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -61,7 +60,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['masterdata:masterdata:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -72,7 +70,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['masterdata:masterdata:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -82,7 +79,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['masterdata:masterdata:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>

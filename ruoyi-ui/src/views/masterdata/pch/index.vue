@@ -67,7 +67,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['masterdata:pch:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -78,7 +77,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['masterdata:pch:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -89,7 +87,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['masterdata:pch:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -99,7 +96,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['masterdata:pch:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>

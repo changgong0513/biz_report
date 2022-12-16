@@ -79,7 +79,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:masterdata:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -90,7 +89,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:masterdata:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -101,7 +99,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:masterdata:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -111,7 +108,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:masterdata:export']"
         >导出</el-button>
       </el-col>
       <el-col :span="1.5">
