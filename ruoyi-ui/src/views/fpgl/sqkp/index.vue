@@ -122,7 +122,7 @@
     />
 
     <!-- 添加或修改发票管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="70%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
@@ -172,11 +172,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票数量" prop="fpglKpsl">{{form.fpglKpsl}}
+            <el-form-item label="开票数量" prop="fpglKpsl">
+              <el-input v-model="form.fpglKpsl" placeholder="请输入开票数量" style="width: 240px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票单价" prop="fpglKpdj">{{form.fpglKpdj}}</el-form-item>
+            <el-form-item label="开票单价" prop="fpglKpdj">
+              <el-input v-model="form.fpglKpdj" placeholder="请输入开票单价" style="width: 240px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -329,6 +332,8 @@ export default {
         this.title = "开票";
         this.form = row;
         this.isUpdate = true;
+        this.fpDetailList = response.rows;
+        this.kpmxTotal = response.total;
       });
     },
     /** 修改按钮操作 */

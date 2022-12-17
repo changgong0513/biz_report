@@ -67,6 +67,9 @@ public class FpglListInfo extends BaseEntity
     @Excel(name = "发票号")
     private String fpglFpno;
 
+    /** 当前登录用户的部门编号 */
+    private Long deptId;
+
     public String getOrderId() {
         return orderId;
     }
@@ -161,6 +164,14 @@ public class FpglListInfo extends BaseEntity
 
     public void setFpglFpno(String fpglFpno) {
         this.fpglFpno = fpglFpno;
+    }
+
+    public Long getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
     }
 
     @Override

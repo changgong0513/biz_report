@@ -91,7 +91,7 @@
           <dict-tag :options="dict.type.fpgl_fp_status" :value="scope.row.fpglFpzt"/>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -101,7 +101,7 @@
             @click="handleAdd(scope.row)"
           >申请开票</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <pagination
@@ -314,6 +314,8 @@ export default {
         this.title = "申请开票";
         this.form = row;
         this.isUpdate = false;
+        this.fpDetailList = response.rows;
+        this.kpmxTotal = response.total;
       });
     },
     /** 修改按钮操作 */

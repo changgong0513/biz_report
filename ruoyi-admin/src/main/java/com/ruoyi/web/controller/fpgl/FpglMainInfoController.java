@@ -46,11 +46,21 @@ public class FpglMainInfoController extends BaseController
     /**
      * 查询发票管理列表
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:list')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:list')")
     @GetMapping("/list")
     public TableDataInfo list(FpglListInfo fpglListInfo) {
+
         startPage();
-//        List<FpglMainInfo> list = fpglMainInfoService.selectFpglMainInfoList(fpglMainInfo);
+
+        Long deptId = this.getDeptId();
+        String loginUserName = this.getUsername();
+        if (StringUtils.equals(loginUserName, "admin")) {
+            // admin可以查看所有发票数据
+            deptId = null;
+        }
+
+        fpglListInfo.setDeptId(deptId);
+
         List<FpglListInfo> list = fpglMainInfoService.selectFpglList(fpglListInfo);
         for (FpglListInfo item : list) {
             BigDecimal total = item.getContractTotal();
@@ -91,7 +101,7 @@ public class FpglMainInfoController extends BaseController
     /**
      * 导出发票管理列表
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:export')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:export')")
     @Log(title = "发票管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, FpglListInfo fpglListInfo) {
@@ -119,7 +129,7 @@ public class FpglMainInfoController extends BaseController
     /**
      * 获取发票管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:query')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:query')")
     @GetMapping(value = "/{fpglDdbh}")
     public AjaxResult getInfo(@PathVariable("fpglDdbh") String fpglDdbh)
     {
@@ -129,7 +139,7 @@ public class FpglMainInfoController extends BaseController
     /**
      * 新增发票管理
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:add')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:add')")
     @Log(title = "发票管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FpglMainInfo fpglMainInfo) {
@@ -161,7 +171,7 @@ public class FpglMainInfoController extends BaseController
     /**
      * 修改发票管理
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:edit')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:edit')")
     @Log(title = "发票管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo) {
@@ -183,7 +193,7 @@ public class FpglMainInfoController extends BaseController
     /**
      * 删除发票管理
      */
-    @PreAuthorize("@ss.hasPermi('fpgl:main:remove')")
+    // @PreAuthorize("@ss.hasPermi('fpgl:main:remove')")
     @Log(title = "发票管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{fpglIds}")
     public AjaxResult remove(@PathVariable String[] fpglIds)

@@ -46,31 +46,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <sql id="selectFpglListVo">
-        SELECT
-            t1.order_id as order_id,
-            t1.supplier_name as supplier_name,
-            t1.material_name as material_name,
-            t2.contract_type as contract_type,
-            t2.our_company_name as our_company_name,
-            ifnull(t2.contract_total, 0) as contract_total,
-            ifnull(t3.fpgl_kpsl, 0) as fpgl_kpsl,
-            ifnull(t3.fpgl_kpdj, 0) as fpgl_kpdj,
-            ifnull(t3.fpgl_kpje, 0) as fpgl_kpje,
-            t3.fpgl_fpno as fpgl_fpno,
-            t4.tax_number as tax_number
-        FROM
-            purchase_sale_order_info t1
-        LEFT JOIN
-            contract_content_info t2 ON t1.contract_id = t2.contract_id
-        LEFT JOIN
-            fpgl_main_info t3 ON t1.order_id = t3.fpgl_ddbh
-        LEFT JOIN
-            master_data_client_info t4 on t1.supplier_name = t4.company_name
+        select
+	        order_id, supplier_name, material_name, contract_type, our_company_name, contract_total,
+	        fpgl_kpsl, fpgl_kpdj, fpgl_kpje, fpgl_fpno, fpgl_sqr, tax_number, tt1.user_name
+        from
+	    (
+	        select
+                t1.order_id as order_id,
+                t1.supplier_name as supplier_name,
+                t1.material_name as material_name,
+                t2.contract_type as contract_type,
+                t2.our_company_name as our_company_name,
+                ifnull( t2.contract_total, 0 ) as contract_total,
+                ifnull( t3.fpgl_kpsl, 0 ) as fpgl_kpsl,
+                ifnull( t3.fpgl_kpdj, 0 ) as fpgl_kpdj,
+                ifnull( t3.fpgl_kpje, 0 ) as fpgl_kpje,
+                t3.fpgl_fpno as fpgl_fpno,
+                t3.fpgl_sqr as fpgl_sqr,
+                t4.tax_number as tax_number
+	        from
+                purchase_sale_order_info t1
+            left join contract_content_info t2 on t1.contract_id = t2.contract_id
+            left join fpgl_main_info t3 on t1.order_id = t3.fpgl_ddbh
+            left join master_data_client_info t4 on t1.supplier_name = t4.company_name
+	    ) fpgl, sys_user tt1, sys_dept tt2
     </sql>
 
     <select id="selectFpglMainInfoList" parameterType="FpglMainInfo" resultMap="FpglMainInfoResult">
         <include refid="selectFpglMainInfoVo"/>
-        <where>  
+        <where>
             <if test="fpglKprq != null "> and fpgl_kprq = #{fpglKprq}</if>
             <if test="fpglKpmx != null  and fpglKpmx != ''"> and fpgl_kpmx like concat('%', #{fpglKpmx}, '%')</if>
             <if test="fpglKpsl != null "> and fpgl_kpsl = #{fpglKpsl}</if>
@@ -86,6 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectFpglList" parameterType="FpglListInfo" resultMap="FpglListInfoResult">
         <include refid="selectFpglListVo"/>
         <where>
+            fpgl.fpgl_sqr = tt1.user_name and tt1.dept_id = tt2.dept_id
+            <if test="deptId != null "> and tt1.dept_id = #{deptId}</if>
             <if test="orderId != null  and orderId != ''"> and order_id like concat('%', #{orderId}, '%')</if>
             <if test="contractType != null "> and contract_type = #{contractType}</if>
             <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
