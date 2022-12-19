@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { listMain, listFpmx, getMain, delMain, addMain, updateMain } from "@/api/fpgl/fpgl";
+import { listMain, listFpmx, addMain, updateMain } from "@/api/fpgl/fpgl";
 
 export default {
   name: "Main",
@@ -265,7 +265,8 @@ export default {
       // 表单参数
       form: {},
       isUpdate: false,
-      sqkpOrderId: null
+      sqkpOrderId: null,
+      sqkpFpglId: null
     };
   },
   created() {
@@ -327,6 +328,7 @@ export default {
     handleAdd(row) {
       this.reset();
       this.sqkpOrderId = row.orderId;
+      this.sqkpFpglId = row.fpglId;
       listFpmx(row.orderId).then(response => {
         this.open = true;
         this.title = "开票";
@@ -352,6 +354,7 @@ export default {
         if (valid) {
           if (this.isUpdate) {
             this.form.fpglDdbh = this.form.orderId;
+            this.form.fpglId = this.sqkpFpglId;
             this.form.actionFlag = "1"; // 开具发票
             updateMain(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");

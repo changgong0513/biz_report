@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractType"    column="contract_type"    />
         <result property="contractTotal"    column="contract_total"    />
         <result property="fpglKpje"    column="fpgl_kpje"    />
+        <result property="fpglId"    column="fpgl_id"    />
         <result property="taxNumber"    column="tax_number"    />
         <result property="ourCompanyName"    column="our_company_name"    />
         <result property="fpglKpsl"    column="fpgl_kpsl"    />
@@ -48,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectFpglListVo">
         select
 	        order_id, supplier_name, material_name, contract_type, our_company_name, contract_total,
-	        fpgl_kpsl, fpgl_kpdj, fpgl_kpje, fpgl_fpno, fpgl_sqr, tax_number, tt1.user_name
+	        fpgl_kpsl, fpgl_kpdj, fpgl_kpje, fpgl_fpno, fpgl_sqr, fpgl_id, tax_number, tt1.user_name
         from
 	    (
 	        select
@@ -63,6 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 ifnull( t3.fpgl_kpje, 0 ) as fpgl_kpje,
                 t3.fpgl_fpno as fpgl_fpno,
                 t3.fpgl_sqr as fpgl_sqr,
+                t3.fpgl_id as fpgl_id,
                 t4.tax_number as tax_number
 	        from
                 purchase_sale_order_info t1

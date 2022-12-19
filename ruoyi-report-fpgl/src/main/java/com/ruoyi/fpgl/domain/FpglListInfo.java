@@ -70,6 +70,9 @@ public class FpglListInfo extends BaseEntity
     /** 当前登录用户的部门编号 */
     private Long deptId;
 
+    /** 发票管理编号 */
+    private String fpglId;
+
     public String getOrderId() {
         return orderId;
     }
@@ -172,6 +175,14 @@ public class FpglListInfo extends BaseEntity
 
     public void setDeptId(Long deptId) {
         this.deptId = deptId;
+    }
+
+    public String getFpglId() {
+        return fpglId;
+    }
+
+    public void setFpglId(String fpglId) {
+        this.fpglId = fpglId;
     }
 
     @Override

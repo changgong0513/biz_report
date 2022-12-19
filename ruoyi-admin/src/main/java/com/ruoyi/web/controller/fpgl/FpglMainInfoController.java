@@ -145,7 +145,7 @@ public class FpglMainInfoController extends BaseController
     public AjaxResult add(@RequestBody FpglMainInfo fpglMainInfo) {
 
         fpglMainInfo.setFpglKprq(DateUtils.parseDate(DateUtils.getDate()));
-        fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
+        fpglMainInfo.setFpglSqr(this.getUsername());
         fpglMainInfo.setBizVersion(1L);
         fpglMainInfo.setCreateTime(DateUtils.getNowDate());
         fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
@@ -158,7 +158,6 @@ public class FpglMainInfoController extends BaseController
         FpglMainInfo findFpglMainInfo = fpglMainInfoService
                 .selectFpglMainInfoByFpglDdbh(fpglMainInfo.getFpglDdbh());
         if (findFpglMainInfo == null) {
-            fpglMainInfo.setFpglId(UUID.randomUUID().toString().replace("-", ""));
             result = toAjax(fpglMainInfoService.insertFpglMainInfo(fpglMainInfo));
         } else {
             fpglMainInfo.setFpglKpje(findFpglMainInfo.getFpglKpje().add(fpglMainInfo.getFpglKpje()));
@@ -176,18 +175,49 @@ public class FpglMainInfoController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo) {
 
-        if (StringUtils.equals(fpglMainInfo.getActionFlag(), "1")) {
-            fpglMainInfo.setFpglKpsl(null);
-            fpglMainInfo.setFpglKpdj(null);
-            fpglMainInfo.setFpglKpje(null);
+        AjaxResult result = AjaxResult.success();
+        Long fpglKpsl = null;
+        BigDecimal fpglKpdj = null;
+        BigDecimal fpglKpje = null;
+
+        FpglMainInfo selectData = fpglMainInfoService
+                .selectFpglMainInfoByFpglDdbh(fpglMainInfo.getFpglDdbh());
+        if (selectData != null) {
+            fpglKpsl = selectData.getFpglKpsl();
+            fpglKpdj = selectData.getFpglKpdj();
+            fpglKpje = selectData.getFpglKpje();
+
+            if (fpglMainInfo.getFpglKpsl() != null) {
+                fpglKpsl = fpglKpsl + fpglMainInfo.getFpglKpsl();
+            }
+
+            if (fpglMainInfo.getFpglKpdj() != null) {
+                fpglKpdj = fpglKpdj.add(fpglMainInfo.getFpglKpdj());
+            }
+
+            if (fpglMainInfo.getFpglKpje() != null) {
+                fpglKpje = fpglKpje.add(fpglMainInfo.getFpglKpje());
+            }
+
+            fpglMainInfo.setFpglKpsl(fpglKpsl);
+            fpglMainInfo.setFpglKpdj(fpglKpdj);
+            fpglMainInfo.setFpglKpje(fpglKpje);
+            fpglMainInfo.setBizVersion(1L);
+            fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+            fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
+            result = toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
+        } else {
+            // 新增发票管理
+            result = add(fpglMainInfo);
         }
 
-        fpglMainInfo.setBizVersion(1L);
-        fpglMainInfo.setCreateTime(DateUtils.getNowDate());
-        fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
-        fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
-        fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
-        return toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
+//        if (StringUtils.equals(fpglMainInfo.getActionFlag(), "1")) {
+//            fpglMainInfo.setFpglKpsl(null);
+//            fpglMainInfo.setFpglKpdj(null);
+//            fpglMainInfo.setFpglKpje(null);
+//        }
+
+        return result;
     }
 
     /**
