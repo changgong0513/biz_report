@@ -333,6 +333,9 @@ export default {
         this.open = true;
         this.title = "开票";
         this.form = row;
+        this.form.fpglKpsl = "";
+        this.form.fpglKpdj = "";
+        this.form.fpglFpno = "";
         this.isUpdate = true;
         this.fpDetailList = response.rows;
         this.kpmxTotal = response.total;

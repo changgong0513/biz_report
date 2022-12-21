@@ -22,6 +22,8 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.fpgl.domain.FpglMainInfo;
+import com.ruoyi.fpgl.mapper.FpglMainInfoMapper;
 import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
 import com.ruoyi.purchase.sale.mapper.PurchaseSaleOrderInfoMapper;
 import com.ruoyi.report.contract.domain.ContractApprovalInfo;
@@ -70,6 +72,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     @Autowired
     private MasterDataClientInfoMapper masterDataClientInfoMapper;
+
+    @Autowired
+    private FpglMainInfoMapper fpglMainInfoMapper;
 
     @Autowired
     protected Validator validator;
@@ -1014,6 +1019,31 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             fillPurchaseInfoFromContract(contract, purchaseInfo);
 
             purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseInfo);
+        }
+
+        // 采购订单或者销售订单，默认都需要开发票
+        FpglMainInfo fpglMainInfo = new FpglMainInfo();
+        fpglMainInfo.setFpglKpmx(purchaseInfo.getMaterialName());
+        fpglMainInfo.setFpglKpsl(0L);
+        fpglMainInfo.setFpglKpdj(BigDecimal.ZERO);
+        fpglMainInfo.setFpglKpje(BigDecimal.ZERO);
+        fpglMainInfo.setFpglFpzt("3");
+        fpglMainInfo.setFpglDdbh(purchaseInfo.getOrderId());
+        fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
+
+        FpglMainInfo selectFpglMainInfo = fpglMainInfoMapper
+                .selectFpglMainInfoByFpglDdbh(purchaseInfo.getOrderId());
+        if (selectFpglMainInfo == null) {
+            fpglMainInfo.setBizVersion(1L);
+            fpglMainInfo.setCreateTime(DateUtils.getNowDate());
+            fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+            fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
+            fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
+            fpglMainInfoMapper.insertFpglMainInfo(fpglMainInfo);
+        } else {
+            fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+            fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
+            fpglMainInfoMapper.updateFpglMainInfo(fpglMainInfo);
         }
 
         return 1;
