@@ -319,9 +319,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="合同总价" prop="contractTotal">
-              <el-input v-model="form.contractTotal" placeholder="请输入合同总价" style="width: 280px" />
-            </el-form-item>
+            <el-form-item label="合同总价" prop="contractTotal">{{calContractTotal}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="交货方式" prop="deliveryMethod">
@@ -565,6 +563,15 @@ export default {
   created() {
     this.getList();
     console.log(process.env.VUE_APP_BASE_API);
+  },
+  computed: {
+    calContractTotal: function () {
+      if (this.form.contractQuantity && this.form.contractPrice) {
+        return Number(this.form.contractQuantity) * Number(this.form.contractPrice)
+      }
+      
+      return 0;
+    }
   },
   methods: {
     /** 根据输入货物名称关键字，取得货物名称列表 */

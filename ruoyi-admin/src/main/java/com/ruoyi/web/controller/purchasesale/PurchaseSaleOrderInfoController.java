@@ -121,7 +121,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 新增采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
+//    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:add')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
@@ -136,7 +136,7 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     /**
      * 修改采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
+//    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:edit')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
@@ -145,13 +145,19 @@ public class PurchaseSaleOrderInfoController extends BaseController {
         purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
         purchaseSaleOrderInfo.setCreateBy(SecurityUtils.getUsername());
         purchaseSaleOrderInfo.setUpdateBy(SecurityUtils.getUsername());
-        return toAjax(purchaseSaleOrderInfoService.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo));
+
+        AjaxResult ajaxResult = AjaxResult.success();
+        if (purchaseSaleOrderInfoService.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo) == 100) {
+            ajaxResult = AjaxResult.error("发票已经开具中，无法修改是否开具发票的选项。");
+        }
+
+        return ajaxResult;
     }
 
     /**
      * 删除采购收货销售发货管理
      */
-    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
+//    @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:remove')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{orderIds}")
     public AjaxResult remove(@PathVariable String[] orderIds)

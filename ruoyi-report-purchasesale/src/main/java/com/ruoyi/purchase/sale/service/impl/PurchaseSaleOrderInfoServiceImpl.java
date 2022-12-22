@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.fpgl.domain.FpglMainInfo;
+import com.ruoyi.fpgl.mapper.FpglMainInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,9 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
 {
     @Autowired
     private PurchaseSaleOrderInfoMapper purchaseSaleOrderInfoMapper;
+
+    @Autowired
+    private FpglMainInfoMapper fpglMainInfoMapper;
 
     /**
      * 查询采购收货销售发货管理
@@ -116,8 +123,7 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * @return 结果
      */
     @Override
-    public int insertPurchaseSaleOrderInfo(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public int insertPurchaseSaleOrderInfo(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
         purchaseSaleOrderInfo.setCreateTime(DateUtils.getNowDate());
         return purchaseSaleOrderInfoMapper.insertPurchaseSaleOrderInfo(purchaseSaleOrderInfo);
     }
@@ -129,10 +135,34 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * @return 结果
      */
     @Override
-    public int updatePurchaseSaleOrderInfo(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
+    public int updatePurchaseSaleOrderInfo(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+
         purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
-        return purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo);
+        int result = purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo);
+        if (result > 0) {
+            if (purchaseSaleOrderInfo.getIsInvoicing() == 1) {
+                FpglMainInfo fpglMainInfo = new FpglMainInfo();
+                fpglMainInfo.setFpglKpmx(purchaseSaleOrderInfo.getMaterialName());
+                fpglMainInfo.setFpglKpsl(0L);
+                fpglMainInfo.setFpglKpdj(BigDecimal.ZERO);
+                fpglMainInfo.setFpglKpje(BigDecimal.ZERO);
+                fpglMainInfo.setFpglFpzt("3");
+                fpglMainInfo.setFpglDdbh(purchaseSaleOrderInfo.getOrderId());
+                fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
+                result = fpglMainInfoMapper.insertFpglMainInfo(fpglMainInfo);
+            } else {
+                FpglMainInfo data = fpglMainInfoMapper.selectFpglMainInfoByFpglDdbh(purchaseSaleOrderInfo.getOrderId());
+                if (data != null) {
+                    if (!StringUtils.equals(data.getFpglFpzt(), "3")) {
+                        result = 100;
+                    } else {
+                        result = fpglMainInfoMapper.deleteFpglMainInfoByFpglId(data.getFpglId());
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
