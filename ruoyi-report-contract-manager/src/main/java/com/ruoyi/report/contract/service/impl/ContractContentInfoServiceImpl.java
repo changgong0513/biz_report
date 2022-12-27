@@ -96,9 +96,40 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      * @return 合同管理
      */
     @Override
-    public ContractContentInfo selectContractContentInfoByContractId(String contactId)
-    {
-        return contractContentInfoMapper.selectContractContentInfoByContractId(contactId);
+    public ContractContentInfo selectContractContentInfoByContractId(String contactId) {
+
+        // 取得所有采购销售订单
+        PurchaseSaleOrderInfo purchaseSaleOrderInfo = new PurchaseSaleOrderInfo();
+        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoMapper
+                .selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+
+        List<String> contractIdList = purchaseSaleOrderInfoList
+                .stream()
+                .map(PurchaseSaleOrderInfo::getContractId)
+                .collect(Collectors.toList());
+
+        ContractContentInfo contractContentInfo = contractContentInfoMapper
+                .selectContractContentInfoByContractId(contactId);
+        if (contractIdList.contains(contractContentInfo.getContractId())) {
+            contractContentInfo.setConstractIsExist(1);
+        } else {
+            contractContentInfo.setConstractIsExist(0);
+        }
+
+        // 取得所有客户主数据
+        List<MasterDataClientInfo> clientList =  masterDataClientInfoMapper
+                .selectMasterDataClientInfoList(new MasterDataClientInfo());
+        Map<String, String> clientMap = clientList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
+
+        // 设置显示的公司名称
+        if (clientMap.containsKey(contractContentInfo.getOppositeCompanyName())) {
+            contractContentInfo.setBaseId(contractContentInfo.getOppositeCompanyName());
+            contractContentInfo.setCompanyName(clientMap.get(contractContentInfo.getOppositeCompanyName()));
+        }
+
+        return contractContentInfo;
     }
 
     /**
@@ -111,20 +142,20 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     public List<ContractContentInfo> selectContractContentInfoList(ContractContentInfo contractContentInfo) {
 
         // 取得所有采购销售订单
-        PurchaseSaleOrderInfo purchaseSaleOrderInfo = new PurchaseSaleOrderInfo();
         List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoMapper
-                .selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+                .selectPurchaseSaleOrderInfoList(new PurchaseSaleOrderInfo());
 
+        // 取得所有采购销售订单对应的合同列表
         List<String> contractIdList = purchaseSaleOrderInfoList
                 .stream()
                 .map(PurchaseSaleOrderInfo::getContractId)
                 .collect(Collectors.toList());
 
         // 取得所有客户主数据
-        MasterDataClientInfo masterDataClientInfo = new MasterDataClientInfo();
         List<MasterDataClientInfo> clientList =  masterDataClientInfoMapper
-                .selectMasterDataClientInfoList(masterDataClientInfo);
+                .selectMasterDataClientInfoList(new MasterDataClientInfo());
 
+        // 客户主数据列表转成Map（key：baseId, value：companyName）
         Map<String, String> clientMap = clientList
                 .stream()
                 .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
@@ -142,7 +173,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 element.setConstractIsExist(0);
             }
 
+            // 设置显示的公司名称
             if (clientMap.containsKey(element.getOppositeCompanyName())) {
+                element.setBaseId(element.getOppositeCompanyName());
                 element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
             }
         });

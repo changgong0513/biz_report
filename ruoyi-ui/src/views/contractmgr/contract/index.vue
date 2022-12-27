@@ -278,9 +278,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="对方单位名称" prop="oppositeCompanyName">
+            <el-form-item label="对方单位名称" prop="companyName">
               <el-select
-                v-model="form.oppositeCompanyName"
+                v-model="form.companyName"
                 filterable
                 remote
                 clearable
@@ -288,7 +288,8 @@
                 placeholder="请输入对方单位名称关键字"
                 style="width: 280px"
                 :remote-method="remoteMethodClientName"
-                :loading="remoteLoadingSClientName">
+                :loading="remoteLoadingSClientName"
+                @change="selChangeClientName">
                 <el-option
                   v-for="item in optionsClientName"
                   :key="item.value"
@@ -613,6 +614,11 @@ export default {
       } else {
         this.optionsClientName = [];
       }
+    },
+    /** 客户姓名下拉列表框，选择值改变后回调方法 */
+    selChangeClientName(selValue) {
+      console.log("选择的客户姓名编号是：" + selValue);
+      this.form.oppositeCompanyName = selValue; // 客户姓名编号
     },
     /** 查询合同管理列表 */
     getList() {

@@ -72,6 +72,7 @@ public class ContractContentInfoController extends BaseController
      */
     @GetMapping("/list")
     public TableDataInfo list(ContractContentInfo contractContentInfo) {
+
         startPage();
         List<ContractContentInfo> list = contractContentInfoService.selectContractContentInfoList(contractContentInfo);
         return getDataTable(list);
@@ -94,25 +95,7 @@ public class ContractContentInfoController extends BaseController
      */
     @GetMapping(value = "/{contractId}")
     public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
-        // 取得所有采购销售订单
-        PurchaseSaleOrderInfo purchaseSaleOrderInfo = new PurchaseSaleOrderInfo();
-        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoService
-                .selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
-
-        List<String> contractIdList = purchaseSaleOrderInfoList
-                .stream()
-                .map(PurchaseSaleOrderInfo::getContractId)
-                .collect(Collectors.toList());
-
-        ContractContentInfo  contractContentInfo = contractContentInfoService
-                .selectContractContentInfoByContractId(contractId);
-        if (contractIdList.contains(contractContentInfo.getContractId())) {
-            contractContentInfo.setConstractIsExist(1);
-        } else {
-            contractContentInfo.setConstractIsExist(0);
-        }
-
-        return AjaxResult.success(contractContentInfo);
+        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(contractId));
     }
 
     /**

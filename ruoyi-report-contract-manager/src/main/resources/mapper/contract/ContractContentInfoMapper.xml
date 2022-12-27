@@ -27,7 +27,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractAgent"    column="contract_agent"    />
         <result property="contractRemark"    column="contract_remark"    />
         <result property="contractStatus"    column="contract_status"    />
-        <result property="companyName"    column="company_name"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
