@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark,
                 t4.dept_name
             from
-                purchase_sale_order_info t1, contract_content_info t2,sys_user t3, sys_dept t4
+                purchase_sale_order_info t1, contract_content_info t2, sys_user t3, sys_dept t4
             where
                 t1.contract_id = t2.contract_id
                 and t2.contract_type = 'P'
@@ -107,6 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             tt1.purchase_quantity, tt1.supplier_name, tt1.unit_price, tt1.metering_unit,
             tt1.arrival_date, tt1.required_delivery_date, tt1.account_period, tt1.arrival_terms,
             tt1.arrival_terms_value, tt1.settlement_method, tt1.is_invoicing, tt1.order_remark,
+            tt1.dept_name,
             ifnull(tt2.check_quantity, 0) as check_quantity,
             ifnull(tt2.check_money, 0) as check_money
         from (
@@ -115,11 +116,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 t1.handled_by, t1.belong_dept, t1.business_date, t1.material_name,
                 t1.purchase_quantity, t1.supplier_name, t1.unit_price, t1.metering_unit,
                 t1.arrival_date, t1.required_delivery_date, t1.account_period, t1.arrival_terms,
-                t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark
+                t1.arrival_terms_value, t1.settlement_method, t1.is_invoicing, t1.order_remark,
+                t4.dept_name
             from
-                purchase_sale_order_info t1, contract_content_info t2
+                purchase_sale_order_info t1, contract_content_info t2, sys_user t3, sys_dept t4
             where
-                t1.contract_id = t2.contract_id and t2.contract_type = 'S'
+                t1.contract_id = t2.contract_id
+                and t2.contract_type = 'S'
+                and t1.handled_by = t3.nick_name
+		        and t3.dept_id = t4.dept_id
         ) tt1 left join sale_deliver_info tt2 on tt1.order_id = tt2.sale_order_id
     </sql>
 

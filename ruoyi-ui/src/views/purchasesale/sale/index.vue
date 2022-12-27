@@ -13,20 +13,10 @@
       </el-form-item>
       <!-- 所属部门 -->
       <el-form-item label="所属部门" prop="belongDept">
-        <el-select
-          v-model="queryParams.belongDept"
-          placeholder="请输入所属部门"
-          clearable
-          style="width: 200px"
-        >
-          <el-option
-            v-for="dict in dict.type.purchasesale_belong_dept"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
+        <treeselect v-model="queryParams.belongDept" 
+          :options="deptOptions" :show-count="true" 
+          placeholder="请选择所属部门" style="width: 240px;" />
+        </el-form-item>
       <!-- 经办人 -->
       <el-form-item label="经办人" prop="handledBy">
         <el-input
@@ -137,11 +127,7 @@
           <span>{{ parseTime(scope.row.businessDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" align="center" prop="belongDept" width="100">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.purchasesale_belong_dept" :value="scope.row.belongDept"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="所属部门" align="center" prop="deptName" width="100" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="客户名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
@@ -188,18 +174,11 @@
           <!-- 所属部门 -->
           <el-col :span="8">
             <el-form-item label="所属部门">
-              <el-select
-                v-model="form.belongDept"
-                placeholder="所属部门"
-                style="width: 240px"
-              >
-                <el-option
-                  v-for="dict in dict.type.purchasesale_belong_dept"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+              <treeselect v-model="form.belongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门" 
+                style="width: 240px;" />
             </el-form-item>
           </el-col>
           <!-- 业务日期 -->
@@ -483,11 +462,15 @@
 <script>
 
 import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase } from "@/api/purchasesale/purchasesale";
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Purchase",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'purchase_mgr_order_status'],
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -601,6 +584,7 @@ export default {
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   methods: {
     /** 查询销售收货销售发货管理列表 */
@@ -725,6 +709,12 @@ export default {
     handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   }
 };

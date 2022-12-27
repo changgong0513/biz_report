@@ -13,20 +13,9 @@
       </el-form-item>
       <!-- 所属部门 -->
       <el-form-item label="所属部门" prop="belongDept">
-        <!-- <el-select
-          v-model="queryParams.belongDept"
-          placeholder="请输入所属部门"
-          clearable
-          style="width: 200px"
-        >
-          <el-option
-            v-for="dict in dict.type.purchasesale_belong_dept"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select> -->
-        <treeselect v-model="queryParams.belongDept" :options="deptOptions" :show-count="true" placeholder="请选择所属部门" style="width: 240px;" />
+        <treeselect v-model="queryParams.belongDept" 
+          :options="deptOptions" :show-count="true" 
+          placeholder="请选择所属部门" style="width: 240px;" />
       </el-form-item>
       <!-- 供应商名称 -->
       <el-form-item label="供应商名称" prop="supplierName">
