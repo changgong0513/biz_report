@@ -39,8 +39,7 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     @Excel(name = "经办人")
     private String handledBy;
 
-    /** 所属部门 */
-    @Excel(name = "所属部门")
+    /** 所属部门编号 */
     private String belongDept;
 
     /** 业务日期 */
@@ -113,6 +112,7 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     private int htsl;
 
     /** 所属部门名称 */
+    @Excel(name = "所属部门")
     private String deptName;
 
     public int getHtsl() {

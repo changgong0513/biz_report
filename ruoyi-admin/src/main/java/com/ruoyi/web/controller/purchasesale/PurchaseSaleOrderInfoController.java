@@ -84,9 +84,16 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     @PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:export')")
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
-        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoList(purchaseSaleOrderInfo);
+    public void export(HttpServletResponse response, PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+        List<PurchaseSaleOrderInfo> list = null;
+        if (StringUtils.equals(purchaseSaleOrderInfo.getContractType(), CONST_CONTRACT_TYPE_PURCHASE)) {
+            // 采购订单管理-收货管理
+            list = purchaseSaleOrderInfoService.selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
+        } else {
+            // 销售订单管理-发货管理
+            list = purchaseSaleOrderInfoService.selectSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+        }
+
         ExcelUtil<PurchaseSaleOrderInfo> util = new ExcelUtil<PurchaseSaleOrderInfo>(PurchaseSaleOrderInfo.class);
         util.exportExcel(response, list, "采购收货销售发货管理数据");
     }

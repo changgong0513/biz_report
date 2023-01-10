@@ -8,7 +8,6 @@
           v-model="queryParams.contractId"
           placeholder="请输入合同编号"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 所属部门 -->
@@ -39,7 +38,6 @@
           v-model="queryParams.unitPrice"
           placeholder="请输入合同单价"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 业务日期 -->
@@ -335,8 +333,8 @@
           <el-col :span="16">
             <el-form-item label="是否开票" prop="isInvoicing">
               <el-switch
-                active-value="1"
-                inactive-value="0"
+                :active-value="1"
+                :inactive-value="0"
                 v-model="form.isInvoicing"
               ></el-switch>
             </el-form-item>
@@ -851,7 +849,18 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      // 重置查询条件
+      this.queryParams = {
+        contractId: null,
+        belongDept: null,
+        supplierName: null,
+        htsl: null,
+        unitPrice: null
+      };
+
+      // 重置业务日期范围查询条件
+      this.dateRange = null;
+
       this.handleQuery();
     },
     // 多选框选中数据
@@ -921,6 +930,7 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
+      this.queryParams.contractType = "P";
       this.download('purchase/mgr/export', {
         ...this.queryParams
       }, `采购管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)

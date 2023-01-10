@@ -140,18 +140,27 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
         purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
         int result = purchaseSaleOrderInfoMapper.updatePurchaseSaleOrderInfo(purchaseSaleOrderInfo);
         if (result > 0) {
+            FpglMainInfo data = fpglMainInfoMapper.selectFpglMainInfoByFpglDdbh(purchaseSaleOrderInfo.getOrderId());
             if (purchaseSaleOrderInfo.getIsInvoicing() == 1) {
-                FpglMainInfo fpglMainInfo = new FpglMainInfo();
-                fpglMainInfo.setFpglKpmx(purchaseSaleOrderInfo.getMaterialName());
-                fpglMainInfo.setFpglKpsl(0L);
-                fpglMainInfo.setFpglKpdj(BigDecimal.ZERO);
-                fpglMainInfo.setFpglKpje(BigDecimal.ZERO);
-                fpglMainInfo.setFpglFpzt("3");
-                fpglMainInfo.setFpglDdbh(purchaseSaleOrderInfo.getOrderId());
-                fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
-                result = fpglMainInfoMapper.insertFpglMainInfo(fpglMainInfo);
+                // 开票
+                if (data == null) {
+                    // 未查询到该订单编号的发票数据
+                    FpglMainInfo fpglMainInfo = new FpglMainInfo();
+                    fpglMainInfo.setFpglKpmx(purchaseSaleOrderInfo.getMaterialName());
+                    fpglMainInfo.setFpglKpsl(0L);
+                    fpglMainInfo.setFpglKpdj(BigDecimal.ZERO);
+                    fpglMainInfo.setFpglKpje(BigDecimal.ZERO);
+                    fpglMainInfo.setFpglFpzt("3");
+                    fpglMainInfo.setFpglDdbh(purchaseSaleOrderInfo.getOrderId());
+                    fpglMainInfo.setFpglSqr(SecurityUtils.getUsername());
+                    fpglMainInfo.setCreateTime(DateUtils.getNowDate());
+                    fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+                    fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
+                    fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
+                    result = fpglMainInfoMapper.insertFpglMainInfo(fpglMainInfo);
+                }
             } else {
-                FpglMainInfo data = fpglMainInfoMapper.selectFpglMainInfoByFpglDdbh(purchaseSaleOrderInfo.getOrderId());
+                // 不开票
                 if (data != null) {
                     if (!StringUtils.equals(data.getFpglFpzt(), "3")) {
                         result = 100;

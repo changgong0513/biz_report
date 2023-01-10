@@ -93,10 +93,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 t1.contract_id = t2.contract_id
                 and t2.contract_type = 'P'
                 and t1.handled_by = t3.nick_name
-		        and t3.dept_id = t4.dept_id
+		        and t1.belong_dept = t4.dept_id
+		    order by
+		        t1.order_id
         ) tt1 left join purchase_receipt_info tt2 on tt1.order_id = tt2.purchase_order_id
-        ORDER BY
-		    tt1.order_id
     </sql>
 
     <!-- 2.查询销售发货列表sql -->
@@ -124,7 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 t1.contract_id = t2.contract_id
                 and t2.contract_type = 'S'
                 and t1.handled_by = t3.nick_name
-		        and t3.dept_id = t4.dept_id
+		        and t1.belong_dept = t4.dept_id
         ) tt1 left join sale_deliver_info tt2 on tt1.order_id = tt2.sale_order_id
     </sql>
 
