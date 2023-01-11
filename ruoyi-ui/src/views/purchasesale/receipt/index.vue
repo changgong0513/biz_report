@@ -18,7 +18,6 @@
           v-model="queryParams.receiptId"
           placeholder="请输入车船编号"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 供应商名称 -->
@@ -27,7 +26,6 @@
           v-model="queryParams.supplierName"
           placeholder="请输入供应商名称"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 仓库名称 -->
@@ -36,7 +34,6 @@
           v-model="queryParams.warehouseName"
           placeholder="请输入仓库名称"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       
@@ -249,7 +246,8 @@
           <!-- 批次号 -->
           <el-col :span="8">
             <el-form-item label="批次号" prop="batchNo">
-              <el-input v-model="form.batchNo" placeholder="请输入批次号" style="width: 240px" />
+              <el-input v-model="form.batchNo" placeholder="请输入批次号" style="width: 240px"
+                maxlength="16" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -257,7 +255,8 @@
           <!-- 车船编号 -->
           <el-col :span="8">
             <el-form-item label="车船编号" prop="ccbh">
-              <el-input v-model="form.ccbh" placeholder="请输入车船编号" style="width: 240px" />
+              <el-input v-model="form.ccbh" placeholder="请输入车船编号" style="width: 240px"
+                maxlength="64" show-word-limit />
             </el-form-item>
           </el-col>
           <!-- 运输方式 -->
@@ -281,7 +280,8 @@
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
-              <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 240px" />
+              <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 240px"
+                maxlength="32" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -331,7 +331,8 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="receiptRemark">
-              <el-input v-model="form.receiptRemark" type="textarea" style="width: 90%" />
+              <el-input v-model="form.receiptRemark" type="textarea" style="width: 90%"
+                maxlength="256" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -353,7 +354,7 @@
           <!-- 比例范围 -->
           <el-col :span="8">
             <el-form-item label="比例范围" prop="dryCalScaleRange">
-              <el-input v-model="form.dryCalScaleRange" placeholder="请输入比例范围" style="width: 240px" />
+              <el-input v-model="form.dryCalScaleRange" placeholder="请输入比例范围1.2-1.3之间" style="width: 240px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -362,7 +363,7 @@
           <el-col :span="24">
             <el-form-item label="计算结果" prop="dryCalResult">
               <el-input v-model="form.dryCalResult" placeholder="请输入计算结果" style="width: 240px; margin-right: 50px" />
-              <el-button type="success" icon="el-icon-check" size="mini" @click="handleQuery">计算</el-button>
+              <el-button type="success" icon="el-icon-check" size="mini" @click="dryCalculation">计算</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -790,7 +791,14 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.queryForm = {
+        receiptDate: null,
+        receiptId: null,
+        supplierName: null,
+        warehouseName: null,
+        contractType: null
+      };
+
       this.handleQuery();
     },
     // 多选框选中数据
@@ -864,6 +872,36 @@ export default {
     handleView(row) {
       this.formDetail = row;
       this.openDetail = true;
+    },
+    /** 折干计算 */
+    dryCalculation() {
+      if (this.form.dryCalWaterValue == null) {
+        this.$modal.msgError(`折干计算水分值为空，请输入水分值!`);
+        return;
+      }
+
+      if (this.form.dryCalDryingRate == null) {
+        this.$modal.msgError(`折干计算烘干率为空，请输入烘干率!`);
+        return;
+      }
+
+      if (this.form.dryCalScaleRange == null) {
+        this.$modal.msgError(`折干计算比例范围为空，请输入比例范围!`);
+        return;
+      }
+
+      if (parseFloat(this.form.dryCalScaleRange) - 1.19 < 0.000001 || 
+          parseFloat(this.form.dryCalScaleRange) - 1.30 > 0.000001) {
+        this.$modal.msgError(`折干计算比例不是指定的范围内，请输入重新输入比例范围!`);
+        return;
+      }
+
+      this.form.dryCalResult = (100 - 
+        ((parseFloat(this.form.dryCalWaterValue) - 
+          parseFloat(this.form.dryCalDryingRate)) * 
+          parseFloat(this.form.dryCalScaleRange)))/100 * 15;
+      
+      this.form.dryCalResult = this.form.dryCalResult.toFixed(2);
     }
   }
 };

@@ -83,16 +83,16 @@ public class PurchaseReceiptInfo extends BaseEntity
     private String receiptRemark;
 
     /** 水分值 */
-    private Long dryCalWaterValue;
+    private Double dryCalWaterValue;
 
     /** 烘干率 */
-    private Long dryCalDryingRate;
+    private Double dryCalDryingRate;
 
     /** 比例范围 */
-    private Long dryCalScaleRange;
+    private Double dryCalScaleRange;
 
     /** 计算结果 */
-    private Long dryCalResult;
+    private Double dryCalResult;
 
     /** 版本号 */
     private Long bizVersion;
@@ -274,39 +274,39 @@ public class PurchaseReceiptInfo extends BaseEntity
     {
         return receiptRemark;
     }
-    public void setDryCalWaterValue(Long dryCalWaterValue) 
+    public void setDryCalWaterValue(Double dryCalWaterValue)
     {
         this.dryCalWaterValue = dryCalWaterValue;
     }
 
-    public Long getDryCalWaterValue() 
+    public Double getDryCalWaterValue()
     {
         return dryCalWaterValue;
     }
-    public void setDryCalDryingRate(Long dryCalDryingRate) 
+    public void setDryCalDryingRate(Double dryCalDryingRate)
     {
         this.dryCalDryingRate = dryCalDryingRate;
     }
 
-    public Long getDryCalDryingRate() 
+    public Double getDryCalDryingRate()
     {
         return dryCalDryingRate;
     }
-    public void setDryCalScaleRange(Long dryCalScaleRange) 
+    public void setDryCalScaleRange(Double dryCalScaleRange)
     {
         this.dryCalScaleRange = dryCalScaleRange;
     }
 
-    public Long getDryCalScaleRange() 
+    public Double getDryCalScaleRange()
     {
         return dryCalScaleRange;
     }
-    public void setDryCalResult(Long dryCalResult) 
+    public void setDryCalResult(Double dryCalResult)
     {
         this.dryCalResult = dryCalResult;
     }
 
-    public Long getDryCalResult() 
+    public Double getDryCalResult()
     {
         return dryCalResult;
     }

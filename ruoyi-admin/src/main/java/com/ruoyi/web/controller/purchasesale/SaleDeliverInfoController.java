@@ -86,11 +86,12 @@ public class SaleDeliverInfoController extends BaseController
             saleDeliverInfo.setDeliverId("ASN00000000");
         } else {
             String maxDeliverId = maxSaleDeliverInfo.getDeliverId();
-            String id = maxDeliverId.substring(2, maxDeliverId.length());
+            String id = maxDeliverId.substring(3, maxDeliverId.length());
             int maxId = Integer.parseInt(id) + 1;
             saleDeliverInfo.setDeliverId("ASN" + StringUtils.padl(maxId, 8));
         }
 
+        saleDeliverInfo.setSaleOrderId(saleDeliverInfo.getSaleOrderId());
         saleDeliverInfo.setBizVersion(1L);
         saleDeliverInfo.setCreateTime(DateUtils.getNowDate());
         saleDeliverInfo.setUpdateTime(DateUtils.getNowDate());

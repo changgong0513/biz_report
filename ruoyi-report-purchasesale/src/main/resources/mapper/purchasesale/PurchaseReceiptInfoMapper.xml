@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPurchaseReceiptInfoVo">
-        select receipt_id, purchase_order_id, purchase_contract_id, handled_by, receipt_date, supplier_name, material_name, warehouse_code, warehouse_name, batch_no, transport_mode, transport_number, expect_receipt_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, receipt_remark, dry_cal_water_value, dry_cal_drying_rate, dry_cal_scale_range, dry_cal_result, create_by, create_time, update_by, update_time, biz_version from purchase_receipt_info
+        select receipt_id, purchase_order_id, purchase_contract_id, handled_by, receipt_date, supplier_name, material_name, warehouse_code, warehouse_name, batch_no, transport_mode, transport_number, expect_receipt_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, receipt_remark, dry_cal_water_value, dry_cal_drying_rate, dry_cal_scale_range, dry_cal_result, ccbh, htdj, create_by, create_time, update_by, update_time, biz_version from purchase_receipt_info
     </sql>
 
     <select id="selectPurchaseReceiptInfoList" parameterType="PurchaseReceiptInfo" resultMap="PurchaseReceiptInfoResult">
@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalScaleRange != null">dry_cal_scale_range,</if>
             <if test="dryCalResult != null">dry_cal_result,</if>
             <if test="ccbh != null">ccbh,</if>
-            <if test="hedj != null">hedj,</if>
+            <if test="htdj != null">htdj,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>

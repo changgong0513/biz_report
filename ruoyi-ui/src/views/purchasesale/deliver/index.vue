@@ -483,7 +483,8 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="deliverRemark">
-              <el-input v-model="form.deliverRemark" type="textarea" style="width: 90%" />
+              <el-input v-model="form.deliverRemark" type="textarea" style="width: 90%" maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
