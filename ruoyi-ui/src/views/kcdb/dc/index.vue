@@ -149,18 +149,9 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="所属部门" prop="fhbm">
-              <el-select
-                v-model="form.fhbm"
-                placeholder="请输入所属部门"
-                style="width: 240px"
-              >
-                <el-option
-                  v-for="dict in dict.type.purchasesale_belong_dept"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+              <treeselect v-model="form.fhbm" 
+                :options="deptOptions" :show-count="true" 
+                placeholder="请选择所属部门" style="width: 240px;" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -295,14 +286,16 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="内勤人员" prop="nqry">
-              <el-input v-model="form.nqry" placeholder="请输入内勤人员" style="width: 240px" />
+              <el-input v-model="form.nqry" placeholder="请输入内勤人员" style="width: 240px"
+                clearable maxlength="32" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="bz">
-              <el-input v-model="form.bz" placeholder="请输入备注" style="width: 600px" />
+              <el-input v-model="form.bz" placeholder="请输入备注" style="width: 600px"
+                maxlength="256" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -440,6 +433,39 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        fhbm: [
+          { required: true, message: "发货部门不能为空", trigger: "change" }
+        ],
+        lx: [
+          { required: true, message: "调拨部门不能为空", trigger: "change" }
+        ],
+        fhck: [
+          { required: true, message: "仓库名称不能为空", trigger: "change" }
+        ],
+        wlmc: [
+          { required: true, message: "物料名称不能为空", trigger: "blur" }
+        ],
+        ysfs: [
+          { required: true, message: "运输方式不能为空", trigger: "change" }
+        ],
+        jsfs: [
+          { required: true, message: "结算方式不能为空", trigger: "change" }
+        ],
+        dbsl: [
+          { required: true, message: "调拨数量不能为空", trigger: "blur" }
+        ],
+        jsdj: [
+          { required: true, message: "结算单价不能为空", trigger: "blur" }
+        ],
+        xhsl: [
+          { required: true, message: "卸货数量不能为空", trigger: "blur" }
+        ],
+        dbrq: [
+          { required: true, message: "调拨日期不能为空", trigger: "blur" }
+        ],
+        nqry: [
+          { required: true, message: "内勤人员不能为空", trigger: "blur" }
+        ],
       },
       isUpdate: false,
       formDetail: {},
@@ -566,12 +592,20 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.queryParams = {
+        fhbm: null,
+        fhck: null,
+        dbsl: null,
+        jsdj: null,
+        dbje: null,
+        dbrq: null,
+        lx: null,
+      };
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.dh)
+      this.ids = selection.map(item => item.dbId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -585,9 +619,11 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const dh = this.ids
-      getKcdb(dh).then(response => {
+      const dhId =  this.ids
+      console.log(dhId);
+      getKcdb(dhId).then(response => {
         this.form = response.data;
+        this.remoteWarehouseName(this.form.fhckmc);
         this.open = true;
         this.title = "修改存库调拨";
         this.isUpdate = true;
@@ -598,12 +634,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {
+            this.form.recordFlag = 'dc';
             updateKcdb(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
+            this.form.recordFlag = 'dc';
             addKcdb(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

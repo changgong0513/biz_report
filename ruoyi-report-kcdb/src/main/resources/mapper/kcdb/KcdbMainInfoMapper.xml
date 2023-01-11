@@ -55,10 +55,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and t1.fhbm = t4.dept_id
             and t1.record_flag = 'dc'
             <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
-            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
             <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
-            <if test="shbm != null  and shbm != ''"> and shbm = #{shbm}</if>
+            <if test="fhck != null  and fhck != ''"> and warehouse_name like concat('%', #{fhck}, '%')</if>
+            <if test="dbsl != null  and dbsl != ''"> and dbsl = #{dbsl}</if>
+            <if test="jsdj != null  and jsdj != ''"> and jsdj = #{jsdj}</if>
+            <if test="dbje != null  and dbje != ''"> and dbje = #{dbje}</if>
             <if test="dbrq != null "> and dbrq = #{dbrq}</if>
+            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
         </where>
     </select>
 
@@ -198,7 +201,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteKcdbMainInfoByDhs" parameterType="String">
-        delete from kcdb_main_info where dh in 
+        delete from kcdb_main_info where id in
         <foreach item="dh" collection="array" open="(" separator="," close=")">
             #{dh}
         </foreach>

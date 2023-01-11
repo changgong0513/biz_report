@@ -574,10 +574,9 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const dbId = row.dbId || this.ids 
+      const dbId = row.dbId || this.ids
       getKcdb(dbId).then(response => {
         this.form = response.data;
-        // this.form.shck = this.form.fhckmc
         this.remoteWarehouseName(this.form.fhckmc);
         this.open = true;
         this.title = "修改库存调入";
