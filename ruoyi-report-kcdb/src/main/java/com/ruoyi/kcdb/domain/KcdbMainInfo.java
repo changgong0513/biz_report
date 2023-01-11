@@ -90,6 +90,9 @@ public class KcdbMainInfo extends BaseEntity
     /** 内勤人员 */
     private String nqry;
 
+    /** 所属部门名称 */
+    private String deptName;
+
     /** 版本号 */
     private Long bizVersion;
 
@@ -227,6 +230,14 @@ public class KcdbMainInfo extends BaseEntity
     public Long getBizVersion() 
     {
         return bizVersion;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     public int getPch() {

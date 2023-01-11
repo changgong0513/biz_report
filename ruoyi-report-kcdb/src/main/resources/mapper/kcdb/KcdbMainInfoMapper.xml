@@ -26,12 +26,72 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fhckmc"    column="warehouse_name"    />
         <result property="materialName"    column="material_name"    />
         <result property="dbId"    column="id"    />
+        <result property="deptName"    column="dept_name"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="bizVersion"    column="biz_version"    />
     </resultMap>
+
+    <!-- 查询存库调出列表sql -->
+    <sql id="selectKcdbMainInfoDcVo">
+        select
+            dh, lx, fhck, shck, fhbm, shbm,
+            wlmc, dbsl, ysfs, jsfs, jsdj, xhsl,
+            dbrq, bz, pch, dbje, record_flag, nqry,
+            warehouse_name, material_name, id, dept_name
+        from
+            kcdb_main_info t1, master_data_warehouse_base_info t2,
+            master_data_material_info t3, sys_dept t4
+    </sql>
+
+    <!-- 查询存库调出列表 -->
+    <select id="selectKcdbMainInfoListDc" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
+        <include refid="selectKcdbMainInfoDcVo"/>
+        <where>
+            t1.fhck = t2.warehouse_code
+            and t1.wlmc = t3.material_id
+            and t1.fhbm = t4.dept_id
+            and t1.record_flag = 'dc'
+            <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
+            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
+            <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
+            <if test="shbm != null  and shbm != ''"> and shbm = #{shbm}</if>
+            <if test="dbrq != null "> and dbrq = #{dbrq}</if>
+        </where>
+    </select>
+
+    <!-- 查询存库调入列表sql -->
+    <sql id="selectKcdbMainInfoDrVo">
+        select
+            dh, lx, fhck, shck, fhbm, shbm,
+            wlmc, dbsl, ysfs, jsfs, jsdj, xhsl,
+            dbrq, bz, pch, dbje, record_flag, nqry,
+            warehouse_name, material_name, id, dept_name
+        from
+            kcdb_main_info t1, master_data_warehouse_base_info t2,
+            master_data_material_info t3, sys_dept t4
+    </sql>
+
+    <!-- 查询存库调入列表 -->
+    <select id="selectKcdbMainInfoListDr" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
+        <include refid="selectKcdbMainInfoDrVo"/>
+        <where>
+            t1.shck = t2.warehouse_code
+            and t1.wlmc = t3.material_id
+            and t1.shbm = t4.dept_id
+            and t1.record_flag = 'dr'
+            <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
+            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
+            <if test="shck != null  and shck != ''"> and warehouse_name like concat('%', #{shck}, '%')</if>
+            <if test="shbm != null  and shbm != ''"> and shbm = #{shbm}</if>
+            <if test="dbrq != null "> and dbrq = #{dbrq}</if>
+            <if test="xhsl != null and xhsl != ''"> and xhsl = #{xhsl}</if>
+            <if test="jsdj != null and jsdj != ''"> and jsdj = #{jsdj}</if>
+            <if test="dbje != null and dbje != ''"> and dbje = #{dbje}</if>
+        </where>
+    </select>
 
     <sql id="selectKcdbMainInfoVo">
         select
@@ -43,18 +103,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             kcdb_main_info t1, master_data_warehouse_base_info t2, master_data_material_info t3
     </sql>
 
-    <select id="selectKcdbMainInfoList" parameterType="KcdbMainInfo" resultMap="KcdbMainInfoResult">
-        <include refid="selectKcdbMainInfoVo"/>
-        <where>
-            t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id and t1.record_flag = #{recordFlag}
-            <if test="dh != null  and dh != ''"> and dh like concat('%', #{dh}, '%')</if>
-            <if test="lx != null  and lx != ''"> and lx = #{lx}</if>
-            <if test="fhbm != null  and fhbm != ''"> and fhbm = #{fhbm}</if>
-            <if test="shbm != null  and shbm != ''"> and shbm = #{shbm}</if>
-            <if test="dbrq != null "> and dbrq = #{dbrq}</if>
-        </where>
-    </select>
-    
     <select id="selectKcdbMainInfoByDh" parameterType="String" resultMap="KcdbMainInfoResult">
         <include refid="selectKcdbMainInfoVo"/>
         where t1.fhck = t2.warehouse_code and t1.wlmc = t3.material_id and id = #{dbId}
@@ -134,6 +182,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="jsdj != null">jsdj = #{jsdj},</if>
             <if test="xhsl != null">xhsl = #{xhsl},</if>
             <if test="dbrq != null">dbrq = #{dbrq},</if>
+            <if test="nqry != null">nqry = #{nqry},</if>
             <if test="bz != null">bz = #{bz},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

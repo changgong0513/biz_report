@@ -74,7 +74,9 @@ public class KcdbMainInfoController extends BaseController
         if (selKcdbMainInfo.getXhsl() != null && selKcdbMainInfo.getDbsl() != null) {
             long xhsl = selKcdbMainInfo.getXhsl();
             BigDecimal dbsl = selKcdbMainInfo.getDbsl();
-            selKcdbMainInfo.setDbsl(dbsl.subtract(new BigDecimal(xhsl)));
+            if (dbsl.compareTo(new BigDecimal(0)) != 0 && dbsl.compareTo(new BigDecimal(xhsl)) == 1) {
+                selKcdbMainInfo.setDbsl(dbsl.subtract(new BigDecimal(xhsl)));
+            }
         }
 
         return AjaxResult.success(selKcdbMainInfo);

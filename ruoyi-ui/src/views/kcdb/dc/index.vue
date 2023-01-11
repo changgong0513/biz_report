@@ -3,18 +3,9 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <!-- 发货部门（库存调出） -->
       <el-form-item label="所属部门" prop="fhbm">
-        <el-select
-          v-model="queryParams.fhbm"
-          placeholder="请输入所属部门"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.purchasesale_belong_dept"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <treeselect v-model="queryParams.fhbm" 
+          :options="deptOptions" :show-count="true" 
+          placeholder="请选择所属部门" style="width: 240px;" />
       </el-form-item>
       <!-- 发货仓库名称（库存调出） -->
       <el-form-item label="仓库名称" prop="fhck">
@@ -131,11 +122,7 @@
           <dict-tag :options="dict.type.kcdb_db_type" :value="scope.row.lx"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" align="center" prop="fhbm">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.purchasesale_belong_dept" :value="scope.row.fhbm"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="所属部门" align="center" prop="deptName" />
       <el-table-column label="仓库名称" align="center" prop="fhckmc" />
       <el-table-column label="数量" align="center" prop="dbsl" />
       <el-table-column label="单价" align="center" prop="jsdj" />
@@ -412,10 +399,14 @@
 import { listKcdb, getKcdb, delKcdb, addKcdb, updateKcdb } from "@/api/kcdb/kcdb";
 import { listWarehouse } from "@/api/masterdata/warehouse";
 import { listMaterialData } from "@/api/masterdata/material";
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Kcdb",
   dicts: ['kcdb_db_type', 'purchasesale_belong_dept', 'purchasesale_transport_mode' ,'purchasesale_settlement_method'],
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -460,11 +451,18 @@ export default {
       // 物料名称选择用
       optionsMaterialName: [],
       listMaterialName: [],
-      remoteLoadingMaterialName: false
+      remoteLoadingMaterialName: false,
+      // 部门树选项
+      deptOptions: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   computed: {
     /** 计算调拨金额 */
@@ -636,6 +634,12 @@ export default {
       this.title = "查看库存调出详细数据"
       this.formDetail = row;
       this.openDetail = true;
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   }
 };

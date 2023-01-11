@@ -3,18 +3,9 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <!-- 收货部门（库存调入） -->
       <el-form-item label="所属部门" prop="shbm">
-        <el-select
-          v-model="form.shbm"
-          placeholder="请输入所属部门"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in dict.type.purchasesale_belong_dept"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        <treeselect v-model="queryParams.shbm" 
+          :options="deptOptions" :show-count="true" 
+          placeholder="请选择所属部门" style="width: 240px;" />
       </el-form-item>
       <!-- 收货仓库名称（库存调入） -->
       <el-form-item label="仓库名称" prop="shck">
@@ -132,11 +123,7 @@
           <dict-tag :options="dict.type.kcdb_db_type" :value="scope.row.lx"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" align="center" prop="fhbm">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.purchasesale_belong_dept" :value="scope.row.fhbm"/>
-        </template>
-      </el-table-column>
+      <el-table-column label="所属部门" align="center" prop="deptName" />
       <el-table-column label="仓库名称" align="center" prop="fhckmc" />
       <el-table-column label="数量" align="center" prop="dbsl" />
       <el-table-column label="单价" align="center" prop="jsdj" />
@@ -271,18 +258,9 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="收货部门" prop="shbm">
-              <el-select
-                v-model="form.shbm"
-                placeholder="请输入收货部门"
-                style="width: 240px"
-              >
-                <el-option
-                  v-for="dict in dict.type.purchasesale_belong_dept"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+              <treeselect v-model="form.shbm" 
+                :options="deptOptions" :show-count="true" 
+                placeholder="请选择所属部门" style="width: 240px;" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -322,7 +300,8 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="备注" prop="bz">
-              <el-input v-model="form.bz" placeholder="请输入备注" style="width: 800px" />
+              <el-input v-model="form.bz" placeholder="请输入备注" style="width: 800px" 
+                maxlength="256" show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -418,10 +397,14 @@
 <script>
 import { listKcdb, getKcdb, delKcdb, addKcdb, updateKcdb } from "@/api/kcdb/kcdb";
 import { listWarehouse } from "@/api/masterdata/warehouse";
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Kcdb",
   dicts: ['kcdb_db_type', 'purchasesale_belong_dept', 'purchasesale_transport_mode' ,'purchasesale_settlement_method'],
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -456,6 +439,18 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        shbm: [
+          { required: true, message: "收货部门不能为空", trigger: "change" }
+        ],
+        shck: [
+          { required: true, message: "收货仓库不能为空", trigger: "change" }
+        ],
+        xhsl: [
+          { required: true, message: "卸货数量不能为空", trigger: "blur" }
+        ],
+        nqry: [
+          { required: true, message: "内勤人员不能为空", trigger: "blur" }
+        ]
       },
       isUpdate: false,
       formDetail: {},
@@ -464,10 +459,17 @@ export default {
       optionsWarehouseName: [],
       ListWarehouseName: [],
       remoteLoadingWarehouseName: false,
+      // 部门树选项
+      deptOptions: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   methods: {
     /** 根据输入仓库名称关键字，取得仓库名称列表 */
@@ -493,7 +495,7 @@ export default {
     /** 查询存库调拨列表 */
     getList() {
       this.loading = true;
-      this.queryParams.recordFlag = "dc";
+      this.queryParams.recordFlag = "dr";
       listKcdb(this.queryParams).then(response => {
         this.kcdbList = response.rows;
         this.total = response.total;
@@ -545,7 +547,15 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      this.queryParams = {
+        shbm: null,
+        shck: null,
+        xhsl: null,
+        jsdj: null,
+        dbje: null,
+        dbrq: null,
+        lx: null,
+      };
       this.handleQuery();
     },
     // 多选框选中数据
@@ -564,19 +574,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      console.log(JSON.stringify(row));
       const dbId = row.dbId || this.ids 
-      console.log(JSON.stringify(dbId));
       getKcdb(dbId).then(response => {
         this.form = response.data;
-        this.form.shbm = "";
-        this.form.shck = "";
-        this.form.xhsl = "";
-        this.form.nqry = "";
-        this.form.bz = "";
+        // this.form.shck = this.form.fhckmc
+        this.remoteWarehouseName(this.form.fhckmc);
         this.open = true;
         this.title = "修改库存调入";
-        this.isUpdate = false;
+        this.isUpdate = true;
       });
     },
     /** 提交按钮 */
@@ -622,6 +627,12 @@ export default {
       this.title = "查看存库调出详细数据"
       this.formDetail = row;
       this.openDetail = true;
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   }
 };

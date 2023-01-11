@@ -21,12 +21,20 @@ public interface KcdbMainInfoMapper
     public KcdbMainInfo selectKcdbMainInfoByDh(String dh);
 
     /**
-     * 查询存库调拨列表
+     * 查询存库调出列表
      * 
      * @param kcdbMainInfo 存库调拨
      * @return 存库调拨集合
      */
-    public List<KcdbMainInfo> selectKcdbMainInfoList(KcdbMainInfo kcdbMainInfo);
+    public List<KcdbMainInfo> selectKcdbMainInfoListDc(KcdbMainInfo kcdbMainInfo);
+
+    /**
+     * 查询存库调入列表
+     *
+     * @param kcdbMainInfo 存库调拨
+     * @return 存库调拨集合
+     */
+    public List<KcdbMainInfo> selectKcdbMainInfoListDr(KcdbMainInfo kcdbMainInfo);
 
     /**
      * 取得库存调出最大的调拨单号

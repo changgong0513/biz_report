@@ -1,7 +1,9 @@
 package com.ruoyi.kcdb.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.kcdb.mapper.KcdbMainInfoMapper;
@@ -39,9 +41,16 @@ public class KcdbMainInfoServiceImpl implements IKcdbMainInfoService
      * @return 存库调拨
      */
     @Override
-    public List<KcdbMainInfo> selectKcdbMainInfoList(KcdbMainInfo kcdbMainInfo)
-    {
-        return kcdbMainInfoMapper.selectKcdbMainInfoList(kcdbMainInfo);
+    public List<KcdbMainInfo> selectKcdbMainInfoList(KcdbMainInfo kcdbMainInfo) {
+
+        List<KcdbMainInfo> list = new ArrayList<>();
+        if (StringUtils.equals(kcdbMainInfo.getRecordFlag(), "dc")) {
+            list = kcdbMainInfoMapper.selectKcdbMainInfoListDc(kcdbMainInfo);
+        } else {
+            list = kcdbMainInfoMapper.selectKcdbMainInfoListDr(kcdbMainInfo);
+        }
+
+        return list;
     }
 
     /**
