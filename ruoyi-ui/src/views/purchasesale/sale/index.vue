@@ -8,7 +8,6 @@
           v-model="queryParams.contractId"
           placeholder="请输入订单编号"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 所属部门 -->
@@ -23,7 +22,6 @@
           v-model="queryParams.handledBy"
           placeholder="请输入经办人"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 物料名称 -->
@@ -32,25 +30,22 @@
           v-model="queryParams.materialName"
           placeholder="请输入物料名称"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 核算金额min -->
-      <el-form-item label="核算金额" prop="checkMoney">
+      <el-form-item label="核算金额" prop="checkMoneyMin">
         <el-input
-          v-model="queryParams.checkMoney"
+          v-model="queryParams.checkMoneyMin"
           placeholder="请输入核算金额"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 核算金额max -->
-      <el-form-item label="~" prop="checkMoney" label-width="15px">
+      <el-form-item label="~" prop="checkMoneyMax" label-width="15px">
         <el-input
-          v-model="queryParams.checkMoney"
+          v-model="queryParams.checkMoneyMax"
           placeholder="请输入核算金额"
           clearable
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <!-- 业务日期 -->
@@ -72,7 +67,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -81,7 +76,7 @@
           @click="handleAdd"
           v-hasPermi="['purchasesale:purchasesale:add']"
         >新增</el-button>
-      </el-col>
+      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -160,20 +155,21 @@
           <!-- 合同编号 -->
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
-              <el-input v-model="form.contractId" placeholder="请输入合同编号" style="width: 240px" />
+              <el-input v-model="form.contractId" placeholder="请输入合同编号" :disabled="this.isUpdate" style="width: 240px" />
             </el-form-item>
           </el-col>
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
-              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" />
+              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" maxlength="16"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 所属部门 -->
           <el-col :span="8">
-            <el-form-item label="所属部门">
+            <el-form-item label="所属部门" prop="belongDept">
               <treeselect v-model="form.belongDept" 
                 :options="deptOptions" 
                 :show-count="true" 
@@ -196,7 +192,8 @@
           <!-- 客户名称 -->
           <el-col :span="8">
             <el-form-item label="客户名称" prop="supplierName">
-              <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" />
+              <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -204,7 +201,8 @@
           <!-- 物料名称 -->
           <el-col :span="8">
             <el-form-item label="物料名称" prop="materialName">
-              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" />
+              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" maxlength="64"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <!-- 销售数量 -->
@@ -315,8 +313,8 @@
           <el-col :span="24">
             <el-form-item label="是否开票" prop="isInvoicing">
               <el-switch
-                active-value="1"
-                inactive-value="0"
+                :active-value="1"
+                :inactive-value="0"
                 v-model="form.isInvoicing"
               ></el-switch>
             </el-form-item>
@@ -326,7 +324,8 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="orderRemark">
-              <el-input v-model="form.orderRemark" type="textarea" style="width: 90%" />
+              <el-input v-model="form.orderRemark" type="textarea" style="width: 90%" maxlength="128"
+                show-word-limit />
             </el-form-item>
           </el-col>
         </el-row>
@@ -508,75 +507,47 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
-      // rules: {
-      //   purchaseType: [
-      //     { required: true, message: "销售类型不能为空", trigger: "change" }
-      //   ],
-      //   contractId: [
-      //     { required: true, message: "合同编号不能为空", trigger: "blur" }
-      //   ],
-      //   handledBy: [
-      //     { required: true, message: "经办人不能为空", trigger: "blur" }
-      //   ],
-      //   belongDept: [
-      //     { required: true, message: "所属部门不能为空", trigger: "blur" }
-      //   ],
-      //   businessDate: [
-      //     { required: true, message: "业务日期不能为空", trigger: "blur" }
-      //   ],
-      //   materialName: [
-      //     { required: true, message: "物料名称不能为空", trigger: "blur" }
-      //   ],
-      //   purchaseQuantity: [
-      //     { required: true, message: "销售数量不能为空", trigger: "blur" }
-      //   ],
-      //   supplierName: [
-      //     { required: true, message: "供应商名称不能为空", trigger: "blur" }
-      //   ],
-      //   unitPrice: [
-      //     { required: true, message: "单价不能为空", trigger: "blur" }
-      //   ],
-      //   meteringUnit: [
-      //     { required: true, message: "计量单位不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalDate: [
-      //     { required: true, message: "预计到货期不能为空", trigger: "blur" }
-      //   ],
-      //   requiredDeliveryDate: [
-      //     { required: true, message: "要求交货期不能为空", trigger: "blur" }
-      //   ],
-      //   accountPeriod: [
-      //     { required: true, message: "账期不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTerms: [
-      //     { required: true, message: "到账条件不能为空", trigger: "blur" }
-      //   ],
-      //   arrivalTermsValue: [
-      //     { required: true, message: "到账条件值不能为空", trigger: "blur" }
-      //   ],
-      //   settlementMethod: [
-      //     { required: true, message: "结算方式不能为空", trigger: "blur" }
-      //   ],
-      //   isInvoicing: [
-      //     { required: true, message: "是否开票不能为空", trigger: "blur" }
-      //   ],
-      //   createBy: [
-      //     { required: true, message: "创建者不能为空", trigger: "blur" }
-      //   ],
-      //   createTime: [
-      //     { required: true, message: "创建时间不能为空", trigger: "blur" }
-      //   ],
-      //   updateBy: [
-      //     { required: true, message: "更新者不能为空", trigger: "blur" }
-      //   ],
-      //   updateTime: [
-      //     { required: true, message: "更新时间不能为空", trigger: "blur" }
-      //   ],
-      //   bizVersion: [
-      //     { required: true, message: "版本号不能为空", trigger: "blur" }
-      //   ]
-      // },
+      rules: {
+        handledBy: [
+          { required: true, message: "经办人不能为空", trigger: "blur" }
+        ],
+        belongDept: [
+          { required: true, message: "所属部门不能为空", trigger: "blur" }
+        ],
+        businessDate: [
+          { required: true, message: "业务日期不能为空", trigger: "blur" }
+        ],
+        supplierName: [
+          { required: true, message: "客户名称不能为空", trigger: "blur" }
+        ],
+        materialName: [
+          { required: true, message: "物料名称不能为空", trigger: "blur" }
+        ],
+        purchaseQuantity: [
+          { required: true, message: "销售数量不能为空", trigger: "blur" }
+        ],
+        unitPrice: [
+          { required: true, message: "单价不能为空", trigger: "blur" }
+        ],
+        meteringUnit: [
+          { required: true, message: "计量单位不能为空", trigger: "blur" }
+        ],
+        arrivalDate: [
+          { required: true, message: "预计到货期不能为空", trigger: "blur" }
+        ],
+        requiredDeliveryDate: [
+          { required: true, message: "要求交货期不能为空", trigger: "blur" }
+        ],
+        accountPeriod: [
+          { required: true, message: "账期不能为空", trigger: "blur" }
+        ],
+        arrivalTerms: [
+          { required: true, message: "到账条件不能为空", trigger: "blur" }
+        ],
+        settlementMethod: [
+          { required: true, message: "结算方式不能为空", trigger: "blur" }
+        ]
+      },
       isUpdate: false,
       formDetail: {},
       openDetail: false
@@ -640,7 +611,21 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
+      // 重置查询条件
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        contractId: null,
+        belongDept: null,
+        handledBy: null,
+        materialName: null,
+        checkMoneyMin: null,
+        checkMoneyMax: null
+      };
+
+      // // 重置业务日期范围查询条件
+      this.dateRange = null;
+
       this.handleQuery();
     },
     // 多选框选中数据

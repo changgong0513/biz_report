@@ -96,7 +96,7 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 核算数量（来自于收货管理） */
     private Long checkQuantity;
 
-    /** 核算金额（来自于收货管理） */
+    /** 核算金额（来自于发货管理） */
     private Long checkMoney;
 
     /** 核算金额Min（查询用） */
