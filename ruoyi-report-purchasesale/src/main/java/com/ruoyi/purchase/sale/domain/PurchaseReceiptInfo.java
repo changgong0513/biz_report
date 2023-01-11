@@ -91,6 +91,9 @@ public class PurchaseReceiptInfo extends BaseEntity
     /** 比例范围 */
     private Double dryCalScaleRange;
 
+    /** 结算重量 */
+    private Double dryCalSettlementWeight;
+
     /** 计算结果 */
     private Double dryCalResult;
 
@@ -304,6 +307,14 @@ public class PurchaseReceiptInfo extends BaseEntity
     public void setDryCalResult(Double dryCalResult)
     {
         this.dryCalResult = dryCalResult;
+    }
+
+    public Double getDryCalSettlementWeight() {
+        return dryCalSettlementWeight;
+    }
+
+    public void setDryCalSettlementWeight(Double dryCalSettlementWeight) {
+        this.dryCalSettlementWeight = dryCalSettlementWeight;
     }
 
     public Double getDryCalResult()

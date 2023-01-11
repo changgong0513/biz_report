@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dryCalWaterValue"    column="dry_cal_water_value"    />
         <result property="dryCalDryingRate"    column="dry_cal_drying_rate"    />
         <result property="dryCalScaleRange"    column="dry_cal_scale_range"    />
+        <result property="dryCalSettlementWeight"    column="dry_cal_settlement_weight"    />
         <result property="dryCalResult"    column="dry_cal_result"    />
         <result property="ccbh"    column="ccbh"    />
         <result property="htdj"    column="htdj"    />
@@ -38,7 +39,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPurchaseReceiptInfoVo">
-        select receipt_id, purchase_order_id, purchase_contract_id, handled_by, receipt_date, supplier_name, material_name, warehouse_code, warehouse_name, batch_no, transport_mode, transport_number, expect_receipt_quantity, check_quantity, check_price, check_money, cargo_damage_quantity, cargo_damage_money, receipt_remark, dry_cal_water_value, dry_cal_drying_rate, dry_cal_scale_range, dry_cal_result, ccbh, htdj, create_by, create_time, update_by, update_time, biz_version from purchase_receipt_info
+        select
+            receipt_id, purchase_order_id, purchase_contract_id, handled_by, receipt_date,
+            supplier_name, material_name, warehouse_code, warehouse_name, batch_no,
+            transport_mode, transport_number, expect_receipt_quantity, check_quantity, check_price,
+            check_money, cargo_damage_quantity, cargo_damage_money, receipt_remark, dry_cal_water_value,
+            dry_cal_drying_rate, dry_cal_scale_range, dry_cal_settlement_weight, dry_cal_result, ccbh,
+            htdj, create_by, create_time, update_by, update_time, biz_version
+        from
+            purchase_receipt_info
     </sql>
 
     <select id="selectPurchaseReceiptInfoList" parameterType="PurchaseReceiptInfo" resultMap="PurchaseReceiptInfoResult">
@@ -88,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalWaterValue != null">dry_cal_water_value,</if>
             <if test="dryCalDryingRate != null">dry_cal_drying_rate,</if>
             <if test="dryCalScaleRange != null">dry_cal_scale_range,</if>
+            <if test="dryCalSettlementWeight != null">dry_cal_settlement_weight,</if>
             <if test="dryCalResult != null">dry_cal_result,</if>
             <if test="ccbh != null">ccbh,</if>
             <if test="htdj != null">htdj,</if>
@@ -120,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalWaterValue != null">#{dryCalWaterValue},</if>
             <if test="dryCalDryingRate != null">#{dryCalDryingRate},</if>
             <if test="dryCalScaleRange != null">#{dryCalScaleRange},</if>
+            <if test="dryCalSettlementWeight != null">#{dryCalSettlementWeight},</if>
             <if test="dryCalResult != null">#{dryCalResult},</if>
             <if test="ccbh != null">#{ccbh},</if>
             <if test="htdj != null">#{htdj},</if>
@@ -155,6 +166,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dryCalWaterValue != null">dry_cal_water_value = #{dryCalWaterValue},</if>
             <if test="dryCalDryingRate != null">dry_cal_drying_rate = #{dryCalDryingRate},</if>
             <if test="dryCalScaleRange != null">dry_cal_scale_range = #{dryCalScaleRange},</if>
+            <if test="dryCalSettlementWeight != null">dry_cal_settlement_weight = #{dryCalSettlementWeight},</if>
             <if test="dryCalResult != null">dry_cal_result = #{dryCalResult},</if>
             <if test="ccbh != null">ccbh = #{ccbh},</if>
             <if test="htdj != null">htdj = #{htdj},</if>

@@ -359,8 +359,14 @@
           </el-col>
         </el-row>
         <el-row>
+          <!-- 结算重量 -->
+          <el-col :span="8">
+            <el-form-item label="结算重量" prop="dryCalSettlementWeight">
+              <el-input v-model="form.dryCalSettlementWeight" placeholder="请输入结算重量" style="width: 240px" />
+            </el-form-item>
+          </el-col>
           <!-- 计算结果 -->
-          <el-col :span="24">
+          <el-col :span="16">
             <el-form-item label="计算结果" prop="dryCalResult">
               <el-input v-model="form.dryCalResult" placeholder="请输入计算结果" style="width: 240px; margin-right: 50px" />
               <el-button type="success" icon="el-icon-check" size="mini" @click="dryCalculation">计算</el-button>
@@ -498,8 +504,12 @@
           </el-col>
         </el-row>
         <el-row>
+          <!-- 结算重量 -->
+          <el-col :span="8">
+            <el-form-item label="结算重量" prop="dryCalSettlementWeight">{{formDetail.dryCalSettlementWeight}}</el-form-item>
+          </el-col>
           <!-- 计算结果 -->
-          <el-col :span="24">
+          <el-col :span="16">
             <el-form-item label="计算结果" prop="dryCalResult">{{formDetail.dryCalResult}}</el-form-item>
           </el-col>
         </el-row>
@@ -778,6 +788,7 @@ export default {
         dryCalWaterValue: null,
         dryCalDryingRate: null,
         dryCalScaleRange: null,
+        dryCalSettlementWeight: null,
         dryCalResult: null,
         ccbh: null,
         htdj: null
@@ -896,10 +907,16 @@ export default {
         return;
       }
 
+      if (this.form.dryCalSettlementWeight == null) {
+        this.$modal.msgError(`折干计算结算重量为空，请输入结算重量!`);
+        return;
+      }
+
       this.form.dryCalResult = (100 - 
         ((parseFloat(this.form.dryCalWaterValue) - 
           parseFloat(this.form.dryCalDryingRate)) * 
-          parseFloat(this.form.dryCalScaleRange)))/100 * 15;
+          parseFloat(this.form.dryCalScaleRange)))/100 * 
+          parseFloat(this.form.dryCalSettlementWeight);
       
       this.form.dryCalResult = this.form.dryCalResult.toFixed(2);
     }
