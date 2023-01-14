@@ -82,7 +82,7 @@
           <dict-tag :options="dict.type.fpgl_order_type" :value="scope.row.contractType"/>
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" align="center" prop="supplierName" />
+      <el-table-column label="客户名称" align="center" prop="realSupplierName" />
       <el-table-column label="物料名称" align="center" prop="materialName" />
       <el-table-column label="合同金额" align="center" prop="contractTotal" />
       <el-table-column label="已开票金额" align="center" prop="fpglKpje" />

@@ -56,6 +56,15 @@ public class FpglMainInfoServiceImpl implements IFpglMainInfoService
         return fpglMainInfoMapper.selectFpglList(fpglListInfo);
     }
 
+    /**
+     * 登录用户角色为财务的场合，取得发票明细列表.
+     *
+     * @param fpglListInfo 查询发票明细列表条件值
+     * @return
+     */
+    public List<FpglListInfo> selectFpglListForCw(FpglListInfo fpglListInfo) {
+        return fpglMainInfoMapper.selectFpglListForCw(fpglListInfo);
+    }
 
     /**
      * 新增发票管理

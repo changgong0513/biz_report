@@ -51,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getHkrlTotal" resultType="java.lang.Double">
-        select sum(hk_hkje) as hk_hkje from zjzy_hk_info
+        select ifnull(sum(hk_hkje), 0) as hk_hkje from zjzy_hk_info
     </select>
 
     <!-- 根据年月分组，取得年月回款总金额 -->

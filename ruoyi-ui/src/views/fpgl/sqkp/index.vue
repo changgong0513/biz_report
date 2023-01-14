@@ -91,7 +91,7 @@
         </template>
       </el-table-column>
       <el-table-column label="我方单位名称" align="center" prop="ourCompanyName" />
-      <el-table-column label="客户名称" align="center" prop="supplierName" />
+      <el-table-column label="客户名称" align="center" prop="realSupplierName" />
       <el-table-column label="物料名称" align="center" prop="materialName" />
       <el-table-column label="合同金额" align="center" prop="contractTotal" />
       <el-table-column label="已开票金额" align="center" prop="fpglKpje" />
@@ -143,7 +143,12 @@
             <el-form-item label="合同金额" prop="contractTotal">{{form.contractTotal}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已开票金额" prop="fpglKpje">{{form.fpglKpje}}</el-form-item>
+            <el-form-item label="已开票金额" prop="fpglKpjeAlready">{{calKpjeAlready}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="申请人" prop="fpglSqr">{{form.fpglSqr}}</el-form-item>
           </el-col>
         </el-row>
         <el-divider></el-divider>
@@ -177,17 +182,60 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票单价" prop="fpglKpdj">
-              <el-input v-model="form.fpglKpdj" placeholder="请输入开票单价" style="width: 240px" />
+            <el-form-item label="开票金额" prop="fpglKpje">
+              <el-input v-model="form.fpglKpje" placeholder="请输入开票金额" style="width: 240px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="开票金额" prop="fpglKpje">{{calKpje}}</el-form-item>
+            <el-form-item label="开票单价" prop="fpglKpdj">{{calKpdj}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开票类型" prop="fpglKplx">
+              <el-select
+                v-model="form.fpglKplx"
+                placeholder="请选择开票类型"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.fpgl_kplx"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="开票税率" prop="fpglKpRate">
+              <el-select
+                v-model="form.fpglKpRate"
+                placeholder="请选择开票税率"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="dict in dict.type.fpgl_kpsl"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="所属部门" prop="fpglBelongDept">
+              <treeselect v-model="form.fpglBelongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门" 
+                style="width: 240px;" />
+            </el-form-item>
+          </el-col>
           <el-col :span="16">
             <el-form-item label="发票号" prop="fpglFpno">
               <el-input v-model="form.fpglFpno" placeholder="请输入发票号用,分割，连续的可以使用-连接" />
@@ -205,10 +253,14 @@
 
 <script>
 import { listMain, listFpmx, addMain, updateMain } from "@/api/fpgl/fpgl";
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Main",
-  dicts: ['fpgl_order_type', 'fpgl_fp_status'],
+  dicts: ['fpgl_order_type', 'fpgl_fp_status', 'fpgl_kplx', 'fpgl_kpsl'],
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -239,10 +291,19 @@ export default {
         fpglKpsl: [
           { required: true, message: "开票数量不能为空", trigger: "blur" }
         ],
-        fpglKpdj: [
-          { required: true, message: "开票单价不能为空", trigger: "blur" }
+        fpglKpje: [
+          { required: true, message: "开票金额不能为空", trigger: "blur" }
         ],
-        fpno: [
+        fpglKplx: [
+          { required: true, message: "开票类型不能为空", trigger: "blur" }
+        ],
+        fpglKpRate: [
+          { required: true, message: "开票税率不能为空", trigger: "blur" }
+        ],
+        fpglBelongDept: [
+          { required: true, message: "所属部门不能为空", trigger: "change" }
+        ],
+        fpglFpno: [
           { required: true, message: "发票号不能为空", trigger: "blur" }
         ]
       },
@@ -266,11 +327,18 @@ export default {
       form: {},
       isUpdate: false,
       sqkpOrderId: null,
-      sqkpFpglId: null
+      sqkpFpglId: null,
+      // 部门树选项
+      deptOptions: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   methods: {
     /** 查询发票管理列表 */
@@ -303,6 +371,8 @@ export default {
         fpglKpsl: null,
         fpglKpdj: null,
         fpglKpje: null,
+        fpglKplx: null,
+        fpglKpRate: null,
         fpno: null,
         fpDetailList: [],
       };
@@ -333,9 +403,13 @@ export default {
         this.open = true;
         this.title = "开票";
         this.form = row;
+        this.form.fpglKpjeAlready = this.form.fpglKpje;
         this.form.fpglKpsl = "";
         this.form.fpglKpdj = "";
+        this.form.fpglKpje = "";
         this.form.fpglFpno = "";
+        this.form.fpglKplx = "";
+        this.form.fpglKpRate = "";
         this.isUpdate = true;
         this.fpDetailList = response.rows;
         this.kpmxTotal = response.total;
@@ -359,6 +433,7 @@ export default {
             this.form.fpglDdbh = this.form.orderId;
             this.form.fpglId = this.sqkpFpglId;
             this.form.actionFlag = "1"; // 开具发票
+            this.form.fpglKpdj = this.calKpdj;
             updateMain(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
@@ -366,7 +441,7 @@ export default {
             });
           } else {
             this.form.fpglDdbh = this.form.orderId;
-            this.form.fpglKpje = this.calKpje;
+            this.form.fpglKpdj = this.calKpdj;
             addMain(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
@@ -392,15 +467,28 @@ export default {
       this.download('fpgl/mgr/export', {
         ...this.queryParams
       }, `发票管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   },
   computed: {
-    calKpje: function () {
-      if (this.form.fpglKpsl && this.form.fpglKpdj) {
-        return Number(this.form.fpglKpsl) * Number(this.form.fpglKpdj)
+    calKpdj: function () {
+      if (this.form.fpglKpsl && this.form.fpglKpje) {
+        return Number(this.form.fpglKpje) / Number(this.form.fpglKpsl)
       }
       
       return 0;
+    },
+    calKpjeAlready: function() {
+      if (this.form.fpglKpje) {
+        return Number(this.form.fpglKpjeAlready) + Number(this.form.fpglKpje);
+      } 
+
+      return Number(this.form.fpglKpjeAlready);
     }
   }
 };

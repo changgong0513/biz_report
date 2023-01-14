@@ -82,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="getFkrlTotal" resultType="java.lang.Double">
-        select sum(fk_je) as fk_je from zjzy_fk_info
+        select ifnull(sum(fk_je), 0) as fk_je from zjzy_fk_info
     </select>
         
     <insert id="insertZjzyFkInfo" parameterType="ZjzyFkInfo" useGeneratedKeys="true" keyProperty="fkId">

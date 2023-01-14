@@ -92,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where
                 t1.contract_id = t2.contract_id
                 and t2.contract_type = 'P'
-                and t1.handled_by = t3.nick_name
+                and t1.handled_by = t3.user_name
 		        and t1.belong_dept = t4.dept_id
 		    order by
 		        t1.order_id

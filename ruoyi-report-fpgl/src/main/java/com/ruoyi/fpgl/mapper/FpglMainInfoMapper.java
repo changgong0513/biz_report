@@ -38,6 +38,14 @@ public interface FpglMainInfoMapper
     public List<FpglListInfo> selectFpglList(FpglListInfo fpglListInfo);
 
     /**
+     * 登录用户角色为财务的场合，取得发票明细列表.
+     *
+     * @param fpglListInfo 查询发票明细列表条件值
+     * @return
+     */
+    public List<FpglListInfo> selectFpglListForCw(FpglListInfo fpglListInfo);
+
+    /**
      * 新增发票管理
      * 
      * @param fpglMainInfo 发票管理

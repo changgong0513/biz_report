@@ -14,6 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fpglSqr"    column="fpgl_sqr"    />
         <result property="fpglFpzt"    column="fpgl_fpzt"    />
         <result property="fpglDdbh"    column="fpgl_ddbh"    />
+        <result property="fpglKplx"    column="fpgl_kplx"    />
+        <result property="fpglKpRate"    column="fpgl_kp_rate"    />
+        <result property="fpglBelongDept"    column="fpgl_belong_dept"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -28,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractType"    column="contract_type"    />
         <result property="contractTotal"    column="contract_total"    />
         <result property="fpglKpje"    column="fpgl_kpje"    />
+        <result property="fpglSqr"    column="fpgl_sqr"    />
         <result property="fpglId"    column="fpgl_id"    />
         <result property="taxNumber"    column="tax_number"    />
         <result property="ourCompanyName"    column="our_company_name"    />
@@ -35,6 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fpglKpdj"    column="fpgl_kpdj"    />
         <result property="fpglKpje"    column="fpgl_kpje"    />
         <result property="fpglFpno"    column="fpgl_fpno"    />
+        <result property="fpglKplx"    column="fpgl_kplx"    />
+        <result property="fpglKpRate"    column="fpgl_kp_rate"    />
+        <result property="fpglBelongDept"    column="fpgl_belong_dept"    />
     </resultMap>
 
     <sql id="selectFpglMainInfoVo">
@@ -71,8 +78,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where
                 t1.contract_id = t2.contract_id
                 and t1.order_id = t3.fpgl_ddbh
-                and t1.supplier_name = t4.company_name
-	    ) fpgl, sys_user tt1, sys_dept tt2, sys_user_role tt3
+                and t1.supplier_name = t4.base_id
+	    ) fpgl, sys_user tt1, sys_dept tt2
     </sql>
 
     <select id="selectFpglMainInfoList" parameterType="FpglMainInfo" resultMap="FpglMainInfoResult">
@@ -93,12 +100,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectFpglList" parameterType="FpglListInfo" resultMap="FpglListInfoResult">
         <include refid="selectFpglListVo"/>
         <where>
-            tt1.dept_id = tt2.dept_id
-            <if test="currentLoginUserName != null  and currentLoginUserName == 'cwtest1'">
-                and tt1.user_name = 'cwtest1'
-            </if>
-            <if test="currentLoginUserName != null  and currentLoginUserName != 'cwtest1'">
-                and fpgl.fpgl_sqr = tt1.user_name
+            fpgl.fpgl_sqr = tt1.user_name and tt1.dept_id = tt2.dept_id
+            <if test="fpglSqr != null  and fpglSqr == ''">
+                and tt1.user_name = = #{fpglSqr}
             </if>
             <if test="deptId != null "> and tt1.dept_id = #{deptId}</if>
             <if test="orderId != null  and orderId != ''"> and order_id like concat('%', #{orderId}, '%')</if>
@@ -111,6 +115,55 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectFpglMainInfoByFpglDdbh" parameterType="String" resultMap="FpglMainInfoResult">
         <include refid="selectFpglMainInfoVo"/>
         where fpgl_ddbh = #{fpglDdbh}
+    </select>
+
+    <!-- 登录用户角色为财务的场合，取得发票明细列表sql -->
+    <sql id="selectFpglListVoForCw">
+        select
+	        order_id, supplier_name, material_name, contract_type,
+	        our_company_name, contract_total, fpgl_kpsl, fpgl_kpdj,
+	        fpgl_kpje, fpgl_fpno, fpgl_sqr, fpgl_id, fpgl_kplx,
+	        fpgl_kp_rate, fpgl_belong_dept, tax_number
+        from
+	    (
+	        select
+		        t1.order_id as order_id,
+		        t1.supplier_name as supplier_name,
+		        t1.material_name as material_name,
+		        t2.contract_type as contract_type,
+		        t2.our_company_name as our_company_name,
+                ifnull( t2.contract_total, 0 ) as contract_total,
+                ifnull( t3.fpgl_kpsl, 0 ) as fpgl_kpsl,
+                ifnull( t3.fpgl_kpdj, 0 ) as fpgl_kpdj,
+                ifnull( t3.fpgl_kpje, 0 ) as fpgl_kpje,
+                t3.fpgl_fpno as fpgl_fpno,
+                t3.fpgl_sqr as fpgl_sqr,
+                t3.fpgl_id as fpgl_id,
+                t3.fpgl_kplx as fpgl_kplx,
+                t3.fpgl_kp_rate as fpgl_kp_rate,
+                t3.fpgl_belong_dept as fpgl_belong_dept,
+                t4.tax_number as tax_number
+	        from
+                fpgl_main_info t3,
+                purchase_sale_order_info t1,
+                contract_content_info t2,
+                master_data_client_info t4
+	        where
+		        t3.fpgl_ddbh = t1.order_id
+		        and t3.fpgl_ddbh = t2.contract_id
+		        and t1.supplier_name = t4.base_id
+	    ) fpgl
+    </sql>
+
+    <!-- 登录用户角色为财务的场合，取得发票明细列表 -->
+    <select id="selectFpglListForCw" parameterType="FpglListInfo" resultMap="FpglListInfoResult">
+        <include refid="selectFpglListVoForCw"/>
+        <where>
+            <if test="orderId != null  and orderId != ''"> and order_id like concat('%', #{orderId}, '%')</if>
+            <if test="contractType != null "> and contract_type = #{contractType}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+        </where>
     </select>
         
     <insert id="insertFpglMainInfo" parameterType="FpglMainInfo">
@@ -126,6 +179,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt,</if>
             <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh,</if>
             <if test="fpglFpno != null and fpglFpno != ''">fpgl_fpno,</if>
+            <if test="fpglKplx != null and fpglKplx != ''">fpgl_kplx,</if>
+            <if test="fpglKpRate != null and fpglKpRate != ''">fpgl_kp_rate,</if>
+            <if test="fpglBelongDept != null and fpglBelongDept != ''">fpgl_belong_dept,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>
@@ -142,6 +198,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpglSqr != null and fpglSqr != ''">#{fpglSqr},</if>
             <if test="fpglFpzt != null and fpglFpzt != ''">#{fpglFpzt},</if>
             <if test="fpglDdbh != null and fpglDdbh != ''">#{fpglDdbh},</if>
+            <if test="fpglFpno != null and fpglFpno != ''">#{fpglFpno},</if>
+            <if test="fpglKplx != null and fpglKplx != ''">#{fpglKplx},</if>
+            <if test="fpglKpRate != null and fpglKpRate != ''">#{fpglKpRate},</if>
+            <if test="fpglBelongDept != null and fpglBelongDept != ''">#{fpglBelongDept},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
@@ -162,6 +222,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fpglFpzt != null and fpglFpzt != ''">fpgl_fpzt = #{fpglFpzt},</if>
             <if test="fpglDdbh != null and fpglDdbh != ''">fpgl_ddbh = #{fpglDdbh},</if>
             <if test="fpglFpno != null and fpglFpno != ''">fpgl_fpno = #{fpglFpno},</if>
+            <if test="fpglKplx != null and fpglKplx != ''">fpgl_kplx = #{fpglKplx},</if>
+            <if test="fpglKpRate != null and fpglKpRate != ''">fpgl_kp_rate = #{fpglKpRate},</if>
+            <if test="fpglBelongDept != null and fpglBelongDept != ''">fpgl_belong_dept = #{fpglBelongDept},</if>
             <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>

@@ -79,6 +79,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     @Autowired
     protected Validator validator;
 
+    private static String companyBaseId = "";
+
     private static com.aliyun.dingtalkworkflow_1_0.Client client = null;
 
     static {
@@ -174,9 +176,19 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             }
 
             // 设置显示的公司名称
-            if (clientMap.containsKey(element.getOppositeCompanyName())) {
+            if (clientMap.containsKey(element.getOppositeCompanyName()) &&
+                    element.getOppositeCompanyName().contains("KH")) {
                 element.setBaseId(element.getOppositeCompanyName());
                 element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
+            } else {
+                clientMap.forEach((k,v)->{
+                    if(v.indexOf(element.getOppositeCompanyName()) >= 0){
+                        companyBaseId = k;
+                        return;
+                    }
+                });
+                element.setBaseId(companyBaseId);
+                element.setCompanyName(element.getOppositeCompanyName());
             }
         });
 
@@ -680,8 +692,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         purchaseInfo.setPurchaseType(contractInfo.getContractType());
         // 合同编号 -> 合同编号
         purchaseInfo.setContractId(contractInfo.getContractId());
-        // 经办人 -> 我方负责人
-        purchaseInfo.setHandledBy(contractInfo.getOurPrincipal());
+        // 经办人 -> 当前登录用户名称
+        purchaseInfo.setHandledBy(SecurityUtils.getUsername());
         // 所属部门 -> 当前登录用户所属部门
         purchaseInfo.setBelongDept(String.valueOf(SecurityUtils.getDeptId()));
         // 业务日期 -> 签约日期
@@ -695,11 +707,17 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             purchaseInfo.setPurchaseQuantity(0L);
         }
         // 供应商名称 -> 对方单位名称
-        MasterDataClientInfo param = new MasterDataClientInfo();
-        param.setCompanyName(contractInfo.getOppositeCompanyName());
-        List<MasterDataClientInfo> masterDataClientInfoList = masterDataClientInfoMapper
-                .selectMasterDataClientInfoList(param);
-        purchaseInfo.setSupplierName(masterDataClientInfoList.get(0).getBaseId());
+        if (StringUtils.contains(contractInfo.getOppositeCompanyName(), "KH")) {
+            // 供应商名称为供应商编码（KHXXXXXX）的场合
+            purchaseInfo.setSupplierName(contractInfo.getOppositeCompanyName());
+        } else {
+            // 供应商名称为汉字名称的场合
+            MasterDataClientInfo param = new MasterDataClientInfo();
+            param.setCompanyName(contractInfo.getOppositeCompanyName());
+            List<MasterDataClientInfo> masterDataClientInfoList = masterDataClientInfoMapper
+                    .selectMasterDataClientInfoList(param);
+            purchaseInfo.setSupplierName(masterDataClientInfoList.get(0).getBaseId());
+        }
         // 单价 -> 合同单价
         purchaseInfo.setUnitPrice(contractInfo.getContractPrice());
         // 计量单位 -> 平方米

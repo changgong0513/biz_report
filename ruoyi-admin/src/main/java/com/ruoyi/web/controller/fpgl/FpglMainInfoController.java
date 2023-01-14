@@ -1,16 +1,24 @@
 package com.ruoyi.web.controller.fpgl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.fpgl.domain.FpglListInfo;
+import com.ruoyi.purchase.sale.domain.PurchaseSaleOrderInfo;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
+import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
+import com.ruoyi.report.masterdata.service.IMasterDataMaterialInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,27 +51,47 @@ public class FpglMainInfoController extends BaseController
     @Autowired
     private IFpglMainInfoService fpglMainInfoService;
 
+    @Autowired
+    private IMasterDataClientInfoService masterDataClientInfoService;
+
+    @Autowired
+    private IMasterDataMaterialInfoService masterDataMaterialInfoService;
+
     /**
      * 查询发票管理列表
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:list')")
     @GetMapping("/list")
     public TableDataInfo list(FpglListInfo fpglListInfo) {
 
         startPage();
 
-        Long deptId = this.getDeptId();
-        String loginUserName = this.getUsername();
-        if (StringUtils.equals(loginUserName, "admin")) {
-            // admin可以查看所有发票数据
-            deptId = null;
+        List<FpglListInfo> fpDetailList = new ArrayList<>();
+        List<FpglListInfo> calculatedFpglList = new ArrayList<>();
+
+        fpglListInfo.setFpglSqr(getUsername());
+
+        Long deptId = getDeptId();
+        fpglListInfo.setDeptId(deptId);
+        if (Long.compare(deptId, 201) == 0) {
+            // 当前登录用户所属部门为财务部
+            fpDetailList = fpglMainInfoService.selectFpglListForCw(fpglListInfo);
+
+            Map<String, List<FpglListInfo>> map = fpDetailList.stream()
+                    .collect(Collectors.groupingBy(element -> element.getOrderId()));
+            map.forEach((key, value) -> {
+                FpglListInfo lastItem = value.get(value.size() - 1);
+                BigDecimal sum = value.stream()
+                        .map(x -> new BigDecimal(String.valueOf(x.getFpglKpje())))
+                        .reduce(BigDecimal.ZERO,BigDecimal::add);
+                lastItem.setFpglKpje(sum);
+                calculatedFpglList.add(lastItem);
+            });
+        } else {
+            // 当前登录用户所属部门为非财务部
+            fpDetailList = fpglMainInfoService.selectFpglList(fpglListInfo);
         }
 
-        fpglListInfo.setDeptId(deptId);
-        fpglListInfo.setCurrentLoginUserName(getUsername());
-
-        List<FpglListInfo> list = fpglMainInfoService.selectFpglList(fpglListInfo);
-        for (FpglListInfo item : list) {
+        for (FpglListInfo item : calculatedFpglList) {
             BigDecimal total = item.getContractTotal();
             BigDecimal kpje = item.getFpglKpje();
             if (kpje.compareTo(total) == 0) {
@@ -73,15 +101,18 @@ public class FpglMainInfoController extends BaseController
             } else {
                 item.setFpglFpzt("2");
             }
+
+            MasterDataClientInfo clientInfo = masterDataClientInfoService.selectMasterDataClientInfoByBaseId(item.getSupplierName());
+            item.setRealSupplierName(clientInfo.getCompanyName());
         }
 
-        List<FpglListInfo> filterList = null;
+        List<FpglListInfo> filterList = new ArrayList<>();
         if (StringUtils.isNotBlank(fpglListInfo.getFpglFpzt())) {
-            filterList = list.stream()
+            filterList = calculatedFpglList.stream()
                     .filter(item -> item.getFpglFpzt().equals(fpglListInfo.getFpglFpzt()))
                     .collect(Collectors.toList());
         } else {
-            filterList = list;
+            filterList = calculatedFpglList;
         }
 
         return getDataTable(filterList);
@@ -102,7 +133,6 @@ public class FpglMainInfoController extends BaseController
     /**
      * 导出发票管理列表
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:export')")
     @Log(title = "发票管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, FpglListInfo fpglListInfo) {
@@ -130,30 +160,26 @@ public class FpglMainInfoController extends BaseController
     /**
      * 获取发票管理详细信息
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:query')")
     @GetMapping(value = "/{fpglDdbh}")
-    public AjaxResult getInfo(@PathVariable("fpglDdbh") String fpglDdbh)
-    {
-        return AjaxResult.success(fpglMainInfoService.selectFpglMainInfoByFpglDdbh(fpglDdbh));
+    public AjaxResult getInfo(@PathVariable("fpglDdbh") String fpglDdbh) {
+        FpglMainInfo fpglMainInfo = fpglMainInfoService.selectFpglMainInfoByFpglDdbh(fpglDdbh);
+        return AjaxResult.success(1);
     }
 
     /**
      * 新增发票管理
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:add')")
     @Log(title = "发票管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody FpglMainInfo fpglMainInfo) {
 
         fpglMainInfo.setFpglKprq(DateUtils.parseDate(DateUtils.getDate()));
-        fpglMainInfo.setFpglSqr(this.getUsername());
+        fpglMainInfo.setFpglSqr(getUsername());
         fpglMainInfo.setBizVersion(1L);
         fpglMainInfo.setCreateTime(DateUtils.getNowDate());
         fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
         fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
         fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
-
-//        return toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
 
         AjaxResult result = AjaxResult.success();
         FpglMainInfo findFpglMainInfo = fpglMainInfoService
@@ -171,60 +197,31 @@ public class FpglMainInfoController extends BaseController
     /**
      * 修改发票管理
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:edit')")
     @Log(title = "发票管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody FpglMainInfo fpglMainInfo) {
 
-        AjaxResult result = AjaxResult.success();
-        Long fpglKpsl = null;
-        BigDecimal fpglKpdj = null;
-        BigDecimal fpglKpje = null;
+        fpglMainInfo.setFpglId(null);
+        fpglMainInfo.setFpglKprq(DateUtils.getNowDate());
+        fpglMainInfo.setFpglSqr(fpglMainInfo.getFpglSqr());
 
-        FpglMainInfo selectData = fpglMainInfoService
-                .selectFpglMainInfoByFpglDdbh(fpglMainInfo.getFpglDdbh());
-        if (selectData != null) {
-            fpglKpsl = selectData.getFpglKpsl();
-            fpglKpdj = selectData.getFpglKpdj();
-            fpglKpje = selectData.getFpglKpje();
+        List<MasterDataMaterialInfo> masterDataMaterialInfoList =  masterDataMaterialInfoService.selectMasterDataMaterialInfoList(new MasterDataMaterialInfo());
+        Map<String, Integer> maps = masterDataMaterialInfoList.stream()
+                .collect(Collectors.toMap(MasterDataMaterialInfo::getMaterialName, MasterDataMaterialInfo::getMaterialId));
+        fpglMainInfo.setFpglKpmx(String.valueOf(maps.get(fpglMainInfo.getMaterialName())));
 
-            if (fpglMainInfo.getFpglKpsl() != null) {
-                fpglKpsl = fpglKpsl + fpglMainInfo.getFpglKpsl();
-            }
+        fpglMainInfo.setBizVersion(1L);
+        fpglMainInfo.setCreateTime(DateUtils.getNowDate());
+        fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
+        fpglMainInfo.setCreateBy(SecurityUtils.getUsername());
+        fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
 
-            if (fpglMainInfo.getFpglKpdj() != null) {
-                fpglKpdj = fpglKpdj.add(fpglMainInfo.getFpglKpdj());
-            }
-
-            if (fpglMainInfo.getFpglKpje() != null) {
-                fpglKpje = fpglKpje.add(fpglMainInfo.getFpglKpje());
-            }
-
-            fpglMainInfo.setFpglKpsl(fpglKpsl);
-            fpglMainInfo.setFpglKpdj(fpglKpdj);
-            fpglMainInfo.setFpglKpje(fpglKpje);
-            fpglMainInfo.setBizVersion(1L);
-            fpglMainInfo.setUpdateTime(DateUtils.getNowDate());
-            fpglMainInfo.setUpdateBy(SecurityUtils.getUsername());
-            result = toAjax(fpglMainInfoService.updateFpglMainInfo(fpglMainInfo));
-        } else {
-            // 新增发票管理
-            result = add(fpglMainInfo);
-        }
-
-//        if (StringUtils.equals(fpglMainInfo.getActionFlag(), "1")) {
-//            fpglMainInfo.setFpglKpsl(null);
-//            fpglMainInfo.setFpglKpdj(null);
-//            fpglMainInfo.setFpglKpje(null);
-//        }
-
-        return result;
+        return toAjax(fpglMainInfoService.insertFpglMainInfo(fpglMainInfo));
     }
 
     /**
      * 删除发票管理
      */
-    // @PreAuthorize("@ss.hasPermi('fpgl:main:remove')")
     @Log(title = "发票管理", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{fpglIds}")
     public AjaxResult remove(@PathVariable String[] fpglIds)
