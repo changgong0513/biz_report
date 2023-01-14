@@ -75,21 +75,22 @@ public class FpglMainInfoController extends BaseController
         if (Long.compare(deptId, 201) == 0) {
             // 当前登录用户所属部门为财务部
             fpDetailList = fpglMainInfoService.selectFpglListForCw(fpglListInfo);
-
-            Map<String, List<FpglListInfo>> map = fpDetailList.stream()
-                    .collect(Collectors.groupingBy(element -> element.getOrderId()));
-            map.forEach((key, value) -> {
-                FpglListInfo lastItem = value.get(value.size() - 1);
-                BigDecimal sum = value.stream()
-                        .map(x -> new BigDecimal(String.valueOf(x.getFpglKpje())))
-                        .reduce(BigDecimal.ZERO,BigDecimal::add);
-                lastItem.setFpglKpje(sum);
-                calculatedFpglList.add(lastItem);
-            });
         } else {
             // 当前登录用户所属部门为非财务部
             fpDetailList = fpglMainInfoService.selectFpglList(fpglListInfo);
         }
+
+        // 实现每个订单编号对应的多条记录，开票金额求和后聚合成一条记录
+        Map<String, List<FpglListInfo>> map = fpDetailList.stream()
+                .collect(Collectors.groupingBy(element -> element.getOrderId()));
+        map.forEach((key, value) -> {
+            FpglListInfo lastItem = value.get(value.size() - 1);
+            BigDecimal sum = value.stream()
+                    .map(x -> new BigDecimal(String.valueOf(x.getFpglKpje())))
+                    .reduce(BigDecimal.ZERO,BigDecimal::add);
+            lastItem.setFpglKpje(sum);
+            calculatedFpglList.add(lastItem);
+        });
 
         for (FpglListInfo item : calculatedFpglList) {
             BigDecimal total = item.getContractTotal();

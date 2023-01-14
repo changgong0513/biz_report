@@ -31,7 +31,9 @@ import com.ruoyi.report.contract.domain.ContractApprovalRecordsInfo;
 import com.ruoyi.report.contract.mapper.ContractApprovalInfoMapper;
 import com.ruoyi.report.contract.mapper.ContractApprovalRecordsInfoMapper;
 import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
 import com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper;
+import com.ruoyi.report.masterdata.mapper.MasterDataMaterialInfoMapper;
 import com.ruoyi.zjzy.domain.ZjzyFkInfo;
 import com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper;
 import org.slf4j.Logger;
@@ -72,6 +74,9 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     @Autowired
     private MasterDataClientInfoMapper masterDataClientInfoMapper;
+
+    @Autowired
+    private MasterDataMaterialInfoMapper masterDataMaterialInfoMapper;
 
     @Autowired
     private FpglMainInfoMapper fpglMainInfoMapper;
@@ -1078,7 +1083,14 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
         // 采购订单或者销售订单，默认都需要开发票
         FpglMainInfo fpglMainInfo = new FpglMainInfo();
-        fpglMainInfo.setFpglKpmx(purchaseInfo.getMaterialName());
+
+        // 取得主数据管理中所有物料列表
+        List<MasterDataMaterialInfo> masterDataMaterialInfoList =  masterDataMaterialInfoMapper
+                .selectMasterDataMaterialInfoList(new MasterDataMaterialInfo());
+        // 取得物料名称 -> 物料编号的Map
+        Map<String, Integer> maps = masterDataMaterialInfoList.stream()
+                .collect(Collectors.toMap(MasterDataMaterialInfo::getMaterialName, MasterDataMaterialInfo::getMaterialId));
+        fpglMainInfo.setFpglKpmx(String.valueOf(maps.get(purchaseInfo.getMaterialName())));
         fpglMainInfo.setFpglKpsl(0L);
         fpglMainInfo.setFpglKpdj(BigDecimal.ZERO);
         fpglMainInfo.setFpglKpje(BigDecimal.ZERO);
