@@ -126,7 +126,8 @@ public class FpglMainInfoController extends BaseController
 
         startPage();
         List<FpglMainInfo> list = fpglMainInfoService.selectFpglMainInfoList(fpglMainInfo);
-        return getDataTable(list);
+        List<FpglMainInfo> filterlist = list.stream().filter(element -> element.getFpglKprq() != null).collect(Collectors.toList());
+        return getDataTable(filterlist);
     }
 
 
