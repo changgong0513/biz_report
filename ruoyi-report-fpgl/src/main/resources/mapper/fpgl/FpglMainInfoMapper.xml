@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <sql id="selectFpglListVo">
-        select
+        select distinct
 	        order_id, supplier_name, material_name, contract_type, our_company_name, contract_total,
 	        fpgl_kpsl, fpgl_kpdj, fpgl_kpje, fpgl_fpno, fpgl_sqr, fpgl_id, tax_number, tt1.user_name
         from
@@ -67,11 +67,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 t3.fpgl_id as fpgl_id,
                 t4.tax_number as tax_number
 	        from
-                purchase_sale_order_info t1
-            left join contract_content_info t2 on t1.contract_id = t2.contract_id
-            left join fpgl_main_info t3 on t1.order_id = t3.fpgl_ddbh
-            left join master_data_client_info t4 on t1.supplier_name = t4.company_name
-	    ) fpgl, sys_user tt1, sys_dept tt2
+                purchase_sale_order_info t1, contract_content_info t2, fpgl_main_info t3, master_data_client_info t4
+            where
+                t1.contract_id = t2.contract_id
+                and t1.order_id = t3.fpgl_ddbh
+                and t1.supplier_name = t4.company_name
+	    ) fpgl, sys_user tt1, sys_dept tt2, sys_user_role tt3
     </sql>
 
     <select id="selectFpglMainInfoList" parameterType="FpglMainInfo" resultMap="FpglMainInfoResult">
@@ -92,7 +93,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectFpglList" parameterType="FpglListInfo" resultMap="FpglListInfoResult">
         <include refid="selectFpglListVo"/>
         <where>
-            fpgl.fpgl_sqr = tt1.user_name and tt1.dept_id = tt2.dept_id
+            tt1.dept_id = tt2.dept_id
+            <if test="currentLoginUserName != null  and currentLoginUserName == 'cwtest1'">
+                and tt1.user_name = 'cwtest1'
+            </if>
+            <if test="currentLoginUserName != null  and currentLoginUserName != 'cwtest1'">
+                and fpgl.fpgl_sqr = tt1.user_name
+            </if>
             <if test="deptId != null "> and tt1.dept_id = #{deptId}</if>
             <if test="orderId != null  and orderId != ''"> and order_id like concat('%', #{orderId}, '%')</if>
             <if test="contractType != null "> and contract_type = #{contractType}</if>

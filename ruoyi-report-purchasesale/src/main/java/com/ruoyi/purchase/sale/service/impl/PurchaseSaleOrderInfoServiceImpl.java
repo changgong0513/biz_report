@@ -11,6 +11,8 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.fpgl.domain.FpglMainInfo;
 import com.ruoyi.fpgl.mapper.FpglMainInfoMapper;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.mapper.MasterDataClientInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,9 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
 
     @Autowired
     private FpglMainInfoMapper fpglMainInfoMapper;
+
+    @Autowired
+    private MasterDataClientInfoMapper masterDataClientInfoMapper;
 
     /**
      * 查询采购收货销售发货管理
@@ -66,6 +71,7 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
 
         List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoMapper
                 .selectPurchaseOrderInfoUnionList(purchaseSaleOrderInfo);
+
         Map<String, List<PurchaseSaleOrderInfo>> map = list.stream()
                 .collect(Collectors.groupingBy(element -> element.getSupplierName()));
 
@@ -82,6 +88,15 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
         } else {
             findPurchaseOrderList = list;
         }
+
+        // 根据客户编号，取得客户名称
+        findPurchaseOrderList.stream().forEach(elment -> {
+            String supplierName = elment.getSupplierName();
+            MasterDataClientInfo supplierData = masterDataClientInfoMapper
+                    .selectMasterDataClientInfoByBaseId(supplierName);
+            String supplierRealName = supplierData.getCompanyName();
+            elment.setSupplierRealName(supplierRealName);
+        });
 
         return findPurchaseOrderList;
     }

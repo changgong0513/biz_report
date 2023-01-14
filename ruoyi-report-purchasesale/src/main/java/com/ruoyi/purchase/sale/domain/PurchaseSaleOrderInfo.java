@@ -54,9 +54,12 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     /** 采购数量 */
     private Long purchaseQuantity;
 
+    /** 供应商名称编号 */
+    private String supplierName;
+
     /** 供应商名称 */
     @Excel(name = "供应商名称")
-    private String supplierName;
+    private String supplierRealName;
 
     /** 单价 */
     private BigDecimal unitPrice;
@@ -115,243 +118,236 @@ public class PurchaseSaleOrderInfo extends BaseEntity
     @Excel(name = "所属部门")
     private String deptName;
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getPurchaseType() {
+        return purchaseType;
+    }
+
+    public void setPurchaseType(String purchaseType) {
+        this.purchaseType = purchaseType;
+    }
+
+    public String getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(String contractId) {
+        this.contractId = contractId;
+    }
+
+    public String getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
+
+    public String getHandledBy() {
+        return handledBy;
+    }
+
+    public void setHandledBy(String handledBy) {
+        this.handledBy = handledBy;
+    }
+
+    public String getBelongDept() {
+        return belongDept;
+    }
+
+    public void setBelongDept(String belongDept) {
+        this.belongDept = belongDept;
+    }
+
+    public Date getBusinessDate() {
+        return businessDate;
+    }
+
+    public void setBusinessDate(Date businessDate) {
+        this.businessDate = businessDate;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
+
+    public Long getPurchaseQuantity() {
+        return purchaseQuantity;
+    }
+
+    public void setPurchaseQuantity(Long purchaseQuantity) {
+        this.purchaseQuantity = purchaseQuantity;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplierRealName() {
+        return supplierRealName;
+    }
+
+    public void setSupplierRealName(String supplierRealName) {
+        this.supplierRealName = supplierRealName;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public String getMeteringUnit() {
+        return meteringUnit;
+    }
+
+    public void setMeteringUnit(String meteringUnit) {
+        this.meteringUnit = meteringUnit;
+    }
+
+    public Date getArrivalDate() {
+        return arrivalDate;
+    }
+
+    public void setArrivalDate(Date arrivalDate) {
+        this.arrivalDate = arrivalDate;
+    }
+
+    public Date getRequiredDeliveryDate() {
+        return requiredDeliveryDate;
+    }
+
+    public void setRequiredDeliveryDate(Date requiredDeliveryDate) {
+        this.requiredDeliveryDate = requiredDeliveryDate;
+    }
+
+    public Long getAccountPeriod() {
+        return accountPeriod;
+    }
+
+    public void setAccountPeriod(Long accountPeriod) {
+        this.accountPeriod = accountPeriod;
+    }
+
+    public String getArrivalTerms() {
+        return arrivalTerms;
+    }
+
+    public void setArrivalTerms(String arrivalTerms) {
+        this.arrivalTerms = arrivalTerms;
+    }
+
+    public Long getArrivalTermsValue() {
+        return arrivalTermsValue;
+    }
+
+    public void setArrivalTermsValue(Long arrivalTermsValue) {
+        this.arrivalTermsValue = arrivalTermsValue;
+    }
+
+    public String getSettlementMethod() {
+        return settlementMethod;
+    }
+
+    public void setSettlementMethod(String settlementMethod) {
+        this.settlementMethod = settlementMethod;
+    }
+
+    public Long getIsInvoicing() {
+        return isInvoicing;
+    }
+
+    public void setIsInvoicing(Long isInvoicing) {
+        this.isInvoicing = isInvoicing;
+    }
+
+    public String getOrderRemark() {
+        return orderRemark;
+    }
+
+    public void setOrderRemark(String orderRemark) {
+        this.orderRemark = orderRemark;
+    }
+
+    public Long getBizVersion() {
+        return bizVersion;
+    }
+
+    public void setBizVersion(Long bizVersion) {
+        this.bizVersion = bizVersion;
+    }
+
+    public Long getCheckQuantity() {
+        return checkQuantity;
+    }
+
+    public void setCheckQuantity(Long checkQuantity) {
+        this.checkQuantity = checkQuantity;
+    }
+
+    public Long getCheckMoney() {
+        return checkMoney;
+    }
+
+    public void setCheckMoney(Long checkMoney) {
+        this.checkMoney = checkMoney;
+    }
+
+    public Long getCheckMoneyMin() {
+        return checkMoneyMin;
+    }
+
+    public void setCheckMoneyMin(Long checkMoneyMin) {
+        this.checkMoneyMin = checkMoneyMin;
+    }
+
+    public Long getCheckMoneyMax() {
+        return checkMoneyMax;
+    }
+
+    public void setCheckMoneyMax(Long checkMoneyMax) {
+        this.checkMoneyMax = checkMoneyMax;
+    }
+
+    public String getCompletionRate() {
+        return completionRate;
+    }
+
+    public void setCompletionRate(String completionRate) {
+        this.completionRate = completionRate;
+    }
+
     public int getHtsl() {
         return htsl;
     }
 
     public void setHtsl(int htsl) {
         this.htsl = htsl;
-    }
-
-    public void setOrderId(String orderId) { this.orderId = orderId; }
-    public String getOrderId() { return orderId; }
-
-    public void setOrderStatus(String orderStatus) { this.orderStatus = orderStatus; }
-    public String getOrderStatus() { return orderStatus; }
-
-    public void setPurchaseType(String purchaseType) 
-    {
-        this.purchaseType = purchaseType;
-    }
-    public String getPurchaseType() 
-    {
-        return purchaseType;
-    }
-
-    public void setContractId(String contractId) 
-    {
-        this.contractId = contractId;
-    }
-    public String getContractId() 
-    {
-        return contractId;
-    }
-
-    public void setContractType(String contractType)
-    {
-        this.contractType = contractType;
-    }
-    public String getContractType()
-    {
-        return contractType;
-    }
-
-    public void setHandledBy(String handledBy) 
-    {
-        this.handledBy = handledBy;
-    }
-    public String getHandledBy() 
-    {
-        return handledBy;
-    }
-
-    public void setBelongDept(String belongDept) 
-    {
-        this.belongDept = belongDept;
-    }
-    public String getBelongDept() 
-    {
-        return belongDept;
-    }
-
-    public void setBusinessDate(Date businessDate) 
-    {
-        this.businessDate = businessDate;
-    }
-    public Date getBusinessDate() 
-    {
-        return businessDate;
-    }
-
-    public void setMaterialName(String materialName) 
-    {
-        this.materialName = materialName;
-    }
-    public String getMaterialName() 
-    {
-        return materialName;
-    }
-
-    public void setPurchaseQuantity(Long purchaseQuantity) 
-    {
-        this.purchaseQuantity = purchaseQuantity;
-    }
-    public Long getPurchaseQuantity() 
-    {
-        return purchaseQuantity;
-    }
-
-    public void setSupplierName(String supplierName) 
-    {
-        this.supplierName = supplierName;
-    }
-    public String getSupplierName() 
-    {
-        return supplierName;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) 
-    {
-        this.unitPrice = unitPrice;
-    }
-    public BigDecimal getUnitPrice()
-    {
-        return unitPrice;
-    }
-
-    public void setMeteringUnit(String meteringUnit) 
-    {
-        this.meteringUnit = meteringUnit;
-    }
-    public String getMeteringUnit() 
-    {
-        return meteringUnit;
-    }
-
-    public void setArrivalDate(Date arrivalDate) 
-    {
-        this.arrivalDate = arrivalDate;
-    }
-    public Date getArrivalDate() 
-    {
-        return arrivalDate;
-    }
-
-    public void setRequiredDeliveryDate(Date requiredDeliveryDate) 
-    {
-        this.requiredDeliveryDate = requiredDeliveryDate;
-    }
-    public Date getRequiredDeliveryDate() 
-    {
-        return requiredDeliveryDate;
-    }
-
-    public void setAccountPeriod(Long accountPeriod) 
-    {
-        this.accountPeriod = accountPeriod;
-    }
-    public Long getAccountPeriod() 
-    {
-        return accountPeriod;
-    }
-
-    public void setArrivalTerms(String arrivalTerms) 
-    {
-        this.arrivalTerms = arrivalTerms;
-    }
-    public String getArrivalTerms() 
-    {
-        return arrivalTerms;
-    }
-
-    public void setArrivalTermsValue(Long arrivalTermsValue) 
-    {
-        this.arrivalTermsValue = arrivalTermsValue;
-    }
-    public Long getArrivalTermsValue() 
-    {
-        return arrivalTermsValue;
-    }
-
-    public void setSettlementMethod(String settlementMethod) 
-    {
-        this.settlementMethod = settlementMethod;
-    }
-    public String getSettlementMethod() 
-    {
-        return settlementMethod;
-    }
-
-    public void setIsInvoicing(Long isInvoicing) 
-    {
-        this.isInvoicing = isInvoicing;
-    }
-    public Long getIsInvoicing() 
-    {
-        return isInvoicing;
-    }
-
-    public void setOrderRemark(String orderRemark) 
-    {
-        this.orderRemark = orderRemark;
-    }
-    public String getOrderRemark() 
-    {
-        return orderRemark;
-    }
-
-    public void setBizVersion(Long bizVersion) 
-    {
-        this.bizVersion = bizVersion;
-    }
-    public Long getBizVersion() 
-    {
-        return bizVersion;
-    }
-
-    public void setCheckQuantity(Long checkQuantity)
-    {
-        this.checkQuantity = checkQuantity;
-    }
-    public Long getCheckQuantity()
-    {
-        return checkQuantity;
-    }
-
-    public void setCheckMoney(Long checkMoney)
-    {
-        this.checkMoney = checkMoney;
-    }
-    public Long getCheckMoney()
-    {
-        return checkMoney;
-    }
-
-    public void setCheckMoneyMin(Long checkMoneyMin)
-    {
-        this.checkMoneyMin = checkMoneyMin;
-    }
-    public Long getCheckMoneyMin()
-    {
-        return checkMoneyMin;
-    }
-
-    public void setCheckMoneyMax(Long checkMoneyMax)
-    {
-        this.checkMoneyMax = checkMoneyMax;
-    }
-    public Long getCheckMoneyMax()
-    {
-        return checkMoneyMax;
-    }
-
-    public void setCompletionRate(String completionRate)
-    {
-        this.completionRate = completionRate;
-    }
-    public String getCompletionRate()
-    {
-        return completionRate;
     }
 
     public String getDeptName() {

@@ -26,5 +26,9 @@
             <version>3.8.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>report.masterdata</artifactId>
+        </dependency>
     </dependencies>
 </project>

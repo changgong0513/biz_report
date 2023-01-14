@@ -73,6 +73,9 @@ public class FpglListInfo extends BaseEntity
     /** 发票管理编号 */
     private String fpglId;
 
+    /** 当前登录用户名称 */
+    private String currentLoginUserName;
+
     public String getOrderId() {
         return orderId;
     }
@@ -183,6 +186,14 @@ public class FpglListInfo extends BaseEntity
 
     public void setFpglId(String fpglId) {
         this.fpglId = fpglId;
+    }
+
+    public String getCurrentLoginUserName() {
+        return currentLoginUserName;
+    }
+
+    public void setCurrentLoginUserName(String currentLoginUserName) {
+        this.currentLoginUserName = currentLoginUserName;
     }
 
     @Override

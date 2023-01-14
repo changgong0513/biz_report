@@ -60,6 +60,7 @@ public class FpglMainInfoController extends BaseController
         }
 
         fpglListInfo.setDeptId(deptId);
+        fpglListInfo.setCurrentLoginUserName(getUsername());
 
         List<FpglListInfo> list = fpglMainInfoService.selectFpglList(fpglListInfo);
         for (FpglListInfo item : list) {

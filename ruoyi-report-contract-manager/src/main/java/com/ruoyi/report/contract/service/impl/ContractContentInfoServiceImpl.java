@@ -463,7 +463,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         listProcessInstanceIdsHeaders.xAcsDingtalkAccessToken = accessToken;
         com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest()
                 .setProcessCode("PROC-53AEE967-1CA5-43CF-9489-CAF178BC1E46") // 测试API
-                .setStartTime(1661961600000L)
+                .setStartTime(1664553600000L)
                 .setNextToken(0L)
                 .setMaxResults(10L);
         try {
@@ -682,8 +682,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         purchaseInfo.setContractId(contractInfo.getContractId());
         // 经办人 -> 我方负责人
         purchaseInfo.setHandledBy(contractInfo.getOurPrincipal());
-        // 所属部门 -> 经办人所属部门
-        purchaseInfo.setBelongDept("1");
+        // 所属部门 -> 当前登录用户所属部门
+        purchaseInfo.setBelongDept(String.valueOf(SecurityUtils.getDeptId()));
         // 业务日期 -> 签约日期
         purchaseInfo.setBusinessDate(contractInfo.getSignDate());
         // 物料名称 -> 货物名称
@@ -695,7 +695,11 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             purchaseInfo.setPurchaseQuantity(0L);
         }
         // 供应商名称 -> 对方单位名称
-        purchaseInfo.setSupplierName(contractInfo.getOppositeCompanyName());
+        MasterDataClientInfo param = new MasterDataClientInfo();
+        param.setCompanyName(contractInfo.getOppositeCompanyName());
+        List<MasterDataClientInfo> masterDataClientInfoList = masterDataClientInfoMapper
+                .selectMasterDataClientInfoList(param);
+        purchaseInfo.setSupplierName(masterDataClientInfoList.get(0).getBaseId());
         // 单价 -> 合同单价
         purchaseInfo.setUnitPrice(contractInfo.getContractPrice());
         // 计量单位 -> 平方米

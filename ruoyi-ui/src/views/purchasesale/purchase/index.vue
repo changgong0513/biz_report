@@ -116,7 +116,7 @@
       </el-table-column>
       <el-table-column label="所属部门" align="center" prop="deptName" width="100" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="供应商名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
+      <el-table-column label="供应商名称" align="center" prop="supplierRealName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.purchase_mgr_order_status" :value="scope.row.orderStatus"/>
