@@ -192,12 +192,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where contract_id = #{contractId}
     </select>
     
-    <select id="getPurchaseContractCounts" resultType="java.lang.Integer">
-        select count(1) as purchaseCounts FROM purchase_sale_order_info t where purchase_type = "P"
+    <select id="getPurchaseContractCounts" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+            count(1) as purchaseCounts
+        from
+            purchase_sale_order_info t
+        where
+            purchase_type = "P"
+            and belong_dept = #{belongDept}
     </select>
 
-    <select id="getSaleContractCounts" resultType="java.lang.Integer">
-        select count(1) as saleCounts FROM purchase_sale_order_info t where purchase_type = "S"
+    <select id="getSaleContractCounts" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select
+            count(1) as saleCounts
+        from
+            purchase_sale_order_info t
+        where
+            purchase_type = "S"
+            and belong_dept = #{belongDept}
     </select>
         
     <insert id="insertPurchaseSaleOrderInfo" parameterType="PurchaseSaleOrderInfo">

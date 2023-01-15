@@ -112,7 +112,8 @@ public class PurchaseSaleOrderInfoController extends BaseController {
      */
     @GetMapping(value = "/purchase/counts")
     public AjaxResult getPurchaseContractCounts() {
-        int purchaseCounts = purchaseSaleOrderInfoService.getPurchaseContractCounts();
+        int purchaseCounts = purchaseSaleOrderInfoService
+                .getPurchaseContractCounts(String.valueOf(getDeptId()));
         return AjaxResult.success(purchaseCounts);
     }
 
@@ -121,7 +122,8 @@ public class PurchaseSaleOrderInfoController extends BaseController {
      */
     @GetMapping(value = "/sale/counts")
     public AjaxResult getSaleContractCounts() {
-        int saleCounts = purchaseSaleOrderInfoService.getSaleContractCounts();
+        int saleCounts = purchaseSaleOrderInfoService
+                .getSaleContractCounts(String.valueOf(getDeptId()));
         return AjaxResult.success(saleCounts);
     }
 

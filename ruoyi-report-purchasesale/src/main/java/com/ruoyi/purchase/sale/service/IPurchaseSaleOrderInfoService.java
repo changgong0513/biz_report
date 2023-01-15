@@ -47,14 +47,14 @@ public interface IPurchaseSaleOrderInfoService {
      *
      * @return 结果
      */
-    public int getPurchaseContractCounts();
+    public int getPurchaseContractCounts(String belongDept);
 
     /**
      * 取得销售合同总数
      *
      * @return 结果
      */
-    public int getSaleContractCounts();
+    public int getSaleContractCounts(String belongDept);
 
     /**
      * 新增采购收货销售发货管理

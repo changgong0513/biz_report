@@ -118,8 +118,8 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      *
      * @return 结果
      */
-    public int getPurchaseContractCounts() {
-        return purchaseSaleOrderInfoMapper.getPurchaseContractCounts();
+    public int getPurchaseContractCounts(String belongDept) {
+        return purchaseSaleOrderInfoMapper.getPurchaseContractCounts(belongDept);
     }
 
     /**
@@ -127,8 +127,8 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      *
      * @return 结果
      */
-    public int getSaleContractCounts() {
-        return purchaseSaleOrderInfoMapper.getSaleContractCounts();
+    public int getSaleContractCounts(String belongDept) {
+        return purchaseSaleOrderInfoMapper.getSaleContractCounts(belongDept);
     }
 
     /**
