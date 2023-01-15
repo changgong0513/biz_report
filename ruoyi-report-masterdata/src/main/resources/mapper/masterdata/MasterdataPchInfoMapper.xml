@@ -47,6 +47,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPchCounts" parameterType="MasterdataPchInfo" resultType="java.lang.Integer">
         <include refid="selectPchCountsVo"/>
     </select>
+
+    <!-- 取得批次号下拉列表数据sql -->
+    <sql id="selectPchListVo">
+        select
+            id, pch, pchmc, belong_dept, ssnf, pchzt,
+            create_by, create_time, update_by, update_time, biz_version
+        from
+            masterdata_pch_info
+    </sql>
+    <!-- 取得批次号下拉列表数据 -->
+    <select id="selectPchList" parameterType="java.lang.String" resultMap="MasterdataPchInfoResult">
+        <include refid="selectPchListVo"/>
+        <where>
+            <if test="belongDept != null  and belongDept != ''"> and belong_dept = #{belongDept}</if>
+        </where>
+    </select>
         
     <insert id="insertMasterdataPchInfo" parameterType="MasterdataPchInfo" useGeneratedKeys="true" keyProperty="id">
         insert into masterdata_pch_info

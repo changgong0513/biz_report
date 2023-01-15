@@ -246,8 +246,19 @@
           <!-- 批次号 -->
           <el-col :span="8">
             <el-form-item label="批次号" prop="batchNo">
-              <el-input v-model="form.batchNo" placeholder="请输入批次号" style="width: 240px"
-                maxlength="16" show-word-limit />
+              <el-select
+                v-model="form.batchNo"
+                placeholder="请输入批次号"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="item in pchOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -525,6 +536,7 @@
 import { listReceipt, getReceipt, addReceipt, delReceipt, updateReceipt } from "@/api/purchasesale/receipt";
 import { listPurchase } from "@/api/purchasesale/purchasesale";
 import { listWarehouse } from "@/api/masterdata/warehouse";
+import { listDeptPch } from "@/api/masterdata/pch";
 
 export default {
   name: "Purchase",
@@ -611,11 +623,14 @@ export default {
       // 采购合同编号选择用
       optionsPurchaseContract: [],
       listPurchaseContract: [],
-      remoteLoadingPurchaseContract: false
+      remoteLoadingPurchaseContract: false,
+      // 批次号选项
+      pchOptions: []
     };
   },
   created() {
     this.getList();
+    this.getDeptPch();
   },
   computed: {
     /** 核算金额 */
@@ -919,6 +934,14 @@ export default {
           parseFloat(this.form.dryCalSettlementWeight);
       
       this.form.dryCalResult = this.form.dryCalResult.toFixed(2);
+    },
+    /** 取得批次号下拉列表 */
+    getDeptPch() {
+      listDeptPch().then(response => {
+        this.pchOptions = response.rows.map(item => {
+            return { value: `${item.pch}`, label: `${item.pch}` };
+          });
+      });
     }
   }
 };

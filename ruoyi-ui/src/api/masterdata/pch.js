@@ -9,6 +9,14 @@ export function listPch(query) {
   })
 }
 
+// 根据登录用户所属部门，查询批次号管理列表
+export function listDeptPch() {
+  return request({
+    url: '/masterdata/pch/dept/list',
+    method: 'get'
+  })
+}
+
 // 查询批次号管理详细
 export function getPch(id) {
   return request({

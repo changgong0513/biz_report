@@ -55,6 +55,16 @@ public class MasterdataPchInfoServiceImpl implements IMasterdataPchInfoService
     }
 
     /**
+     * 取得批次号下拉列表数据
+     *
+     * @param belongDept 批次号所属部门
+     * @return 批次号管理集合
+     */
+    public List<MasterdataPchInfo> selectPchList(String belongDept) {
+        return masterdataPchInfoMapper.selectPchList(belongDept);
+    }
+
+    /**
      * 新增批次号管理
      * 
      * @param masterdataPchInfo 批次号管理

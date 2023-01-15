@@ -54,6 +54,16 @@ public class MasterdataPchInfoController extends BaseController
     }
 
     /**
+     * 根据登录用户所属部门，查询批次号管理列表
+     */
+    // @PreAuthorize("@ss.hasPermi('masterdata:pch:list')")
+    @GetMapping("/dept/list")
+    public TableDataInfo deptPchlist(MasterdataPchInfo masterdataPchInfo) {
+        List<MasterdataPchInfo> list = masterdataPchInfoService.selectPchList(String.valueOf(getDeptId()));
+        return getDataTable(list);
+    }
+
+    /**
      * 导出批次号管理列表
      */
     // @PreAuthorize("@ss.hasPermi('masterdata:pch:export')")

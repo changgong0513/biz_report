@@ -268,7 +268,19 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="批次号" prop="pch" v-if="form.lx == '1'">
-              <el-input v-model="form.pch" placeholder="请输入批次号" style="width: 240px" />
+              <el-select
+                v-model="form.pch"
+                placeholder="请输入批次号"
+                clearable
+                style="width: 240px"
+              >
+                <el-option
+                  v-for="item in pchOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label="卸货数量" prop="xhsl" v-else>
               <el-input v-model="form.xhsl" placeholder="请输入卸货数量" style="width: 240px" />
@@ -392,6 +404,7 @@
 import { listKcdb, getKcdb, delKcdb, addKcdb, updateKcdb } from "@/api/kcdb/kcdb";
 import { listWarehouse } from "@/api/masterdata/warehouse";
 import { listMaterialData } from "@/api/masterdata/material";
+import { listDeptPch } from "@/api/masterdata/pch";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -483,12 +496,15 @@ export default {
       defaultProps: {
         children: "children",
         label: "label"
-      }
+      },
+      // 批次号选项
+      pchOptions: []
     };
   },
   created() {
     this.getList();
     this.getDeptTree();
+    this.getDeptPch();
   },
   computed: {
     /** 计算调拨金额 */
@@ -677,6 +693,14 @@ export default {
     getDeptTree() {
       deptTreeSelect().then(response => {
         this.deptOptions = response.data;
+      });
+    },
+    /** 取得批次号下拉列表 */
+    getDeptPch() {
+      listDeptPch().then(response => {
+        this.pchOptions = response.rows.map(item => {
+            return { value: `${item.pch}`, label: `${item.pch}` };
+          });
       });
     }
   }
