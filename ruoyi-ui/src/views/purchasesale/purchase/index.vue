@@ -440,11 +440,7 @@
           </el-col>
           <!-- 所属部门 -->
           <el-col :span="8">
-            <el-form-item label="所属部门">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_belong_dept" :value="formDetail.belongDept"/>
-              </template>
-            </el-form-item>
+            <el-form-item label="所属部门">{{formDetail.deptName}}</el-form-item>
           </el-col>
           <!-- 业务日期 -->
           <el-col :span="8">
@@ -462,7 +458,7 @@
           </el-col>
           <!-- 供应商名称 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">{{formDetail.supplierName}}</el-form-item>
+            <el-form-item label="供应商名称" prop="supplierRealName">{{formDetail.supplierRealName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -1077,6 +1073,7 @@ export default {
     },
      /** 查看合同数据 */ 
     handleView(row) {
+      console.log(JSON.stringify(row));
       this.formDetail = row;
       this.fileListDetail = [];
       this.selRow = row;

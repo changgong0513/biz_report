@@ -773,7 +773,7 @@ export default {
       this.open = false;
       this.reset();
     },
-      // 取消按钮
+    // 取消按钮
     cancelDetail() {
       this.openDetail = false;
       this.reset();
