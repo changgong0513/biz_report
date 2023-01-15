@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="pch"    column="pch"    />
         <result property="pchmc"    column="pchmc"    />
+        <result property="belongDept"    column="belong_dept"    />
         <result property="ssnf"    column="ssnf"    />
         <result property="pchzt"    column="pchzt"    />
         <result property="createBy"    column="create_by"    />
@@ -18,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMasterdataPchInfoVo">
-        select id, pch, pchmc, ssnf, pchzt, create_by, create_time, update_by, update_time, biz_version from masterdata_pch_info
+        select id, pch, pchmc, belong_dept, ssnf, pchzt, create_by, create_time, update_by, update_time, biz_version from masterdata_pch_info
     </sql>
 
     <select id="selectMasterdataPchInfoList" parameterType="MasterdataPchInfo" resultMap="MasterdataPchInfoResult">
@@ -26,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="pch != null  and pch != ''"> and pch like concat('%', #{pch}, '%')</if>
             <if test="pchmc != null  and pchmc != ''"> and pchmc like concat('%', #{pchmc}, '%')</if>
+            <if test="belongDept != null  and belongDept != ''"> and belong_dept = #{belongDept}</if>
             <if test="ssnf != null "> and ssnf = #{ssnf}</if>
             <if test="pchzt != null  and pchzt != ''"> and pchzt = #{pchzt}</if>
             <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
@@ -36,12 +38,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectMasterdataPchInfoVo"/>
         where id = #{id}
     </select>
+
+    <!-- 判断新增批次号存在性sql -->
+    <sql id="selectPchCountsVo">
+        select count(1) as cnt from masterdata_pch_info where pch = #{pch} and belong_dept = #{belongDept}
+    </sql>
+    <!-- 判断新增批次号存在性方法 -->
+    <select id="selectPchCounts" parameterType="MasterdataPchInfo" resultType="java.lang.Integer">
+        <include refid="selectPchCountsVo"/>
+    </select>
         
     <insert id="insertMasterdataPchInfo" parameterType="MasterdataPchInfo" useGeneratedKeys="true" keyProperty="id">
         insert into masterdata_pch_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pch != null and pch != ''">pch,</if>
             <if test="pchmc != null">pchmc,</if>
+            <if test="belongDept != null and belongDept != ''">belong_dept,</if>
             <if test="ssnf != null">ssnf,</if>
             <if test="pchzt != null and pchzt != ''">pchzt,</if>
             <if test="createBy != null">create_by,</if>
@@ -53,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pch != null and pch != ''">#{pch},</if>
             <if test="pchmc != null">#{pchmc},</if>
+            <if test="belongDept != null and belongDept != ''">#{belongDept},</if>
             <if test="ssnf != null">#{ssnf},</if>
             <if test="pchzt != null and pchzt != ''">#{pchzt},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -68,6 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="pch != null and pch != ''">pch = #{pch},</if>
             <if test="pchmc != null">pchmc = #{pchmc},</if>
+            <if test="belongDept != null">belong_dept = #{belongDept},</if>
             <if test="ssnf != null">ssnf = #{ssnf},</if>
             <if test="pchzt != null and pchzt != ''">pchzt = #{pchzt},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

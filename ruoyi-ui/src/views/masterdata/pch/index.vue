@@ -8,7 +8,7 @@
                 v-model="queryParams.pch"
                 placeholder="请输入批次号"
                 clearable
-                @keyup.enter.native="handleQuery"
+                style="width: 260px;"
               />
             </el-form-item>
           </el-col>
@@ -18,28 +18,39 @@
                 v-model="queryParams.pchmc"
                 placeholder="请输入名称"
                 clearable
-                @keyup.enter.native="handleQuery"
+                style="width: 260px;"
               />
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="所属部门" prop="belongDept">
+              <treeselect v-model="queryParams.belongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门" 
+                style="width: 260px;" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="所属年份" prop="ssnf">
               <el-date-picker clearable
                 v-model="queryParams.ssnf"
                 type="year"
                 value-format="yyyy"
-                placeholder="请选择所属年份">
+                placeholder="请选择所属年份"
+                style="width: 260px;">
               </el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="状态" prop="pchzt">
               <el-select
                 v-model="queryParams.pchzt"
                 placeholder="请输入状态"
                 clearable
+                style="width: 260px;"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_pch_status"
@@ -50,7 +61,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item>
               <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -135,6 +146,13 @@
         <el-form-item label="名称" prop="pchmc">
           <el-input v-model="form.pchmc" placeholder="请输入名称" />
         </el-form-item>
+        <el-form-item label="所属部门" prop="belongDept">
+          <treeselect v-model="form.belongDept" 
+            :options="deptOptions" 
+            :show-count="true" 
+            placeholder="请选择所属部门" 
+            style="width: 240px;" />
+        </el-form-item>
         <el-form-item label="所属年份" prop="ssnf">
           <el-date-picker clearable
             v-model="form.ssnf"
@@ -168,10 +186,14 @@
 
 <script>
 import { listPch, getPch, delPch, addPch, updatePch } from "@/api/masterdata/pch";
+import { deptTreeSelect } from "@/api/system/user";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name: "Pch",
   dicts: ['masterdata_pch_status'],
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -209,11 +231,18 @@ export default {
         pch: [
           { required: true, message: "批次号不能为空", trigger: "blur" }
         ]
+      },
+      // 部门树选项
+      deptOptions: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
       }
     };
   },
   created() {
     this.getList();
+    this.getDeptTree();
   },
   methods: {
     /** 查询批次号管理列表 */
@@ -312,7 +341,13 @@ export default {
     handleExport() {
       this.download('masterdata/pch/export', {
         ...this.queryParams
-      }, `pch_${new Date().getTime()}.xlsx`)
+      }, `批次号管理_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
+    },
+    /** 查询部门下拉树结构 */
+    getDeptTree() {
+      deptTreeSelect().then(response => {
+        this.deptOptions = response.data;
+      });
     }
   }
 };

@@ -28,71 +28,86 @@ public class MasterdataPchInfo extends BaseEntity
     @Excel(name = "批次号名称")
     private String pchmc;
 
+    /** 所属部门编号 */
+    private String belongDept;
+
+    /** 所属部门名称 */
+    @Excel(name = "所属部门")
+    private String belongDeptName;
+
     /** 批次号所属年份 */
     @Excel(name = "批次号所属年份")
     private String ssnf;
 
     /** 批次号状态 */
-    @Excel(name = "批次号状态")
+    @Excel(name = "批次号状态", dictType = "masterdata_pch_status")
     private String pchzt;
 
     /** 版本号 */
-    @Excel(name = "版本号")
     private Long bizVersion;
 
-    public void setId(String id) 
-    {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getId() 
-    {
-        return id;
+    public String getPch() {
+        return pch;
     }
-    public void setPch(String pch) 
-    {
+
+    public void setPch(String pch) {
         this.pch = pch;
     }
 
-    public String getPch() 
-    {
-        return pch;
+    public String getPchmc() {
+        return pchmc;
     }
-    public void setPchmc(String pchmc) 
-    {
+
+    public void setPchmc(String pchmc) {
         this.pchmc = pchmc;
     }
 
-    public String getPchmc() 
-    {
-        return pchmc;
+    public String getBelongDept() {
+        return belongDept;
     }
-    public void setSsnf(String ssnf)
-    {
+
+    public void setBelongDept(String belongDept) {
+        this.belongDept = belongDept;
+    }
+
+    public String getBelongDeptName() {
+        return belongDeptName;
+    }
+
+    public void setBelongDeptName(String belongDeptName) {
+        this.belongDeptName = belongDeptName;
+    }
+
+    public String getSsnf() {
+        return ssnf;
+    }
+
+    public void setSsnf(String ssnf) {
         this.ssnf = ssnf;
     }
 
-    public String getSsnf()
-    {
-        return ssnf;
+    public String getPchzt() {
+        return pchzt;
     }
-    public void setPchzt(String pchzt) 
-    {
+
+    public void setPchzt(String pchzt) {
         this.pchzt = pchzt;
     }
 
-    public String getPchzt() 
-    {
-        return pchzt;
-    }
-    public void setBizVersion(Long bizVersion) 
-    {
-        this.bizVersion = bizVersion;
+    public Long getBizVersion() {
+        return bizVersion;
     }
 
-    public Long getBizVersion() 
-    {
-        return bizVersion;
+    public void setBizVersion(Long bizVersion) {
+        this.bizVersion = bizVersion;
     }
 
     @Override

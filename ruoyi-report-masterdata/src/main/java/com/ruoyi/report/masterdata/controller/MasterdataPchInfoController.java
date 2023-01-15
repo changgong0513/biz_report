@@ -3,9 +3,12 @@ package com.ruoyi.report.masterdata.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.report.masterdata.domain.MasterdataPchInfo;
 import com.ruoyi.report.masterdata.service.IMasterdataPchInfoService;
+import com.ruoyi.system.service.ISysDeptService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +38,9 @@ public class MasterdataPchInfoController extends BaseController
     @Autowired
     private IMasterdataPchInfoService masterdataPchInfoService;
 
+    @Autowired
+    private ISysDeptService sysDeptService;
+
     /**
      * 查询批次号管理列表
      */
@@ -53,9 +59,16 @@ public class MasterdataPchInfoController extends BaseController
     // @PreAuthorize("@ss.hasPermi('masterdata:pch:export')")
     @Log(title = "批次号管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, MasterdataPchInfo masterdataPchInfo)
-    {
+    public void export(HttpServletResponse response, MasterdataPchInfo masterdataPchInfo) {
+
         List<MasterdataPchInfo> list = masterdataPchInfoService.selectMasterdataPchInfoList(masterdataPchInfo);
+        list.stream().forEach(elment -> {
+            String belongDeptId = elment.getBelongDept();
+            if (StringUtils.isNotBlank(belongDeptId)) {
+                SysDept dept = sysDeptService.selectDeptById(Long.parseLong(belongDeptId));
+                elment.setBelongDeptName(dept.getDeptName());
+            }
+        });
         ExcelUtil<MasterdataPchInfo> util = new ExcelUtil<MasterdataPchInfo>(MasterdataPchInfo.class);
         util.exportExcel(response, list, "批次号管理数据");
     }
@@ -76,9 +89,19 @@ public class MasterdataPchInfoController extends BaseController
     // @PreAuthorize("@ss.hasPermi('masterdata:pch:add')")
     @Log(title = "批次号管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody MasterdataPchInfo masterdataPchInfo)
-    {
-        return toAjax(masterdataPchInfoService.insertMasterdataPchInfo(masterdataPchInfo));
+    public AjaxResult add(@RequestBody MasterdataPchInfo masterdataPchInfo) {
+
+        AjaxResult result = AjaxResult.success();
+        MasterdataPchInfo params = new MasterdataPchInfo();
+        params.setPch(masterdataPchInfo.getPch());
+        params.setBelongDept(masterdataPchInfo.getBelongDept());
+        int cnt = masterdataPchInfoService.selectPchCounts(params);
+        if (cnt == 0) {
+            result = toAjax(masterdataPchInfoService.insertMasterdataPchInfo(masterdataPchInfo));
+        } else {
+            result = AjaxResult.error("新增批次号已存在，请重新输入新的批次号!");
+        }
+        return result;
     }
 
     /**

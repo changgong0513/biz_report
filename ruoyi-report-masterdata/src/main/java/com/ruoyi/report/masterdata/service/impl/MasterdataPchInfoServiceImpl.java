@@ -45,6 +45,16 @@ public class MasterdataPchInfoServiceImpl implements IMasterdataPchInfoService
     }
 
     /**
+     * 判断新增批次号存在性方法
+     *
+     * @param masterdataPchInfo 批次号管理
+     * @return 批次号管理集合
+     */
+    public int selectPchCounts(MasterdataPchInfo masterdataPchInfo) {
+        return masterdataPchInfoMapper.selectPchCounts(masterdataPchInfo);
+    }
+
+    /**
      * 新增批次号管理
      * 
      * @param masterdataPchInfo 批次号管理
