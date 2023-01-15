@@ -22,9 +22,12 @@ public class ZjzyHkInfo extends BaseEntity
     /** 客户编号 */
     private String hkKhbh;
 
+    /** 客户编号（回款单位） */
+    private String hkKhmc;
+
     /** 客户名称（回款单位） */
     @Excel(name = "回款单位")
-    private String hkKhmc;
+    private String hkRealKhmc;
 
     /** 回款账号 */
     @Excel(name = "回款账号")
@@ -49,53 +52,59 @@ public class ZjzyHkInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setHkId(String hkId) 
-    {
+    public String getHkId() {
+        return hkId;
+    }
+
+    public void setHkId(String hkId) {
         this.hkId = hkId;
     }
 
-    public String getHkId() 
-    {
-        return hkId;
+    public String getHkKhbh() {
+        return hkKhbh;
     }
-    public void setHkKhbh(String hkKhbh) 
-    {
+
+    public void setHkKhbh(String hkKhbh) {
         this.hkKhbh = hkKhbh;
     }
 
-    public String getHkKhbh() 
-    {
-        return hkKhbh;
+    public String getHkKhmc() {
+        return hkKhmc;
     }
-    public void setHkKhmc(String hkKhmc) 
-    {
+
+    public void setHkKhmc(String hkKhmc) {
         this.hkKhmc = hkKhmc;
     }
 
-    public String getHkKhmc() 
-    {
-        return hkKhmc;
+    public String getHkRealKhmc() {
+        return hkRealKhmc;
     }
-    public void setHkHkzh(String hkHkzh) 
-    {
+
+    public void setHkRealKhmc(String hkRealKhmc) {
+        this.hkRealKhmc = hkRealKhmc;
+    }
+
+    public String getHkHkzh() {
+        return hkHkzh;
+    }
+
+    public void setHkHkzh(String hkHkzh) {
         this.hkHkzh = hkHkzh;
     }
 
-    public String getHkHkzh() 
-    {
-        return hkHkzh;
+    public BigDecimal getHkHkje() {
+        return hkHkje;
     }
-    public void setHkHkje(BigDecimal hkHkje) 
-    {
+
+    public void setHkHkje(BigDecimal hkHkje) {
         this.hkHkje = hkHkje;
     }
 
-    public BigDecimal getHkHkje() 
-    {
-        return hkHkje;
+    public String getHkHkzt() {
+        return hkHkzt;
     }
-    public void setHkHkzt(String hkHkzt) 
-    {
+
+    public void setHkHkzt(String hkHkzt) {
         this.hkHkzt = hkHkzt;
     }
 
@@ -105,11 +114,6 @@ public class ZjzyHkInfo extends BaseEntity
 
     public void setHkrlJe(BigDecimal hkrlJe) {
         this.hkrlJe = hkrlJe;
-    }
-
-    public String getHkHkzt()
-    {
-        return hkHkzt;
     }
 
     public String getHkYearMonth() {
@@ -128,14 +132,12 @@ public class ZjzyHkInfo extends BaseEntity
         this.hkTotalJe = hkTotalJe;
     }
 
-    public void setBizVersion(Long bizVersion)
-    {
-        this.bizVersion = bizVersion;
+    public Long getBizVersion() {
+        return bizVersion;
     }
 
-    public Long getBizVersion() 
-    {
-        return bizVersion;
+    public void setBizVersion(Long bizVersion) {
+        this.bizVersion = bizVersion;
     }
 
     @Override

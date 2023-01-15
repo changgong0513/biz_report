@@ -3,8 +3,13 @@ package com.ruoyi.web.controller.zjzy;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
+import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import com.ruoyi.zjzy.domain.ZjzyHkInfo;
 import com.ruoyi.zjzy.service.IZjzyHkInfoService;
 import org.apache.xmlbeans.impl.jam.JElement;
@@ -39,6 +44,9 @@ public class ZjzyHkInfoController extends BaseController
     @Autowired
     private IZjzyHkInfoService zjzyHkInfoService;
 
+    @Autowired
+    private IMasterDataClientInfoService masterDataClientInfoService;
+
     /**
      * 查询回款列表
      */
@@ -47,8 +55,10 @@ public class ZjzyHkInfoController extends BaseController
     public TableDataInfo list(ZjzyHkInfo zjzyHkInfo)
     {
         startPage();
+
         List<ZjzyHkInfo> list = zjzyHkInfoService.selectZjzyHkInfoList(zjzyHkInfo);
         list.stream().forEach(hkData -> {
+
             if (hkData.getHkHkje() != null && hkData.getHkrlJe() != null) {
                 BigDecimal hkje = hkData.getHkHkje();
                 BigDecimal hkrlje = hkData.getHkrlJe();

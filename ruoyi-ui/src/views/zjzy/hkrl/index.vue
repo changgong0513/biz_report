@@ -111,6 +111,7 @@
       <el-table-column label="客户名称" align="center" prop="hkKhmc" />
       <el-table-column label="回款账号" align="center" prop="hkHkzh" />
       <el-table-column label="回款金额" align="center" prop="hkHkje" />
+      <el-table-column label="认领金额" align="center" prop="hkrlJe" />
       <el-table-column label="回款状态" align="center" prop="hkHkzt">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.zjzy_hkrl_status" :value="scope.row.hkHkzt"/>
@@ -393,7 +394,7 @@ export default {
         // 设置上传的请求头部
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/zjzy/hkrl/importData"
+        url: process.env.VUE_APP_BASE_API + "/zjzy/hk/importData"
       },
       // 部门树选项
       deptOptions: undefined,
@@ -642,7 +643,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('/zjzy/hkrl/importTemplate', {}, `回款导入模板_${new Date().getTime()}.xlsx`)
+      this.download('/zjzy/hk/importTemplate', {}, `回款导入模板_${new Date().getTime()}.xlsx`)
     },
     /** 文件上传中处理 */
     handleFileUploadProgress(event, file, fileList) {
