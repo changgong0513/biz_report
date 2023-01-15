@@ -572,7 +572,6 @@
                   type="text"
                   icon="el-icon-edit"
                   @click="viewReceipt(scope.row)"
-                  v-hasPermi="['kcdb:kcdb:edit']"
                 >查看</el-button>
               </template>
             </el-table-column>
@@ -589,6 +588,145 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelDetail">关 闭</el-button>
+      </div>
+    </el-dialog>
+
+    <!--查看收货详细对话框 -->
+    <el-dialog :title="title" :visible.sync="openReceiptDetail" width="50%" append-to-body :close-on-click-modal="false">
+      <el-form ref="formReceiptDetail" :model="formReceiptDetail" label-width="100px">
+        <el-row>
+          <!-- 收货编号 -->
+          <el-col :span="8">
+            <el-form-item label="收货编号" prop="receiptId">{{formReceiptDetail.receiptId}}</el-form-item>
+          </el-col>
+          <!-- 采购订单编号 -->
+          <el-col :span="8">
+            <el-form-item label="采购订单编号" prop="purchaseOrderId">{{formReceiptDetail.purchaseOrderId}}</el-form-item>
+          </el-col>
+          <!-- 采购合同编号 -->
+          <el-col :span="8">
+            <el-form-item label="采购合同编号" prop="purchaseContractId">{{formReceiptDetail.purchaseContractId}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 经办人 -->
+          <el-col :span="8">
+            <el-form-item label="经办人" prop="handledBy">{{formReceiptDetail.handledBy}}</el-form-item>
+          </el-col>
+          <!-- 收货日期 -->
+          <el-col :span="8">
+            <el-form-item label="收货日期" prop="receiptDate">{{formReceiptDetail.receiptDate}}</el-form-item>
+          </el-col>
+          <!-- 供应商名称 -->
+          <el-col :span="8">
+            <el-form-item label="供应商名称" prop="supplierName">{{formReceiptDetail.supplierName}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 物料名称 -->
+          <el-col :span="8">
+            <el-form-item label="物料名称" prop="materialName">{{formReceiptDetail.materialName}}</el-form-item>
+          </el-col>
+          <!-- 仓库编号 -->
+          <el-col :span="8">
+            <el-form-item label="仓库编号" prop="warehouseCode">{{formReceiptDetail.warehouseCode}}</el-form-item>
+          </el-col>
+          <!-- 仓库名称 -->
+          <el-col :span="8">
+            <el-form-item label="仓库名称" prop="warehouseName">{{formReceiptDetail.warehouseName}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 批次号 -->
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="batchNo">{{formReceiptDetail.batchNo}}</el-form-item>
+          </el-col>
+          <!-- 车船编号 -->
+          <el-col :span="8">
+            <el-form-item label="车船编号" prop="ccbh">{{formReceiptDetail.ccbh}}</el-form-item>
+          </el-col>
+          <!-- 运输方式 -->
+          <el-col :span="8">
+            <el-form-item label="运输方式" prop="transportMode">
+              <template>
+                <dict-tag :options="dict.type.purchasesale_transport_mode" :value="formReceiptDetail.transportMode"/>
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 运输单号 -->
+          <el-col :span="8">
+            <el-form-item label="运输单号" prop="transportNumber">{{formReceiptDetail.transportNumber}}</el-form-item>
+          </el-col>
+          <!-- 卸货数量 -->
+          <el-col :span="8">
+            <el-form-item label="卸货数量" prop="expectReceiptQuantity">{{formReceiptDetail.expectReceiptQuantity}}</el-form-item>
+          </el-col>
+          <!-- 核算数量 -->
+          <el-col :span="8">
+            <el-form-item label="核算数量" prop="checkQuantity">{{formReceiptDetail.checkQuantity}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 核算单价 -->
+          <el-col :span="8">
+            <el-form-item label="核算单价" prop="checkPrice">{{formReceiptDetail.checkPrice}}</el-form-item>
+          </el-col>
+          <!-- 核算金额 -->
+          <el-col :span="8">
+            <el-form-item label="核算金额" prop="checkMoney">{{formReceiptDetail.checkMoney}}</el-form-item>
+          </el-col>
+          <!-- 合同单价 -->
+          <el-col :span="8">
+            <el-form-item label="合同单价" prop="checkMoney">{{formReceiptDetail.htdj}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 货损数量 -->
+          <el-col :span="8">
+            <el-form-item label="货损数量" prop="cargoDamageQuantity">{{formReceiptDetail.cargoDamageQuantity}}</el-form-item>
+          </el-col>
+          <!-- 货损金额 -->
+          <el-col :span="8">
+            <el-form-item label="货损金额" prop="cargoDamageMoney">{{formReceiptDetail.cargoDamageMoney}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 备注 -->
+          <el-col :span="24">
+            <el-form-item label="备注" prop="receiptRemark">{{formReceiptDetail.receiptRemark}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <h3>折干计算</h3>
+        <el-row>
+          <!-- 水分值 -->
+          <el-col :span="8">
+            <el-form-item label="水分值" prop="dryCalWaterValue">{{formReceiptDetail.dryCalWaterValue}}</el-form-item>
+          </el-col>
+          <!-- 烘干率 -->
+          <el-col :span="8">
+            <el-form-item label="烘干率" prop="dryCalDryingRate">{{formReceiptDetail.dryCalDryingRate}}</el-form-item>
+          </el-col>
+          <!-- 比例范围 -->
+          <el-col :span="8">
+            <el-form-item label="比例范围" prop="dryCalScaleRange">{{formReceiptDetail.dryCalScaleRange}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- 结算重量 -->
+          <el-col :span="8">
+            <el-form-item label="结算重量" prop="dryCalSettlementWeight">{{formReceiptDetail.dryCalSettlementWeight}}</el-form-item>
+          </el-col>
+          <!-- 计算结果 -->
+          <el-col :span="16">
+            <el-form-item label="计算结果" prop="dryCalResult">{{formReceiptDetail.dryCalResult}}</el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelReceiptDetail">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -740,6 +878,8 @@ export default {
       isUpdate: false,
       formDetail: {},
       openDetail: false,
+      formReceiptDetail: {},
+      openReceiptDetail: false,
       fileList: [],
       selRow: {},
       receiptList: [],
@@ -1055,10 +1195,17 @@ export default {
       }
       return strs != '' ? strs.substr(0, strs.length - 1) : '';
     },
-    // 库区维护
+     // 取消查看收货详细
+     cancelReceiptDetail() {
+      this.openReceiptDetail = false;
+      this.formReceiptDetail =  {};
+    },
+    // 查看收货详细
     viewReceipt(row) {
       // console.log("选择的仓库数据: " + JSON.stringify(row));
-      this.$router.push({ path: "/cgmgr/shmgr", query: { selRow: row } });
+      // this.$router.push({ path: "/cgmgr/shmgr", query: { selRow: row } });
+      this.formReceiptDetail = row;
+      this.openReceiptDetail = true;
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
