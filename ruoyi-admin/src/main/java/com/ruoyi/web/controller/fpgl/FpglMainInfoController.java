@@ -126,8 +126,24 @@ public class FpglMainInfoController extends BaseController
         fpglMainInfo.setFpglDdbh(orderId);
 
         startPage();
+
+        // 取得物料名称 -> 物料编号的Map
+        // 取得主数据管理中所有物料列表
+        List<MasterDataMaterialInfo> masterDataMaterialInfoList =  masterDataMaterialInfoService
+                .selectMasterDataMaterialInfoList(new MasterDataMaterialInfo());
+        Map<Integer, String> maps = masterDataMaterialInfoList.stream()
+                .collect(Collectors.toMap(MasterDataMaterialInfo::getMaterialId, MasterDataMaterialInfo::getMaterialName));
         List<FpglMainInfo> list = fpglMainInfoService.selectFpglMainInfoList(fpglMainInfo);
-        List<FpglMainInfo> filterlist = list.stream().filter(element -> element.getFpglKprq() != null).collect(Collectors.toList());
+        list.stream().forEach(element -> {
+            try {
+                element.setFpglRealKpmx(maps.get(Integer.parseInt(element.getFpglKpmx())));
+            } catch(Exception e) {
+                element.setFpglRealKpmx(StringUtils.EMPTY);
+            }
+        });
+
+        List<FpglMainInfo> filterlist = list.stream()
+                .filter(element -> element.getFpglKprq() != null).collect(Collectors.toList());
         return getDataTable(filterlist);
     }
 

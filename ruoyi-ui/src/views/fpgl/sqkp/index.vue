@@ -129,7 +129,7 @@
             <el-form-item label="订单编号" prop="orderId">{{form.orderId}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="客户名称" prop="supplierName">{{form.supplierName}}</el-form-item>
+            <el-form-item label="客户名称" prop="supplierName">{{form.realSupplierName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="客户税号" prop="taxNumber">{{form.taxNumber}}</el-form-item>
@@ -156,7 +156,7 @@
         <el-row>
           <el-table v-loading="loading" :data="fpDetailList" @selection-change="handleSelectionChange">
             <el-table-column label="开票日期" align="center" prop="fpglKprq" />
-            <el-table-column label="开票明细" align="center" prop="fpglKpmx" width="180" />
+            <el-table-column label="开票明细" align="center" prop="fpglRealKpmx" width="180" />
             <el-table-column label="开票数量" align="center" prop="fpglKpsl" />
             <el-table-column label="单价" align="center" prop="fpglKpdj" />
             <el-table-column label="开票金额" align="center" prop="fpglKpje" />
@@ -363,6 +363,7 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+      this.getList();
     },
     // 表单重置
     reset() {

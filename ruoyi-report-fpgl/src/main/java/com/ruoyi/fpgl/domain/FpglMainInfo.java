@@ -30,6 +30,10 @@ public class FpglMainInfo extends BaseEntity
     @Excel(name = "开票明细")
     private String fpglKpmx;
 
+    /** 开票明细名称 */
+    @Excel(name = "开票明细")
+    private String fpglRealKpmx;
+
     /** 开票数量 */
     @Excel(name = "开票数量")
     private Long fpglKpsl;
@@ -87,7 +91,7 @@ public class FpglMainInfo extends BaseEntity
 
     /** 发票所属部门 */
     private String fpglBelongDept;
-
+    
     public String getFpglId() {
         return fpglId;
     }
@@ -110,6 +114,14 @@ public class FpglMainInfo extends BaseEntity
 
     public void setFpglKpmx(String fpglKpmx) {
         this.fpglKpmx = fpglKpmx;
+    }
+
+    public String getFpglRealKpmx() {
+        return fpglRealKpmx;
+    }
+
+    public void setFpglRealKpmx(String fpglRealKpmx) {
+        this.fpglRealKpmx = fpglRealKpmx;
     }
 
     public Long getFpglKpsl() {
