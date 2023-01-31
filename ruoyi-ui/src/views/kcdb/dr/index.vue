@@ -312,78 +312,151 @@
       </div>
     </el-dialog>
 
-    <!-- 查看存库调出详细对话框 -->
+    <!-- 查看存库调入详细对话框 -->
     <el-dialog :title="title" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="调拨单号" prop="dh">{{formDetail.dh}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="所属部门" prop="fhbm">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_belong_dept" :value="formDetail.fhbm"/>
-              </template>
+            <el-form-item label="调拨单号" prop="dh">
+              <el-input v-model="formDetail.dh" placeholder="请输入调拨单号" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="调拨类型" prop="lx">
-              <template>
-                <dict-tag :options="dict.type.kcdb_db_type" :value="formDetail.lx"/>
-              </template>
+              <el-select
+                v-model="formDetail.lx"
+                placeholder="请输入调拨类型"
+                clearable
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.kcdb_db_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input v-model="formDetail.materialName" placeholder="请输入物料名称" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="仓库名称" prop="fhckmc">{{formDetail.fhckmc}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">{{formDetail.materialName}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="运输方式" prop="ysfs">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_transport_mode" :value="formDetail.ysfs"/>
-              </template>
+            <el-form-item label="调拨数量" prop="dbsl">
+              <el-input v-model="formDetail.dbsl" placeholder="请输入调拨数量" :disabled="true" style="width: 200px" />
             </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="结算单价" prop="jsdj">
+              <el-input v-model="formDetail.jsdj" placeholder="请输入结算单价" :disabled="true" style="width: 200px" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金额" prop="dbje" style="width: 200px">{{formDetail.dbje}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="结算方式" prop="jsfs">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_settlement_method" :value="formDetail.jsfs"/>
-              </template>
+              <el-select
+                v-model="formDetail.jsfs"
+                placeholder="结算方式"
+                clearable
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_settlement_method"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="调拨数量" prop="dbsl">{{formDetail.dbsl}}</el-form-item>
+            <el-form-item label="运输方式" prop="ysfs">
+              <el-select
+                v-model="formDetail.ysfs"
+                placeholder="请输入运输方式"
+                clearable
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_transport_mode"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="结算单价" prop="jsdj">{{formDetail.jsdj}}</el-form-item>
+            <el-form-item label="调拨日期" prop="dbrq">
+              <el-date-picker clearable
+                v-model="formDetail.dbrq"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择调拨日期" :disabled="true" style="width: 200px">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="金额" prop="jsdj">{{formDetail.dbje}}</el-form-item>
+            <el-form-item label="收货部门" prop="shbm">
+              <treeselect v-model="formDetail.shbm" 
+                :options="deptOptions" :show-count="true" 
+                placeholder="请选择所属部门" :disabled="true" style="width: 200px;" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="批次号" prop="pch" v-if="formDetail.lx == '1'">{{formDetail.pch}}</el-form-item>
-            <el-form-item label="卸货数量" prop="xhsl" v-else>{{formDetail.xhsl}}</el-form-item>
+            <el-form-item label="收货仓库" prop="shck">
+              <el-select
+                v-model="formDetail.shck"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入仓库名称关键字"
+                :disabled="true"
+                style="width: 200px"
+                :remote-method="remoteWarehouseName"
+                :loading="remoteLoadingWarehouseName">
+                <el-option
+                  v-for="item in optionsWarehouseName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="调拨日期" prop="dbrq">{{formDetail.dbrq}}</el-form-item>
+            <el-form-item label="卸货数量" prop="xhsl">
+              <el-input v-model="formDetail.xhsl" placeholder="请输入卸货数量" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="内勤人员" prop="dbrq">{{formDetail.nqry}}</el-form-item>
+            <el-form-item label="内勤人员" prop="nqry">
+              <el-input v-model="formDetail.nqry" placeholder="请输入内勤人员" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="16">
-            <el-form-item label="备注" prop="bz">{{formDetail.bz}}</el-form-item>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="bz">
+              <el-input v-model="formDetail.bz" placeholder="请输入备注" :disabled="true" style="width: 760px" 
+                maxlength="256" show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
