@@ -100,6 +100,21 @@
           <dict-tag :options="dict.type.fpgl_fp_status" :value="scope.row.fpglFpzt"/>
         </template>
       </el-table-column>
+      <el-table-column label="上传附件" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-upload
+            ref="uploadRef"
+            action=""
+            accept=".xlsx, .xls, .docx, .doc, .pdf"
+            :auto-upload="false"
+            :on-change="(file, fileList) => { handleChange(file, fileList, scope.row.orderId) }"
+            :show-file-list="false"
+            :before-upload="beforeUpload"
+          >
+            <el-button type="text" size="mini">上传</el-button>
+          </el-upload>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -149,6 +164,28 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="申请人" prop="fpglSqr">{{form.fpglSqr}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="3">
+            <el-form-item label="附件" style="padding-top: 8px;"></el-form-item>
+          </el-col>
+          <el-col :span="21">
+            <!-- 文件上传 start -->
+            <div class="upload-file" style="height: 30px;">
+              <!-- 文件列表 -->
+              <transition-group class="upload-file-list el-upload-list el-upload-list--text" 
+                name="el-fade-in-linear" tag="ul" style="width: 600px;">
+                <li :key="file.url" 
+                  class="el-upload-list__item ele-upload-list__item-content" 
+                  v-for="(file) in contractAdditionalList">
+                  <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
+                    <span class="el-icon-document" style="font-size: 12px;"> {{ getFileName(file.name) }} </span>
+                  </el-link>
+                </li>
+              </transition-group>
+            </div>
+            <!-- 文件上传 end -->
           </el-col>
         </el-row>
         <el-divider></el-divider>
@@ -252,7 +289,7 @@
 </template>
 
 <script>
-import { listMain, listFpmx, addMain, updateMain } from "@/api/fpgl/fpgl";
+import { listMain, listFpmx, addMain, updateMain, uploadFile, getContractAdditional } from "@/api/fpgl/fpgl";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -333,7 +370,10 @@ export default {
       defaultProps: {
         children: "children",
         label: "label"
-      }
+      },
+      // 上传附件列表
+      contractAdditionalList: [],
+      baseUrl: process.env.VUE_APP_BASE_API
     };
   },
   created() {
@@ -400,6 +440,7 @@ export default {
       this.reset();
       this.sqkpOrderId = row.orderId;
       this.sqkpFpglId = row.fpglId;
+      this.contractAdditionalList = [];
       listFpmx(row.orderId).then(response => {
         this.open = true;
         this.title = "开票";
@@ -414,6 +455,13 @@ export default {
         this.isUpdate = true;
         this.fpDetailList = response.rows;
         this.kpmxTotal = response.total;
+
+        getContractAdditional(row.orderId).then(response => {
+            response.rows.forEach(element => {
+            this.contractAdditionalList.push({ name: element.uplloadFilePath, 
+            url: element.uplloadFilePath });
+          });
+        });
       });
     },
     /** 修改按钮操作 */
@@ -474,6 +522,43 @@ export default {
       deptTreeSelect().then(response => {
         this.deptOptions = response.data;
       });
+    },
+    /** 文件上传 */
+    handleChange(file, fileList, uploadOrderId) {
+      console.log("申请开票上传附件的订单编号：" + uploadOrderId);
+      if(file != null){
+        let formData = new FormData();
+        formData.append('file', file.raw)
+        formData.append('uploadContractId', uploadOrderId)
+        uploadFile(formData).then(response => {
+          console.log(response)
+          this.$modal.msgSuccess("上传成功！");
+          getContractAdditional(uploadContractId).then(response => {
+              response.rows.forEach(element => {
+              this.contractAdditionalList.push({ name: element.uplloadFilePath, 
+              url: element.uplloadFilePath });
+            });
+          });
+        });
+      }
+    },
+    // 上传预处理
+    beforeUpload(file) {
+      if (file.type.indexOf(".xlsx") == -1 || file.type.indexOf(".xls") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
+      } else if (file.type.indexOf(".docx") == -1 || file.type.indexOf(".doc") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
+      } else if (file.type.indexOf(".pdf") == -1 || file.type.indexOf(".PDF") == -1) {
+        this.$modal.msgError("文件格式错误，请上传正确的类型,如：.xlsx，.xls, .docx，.doc, .pdf后缀的文件。");
+      }
+    },
+    // 获取文件名称
+    getFileName(name) {
+      if (name.lastIndexOf("/") > -1) {
+        return name.slice(name.lastIndexOf("/") + 1);
+      } else {
+        return "";
+      }
     }
   },
   computed: {
@@ -494,3 +579,24 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.upload-file-uploader {
+  margin-bottom: 5px;
+}
+.upload-file-list .el-upload-list__item {
+  border: 1px solid #e4e7ed;
+  line-height: 2;
+  margin-bottom: 10px;
+  position: relative;
+}
+.upload-file-list .ele-upload-list__item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: inherit;
+}
+.ele-upload-list__item-content-action .el-link {
+  margin-right: 10px;
+}
+</style>

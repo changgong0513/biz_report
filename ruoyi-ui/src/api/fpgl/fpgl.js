@@ -60,3 +60,21 @@ export function listSqkp(query) {
     params: query
   })
 }
+
+// 申请开票上传附件
+export function uploadFile(data) {
+  return request({
+    url: '/fpgl/mgr/sqkp/upload',
+    method: 'post',
+    data: data
+  })
+}
+
+// 查询合同附件
+export function getContractAdditional(contractId) {
+  // console.log("查询合同附件");
+  return request({
+    url: '/fpgl/mgr/sqkp/additional/' + contractId,
+    method: 'get'
+  })
+}
