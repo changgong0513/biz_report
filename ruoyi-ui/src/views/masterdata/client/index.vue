@@ -360,7 +360,7 @@
     <!-- 客户数据详细 -->
     <el-dialog title="客户数据详细" 
       :visible.sync="openDetail" 
-      width="50%" 
+      width="75%" 
       append-to-body 
       v-show="showDetail" 
       :close-on-click-modal="false">
@@ -368,67 +368,181 @@
         <h3>基本信息</h3>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="公司名称">{{formDetail.companyName}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="注册城市">
-              <template>
-                <dict-tag :options="dict.type.masterdata_register_city" :value="formDetail.registerCity"/>
-              </template>
+            <el-form-item label="公司名称">
+              <el-input 
+                v-model="formDetail.companyName" 
+                placeholder="请输入公司名称"
+                :disabled="true"
+                style="width: 200px"
+                maxlength="50"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="注册资金">{{formDetail.registeredCapital}}</el-form-item>
+            <el-form-item label="注册城市">
+              <el-select
+                v-model="formDetail.registerCity"
+                placeholder="注册城市"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_register_city"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="注册资金">
+              <el-input 
+                v-model="formDetail.registeredCapital" 
+                placeholder="请输入注册资金" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="企业法人">{{formDetail.legalPerson}}</el-form-item>
+            <el-form-item label="企业法人">
+              <el-input 
+                v-model="formDetail.legalPerson" 
+                placeholder="请输入企业法人"
+                :disabled="true"
+                style="width: 200px"
+                maxlength="50"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="传真号码">{{formDetail.faxNumber}}</el-form-item>
+            <el-form-item label="传真号码">
+              <el-input 
+                v-model="formDetail.faxNumber" 
+                placeholder="请输入传真号码xxx-xxxxxxxx" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="12"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="邮编">{{formDetail.zipCode}}</el-form-item>
+            <el-form-item label="邮编">
+              <el-input 
+                v-model="formDetail.zipCode" 
+                placeholder="请输入邮编" 
+                :disabled="true"
+                style="width: 200px" 
+                maxlength="6"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="公司地址">{{formDetail.companyAdress}}</el-form-item>
+            <el-form-item label="公司地址">
+              <el-input 
+                v-model="formDetail.companyAdress" 
+                placeholder="请输入公司地址"
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="公司网址">{{formDetail.companyWebsite}}</el-form-item>
+            <el-form-item label="公司网址">
+              <el-input 
+                v-model="formDetail.companyWebsite" 
+                placeholder="请输入公司网址"
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
         <h3>联系人信息</h3>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="姓名">{{formDetail.contactsName}}</el-form-item>
+            <el-form-item label="姓名">
+              <el-input 
+                v-model="formDetail.contactsName" 
+                placeholder="请输入姓名" 
+                :disabled="true"
+                style="width: 200px" 
+                maxlength="50"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="手机">{{formDetail.contactsMobile}}</el-form-item>
+            <el-form-item label="手机">
+              <el-input 
+                v-model="formDetail.contactsMobile" 
+                placeholder="请输入手机" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="电子邮箱">{{formDetail.contactsEmail}}</el-form-item>
+            <el-form-item label="电子邮箱">
+              <el-input 
+                v-model="formDetail.contactsEmail" 
+                placeholder="请输入电子邮箱" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="办公地点">{{formDetail.contactsOfficeLocation}}</el-form-item>
+            <el-form-item label="办公地点">
+              <el-input 
+                v-model="formDetail.contactsOfficeLocation" 
+                placeholder="请输入办公地点"
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
         <h3>收件人信息</h3>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="姓名">{{formDetail.sjrxm}}</el-form-item>
+            <el-form-item label="姓名">
+              <el-input 
+                v-model="formDetail.sjrxm" 
+                placeholder="请输入姓名" 
+                :disabled="true"
+                style="width: 200px" 
+                maxlength="50"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="电话">{{formDetail.sjrdh}}</el-form-item>
+            <el-form-item label="电话">
+              <el-input 
+                v-model="formDetail.sjrdh" 
+                placeholder="请输入电话" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="地址">{{formDetail.sjrdz}}</el-form-item>
+            <el-form-item label="地址">
+              <el-input 
+                v-model="formDetail.sjrdz" 
+                placeholder="请输入地址" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-divider />
@@ -436,30 +550,75 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="开户行">
-              <template>
-                <dict-tag :options="dict.type.masterdata_deposit_bank" :value="formDetail.depositBank"/>
-              </template>
+              <el-select
+                v-model="formDetail.depositBank"
+                placeholder="开户行"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_deposit_bank"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="账号">{{formDetail.accountNumber}}</el-form-item>
+            <el-form-item label="账号">
+              <el-input 
+                v-model="formDetail.accountNumber" 
+                placeholder="请输入账号" 
+                :disabled="true"
+                style="width: 200px" 
+                maxlength="32"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="税号">{{formDetail.taxNumber}}</el-form-item>
+            <el-form-item label="税号">
+              <el-input 
+                v-model="formDetail.taxNumber" 
+                placeholder="请输入税号" 
+                :disabled="true"
+                style="width: 200px" 
+                maxlength="32"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票类型">
-              <template>
-                <dict-tag :options="dict.type.masterdata_invoice_type" :value="formDetail.invoiceType"/>
-              </template>
+              <el-select
+                v-model="formDetail.invoiceType"
+                placeholder="发票类型"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_invoice_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="发票地址">{{formDetail.invoiceAddress}}</el-form-item>
+            <el-form-item label="发票地址">
+              <el-input 
+                v-model="formDetail.invoiceAddress" 
+                placeholder="请输入发票地址" 
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
