@@ -342,112 +342,193 @@
         <el-row>
           <!-- 订单编号 -->
           <el-col :span="8">
-            <el-form-item label="订单编号">{{formDetail.orderId}}</el-form-item>
-          </el-col>
-          <!-- 销售类型 -->
-          <el-col :span="8">
-            <el-form-item label="销售类型">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_purchase_type" :value="formDetail.purchaseType"/>
-              </template>
+            <el-form-item label="订单编号">
+              <el-input v-model="formDetail.orderId" placeholder="请输入订单编号" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 合同编号 -->
           <el-col :span="8">
-            <el-form-item label="合同编号" prop="contractId">{{formDetail.contractId}}</el-form-item>
+            <el-form-item label="合同编号" prop="contractId">
+              <el-input v-model="formDetail.contractId" placeholder="请输入合同编号" :disabled="true" style="width: 200px" />
+            </el-form-item>
+          </el-col>
+          <!-- 经办人 -->
+          <el-col :span="8">
+            <el-form-item label="经办人" prop="handledBy">
+              <el-input v-model="formDetail.handledBy" placeholder="请输入经办人" :disabled="true" style="width: 200px" maxlength="16"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 经办人 -->
-          <el-col :span="8">
-            <el-form-item label="经办人" prop="handledBy">{{formDetail.handledBy}}</el-form-item>
-          </el-col>
           <!-- 所属部门 -->
           <el-col :span="8">
-            <el-form-item label="所属部门">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_belong_dept" :value="formDetail.belongDept"/>
-              </template>
+            <el-form-item label="所属部门" prop="belongDept">
+              <treeselect v-model="formDetail.belongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门"
+                :disabled="true"
+                style="width: 200px;" />
             </el-form-item>
           </el-col>
           <!-- 业务日期 -->
           <el-col :span="8">
-            <el-form-item label="业务日期" prop="businessDate">{{formDetail.businessDate}}</el-form-item>
+            <el-form-item label="业务日期" prop="businessDate">
+              <el-date-picker clearable
+                v-model="formDetail.businessDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择业务日期"
+                :disabled="true"
+                style="width: 200px">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- 客户名称 -->
+          <el-col :span="8">
+            <el-form-item label="客户名称" prop="supplierName">
+              <el-input v-model="formDetail.supplierName" placeholder="请输入供应商名称" :disabled="true" style="width: 240px" maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 物料名称 -->
           <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">{{formDetail.materialName}}</el-form-item>
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input v-model="formDetail.materialName" placeholder="请输入物料名称" :disabled="true" style="width: 200px" maxlength="64"
+                show-word-limit />
+            </el-form-item>
           </el-col>
           <!-- 销售数量 -->
           <el-col :span="8">
-            <el-form-item label="销售数量" prop="purchaseQuantity">{{formDetail.purchaseQuantity}}</el-form-item>
+            <el-form-item label="销售数量" prop="purchaseQuantity">
+              <el-input v-model="formDetail.purchaseQuantity" placeholder="请输入销售数量" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
-          <!-- 供应商名称 -->
+          <!-- 单价 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">{{formDetail.supplierName}}</el-form-item>
+            <el-form-item label="单价" prop="unitPrice">
+              <el-input v-model="formDetail.unitPrice" placeholder="请输入单价" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 单价 -->
-          <el-col :span="8">
-            <el-form-item label="单价" prop="unitPrice">{{formDetail.unitPrice}}</el-form-item>
-          </el-col>
           <!-- 计量单位 -->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="meteringUnit">
-              <template>
-                <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="formDetail.meteringUnit"/>
-              </template>
+              <el-select
+                v-model="formDetail.meteringUnit"
+                placeholder="计量单位"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 预计到货期 -->
           <el-col :span="8">
-            <el-form-item label="预计到货期" prop="arrivalDate">{{formDetail.arrivalDate}}</el-form-item>
+            <el-form-item label="预计到货期" prop="arrivalDate">
+              <el-date-picker clearable
+                v-model="formDetail.arrivalDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择预计到货期"
+                :disabled="true"
+                style="width: 200px">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- 要求到货期 -->
+          <el-col :span="8">
+            <el-form-item label="要求到货期" prop="requiredDeliveryDate">
+              <el-date-picker clearable
+                v-model="formDetail.requiredDeliveryDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择要求到货期"
+                :disabled="true"
+                style="width: 200px">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 要求交货期 -->
-          <el-col :span="8">
-            <el-form-item label="要求交货期" prop="requiredDeliveryDate">{{formDetail.requiredDeliveryDate}}</el-form-item>
-          </el-col>
           <!-- 账期 -->
           <el-col :span="8">
-            <el-form-item label="账期" prop="accountPeriod">{{formDetail.accountPeriod}}</el-form-item>
+            <el-form-item label="账期" prop="accountPeriod">
+              <el-input v-model="formDetail.accountPeriod" placeholder="请输入账期" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 到账条件 -->
           <el-col :span="8">
             <el-form-item label="到账条件" prop="arrivalTerms">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_arrival_terms" :value="formDetail.arrivalTerms"/>
-              </template>
+              <el-select
+                v-model="formDetail.arrivalTerms"
+                placeholder="到账条件"
+                clearable
+                :disabled="true"
+                style="width: 100px"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_arrival_terms"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
               <!-- 到账条件值 -->
-              {{formDetail.arrivalTermsValue}}（天）
+              <el-input v-model="formDetail.arrivalTermsValue" placeholder="天数" :disabled="true" style="margin-left: 10px; width: 50px" />（天）
+            </el-form-item>
+          </el-col>
+          <!-- 结算方式 -->
+          <el-col :span="8">
+            <el-form-item label="结算方式" prop="settlementMethod">
+              <el-select
+                v-model="formDetail.settlementMethod"
+                placeholder="结算方式"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_settlement_method"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 结算方式 -->
-          <el-col :span="8">
-            <el-form-item label="结算方式" prop="settlementMethod">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_settlement_method" :value="formDetail.settlementMethod"/>
-              </template>
-            </el-form-item>
-          </el-col>
           <!-- 是否开票 -->
-          <el-col :span="16">
+          <el-col :span="24">
             <el-form-item label="是否开票" prop="isInvoicing">
-              <div v-if="formDetail.isInvoicing == '1'">开</div>
-              <div v-else>否</div>
+              <el-switch
+                :active-value="1"
+                :inactive-value="0"
+                v-model="formDetail.isInvoicing"
+                :disabled="true"
+              ></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 备注 -->
           <el-col :span="24">
-            <el-form-item label="备注" prop="orderRemark">{{formDetail.orderRemark}}</el-form-item>
+            <el-form-item label="备注" prop="orderRemark">
+              <el-input v-model="formDetail.orderRemark" type="textarea" :disabled="true" style="width: 90%" maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
