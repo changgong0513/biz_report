@@ -159,8 +159,6 @@
                 show-word-limit />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="区划" prop="warehouseRegion">
               <el-select
@@ -178,6 +176,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="仓库地址" prop="warehouseAddress">
               <el-input 
@@ -188,8 +188,6 @@
                 show-word-limit />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="管理部门" prop="managementDepartment">
               <el-select
@@ -217,13 +215,13 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="联系方式1" prop="contactMobile1">
               <el-input v-model="form.contactMobile1" placeholder="请输入手机号码" style="width: 280px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="联系方式2" prop="contactMobile2">
               <el-input v-model="form.contactMobile2" placeholder="请输入手机号码" style="width: 280px" />
@@ -247,13 +245,13 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="占地面积" prop="useArea">
               <el-input v-model="form.useArea" placeholder="请输入占地面积" style="width: 280px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="最大容量" prop="maximumCapacity">
               <el-input v-model="form.maximumCapacity" placeholder="请输入最大容量" style="width: 280px" />
@@ -276,7 +274,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8"></el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -293,82 +290,166 @@
     </el-dialog>
 
     <!-- 仓库数据详细 -->
-    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="仓库数据详细" :visible.sync="openDetail" width="80%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="仓库ID">{{formDetail.warehouseId}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="仓库编码">{{formDetail.warehouseCode}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="仓库名称">{{formDetail.warehouseName}}</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="成立日期">{{formDetail.buildDate}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="区划">
-              <template>
-                <dict-tag :options="dict.type.masterdata_warehouse_region" :value="formDetail.warehouseRegion"/>
-              </template>
+            <el-form-item label="仓库编码">
+              <el-input 
+                v-model="formDetail.warehouseCode" 
+                placeholder="请输入仓库编码" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="64"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="仓库地址">{{formDetail.warehouseAddress}}</el-form-item>
+            <el-form-item label="仓库名称">
+              <el-input 
+                v-model="formDetail.warehouseName" 
+                placeholder="请输入仓库名称" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="区划">
+              <el-select
+                v-model="formDetail.warehouseRegion"
+                placeholder="区划"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_region"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
+            <el-form-item label="仓库地址">
+              <el-input 
+                v-model="formDetail.warehouseAddress" 
+                placeholder="请输入仓库地址" 
+                :disabled="true"
+                style="width: 200px"
+                maxlength="256"
+                show-word-limit />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="管理部门">
-              <template>
-                <dict-tag :options="dict.type.masterdata_management_department" :value="formDetail.managementDepartment"/>
-              </template>
+              <el-select
+                v-model="formDetail.managementDepartment"
+                placeholder="管理部门"
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_management_department"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <!-- 管理人员 -->
-            <el-form-item label="管理人员">{{formDetail.warehouseManager}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="联系方式1">{{formDetail.contactMobile1}}</el-form-item>
+            <el-form-item label="管理人员">
+              <el-input
+                v-model="formDetail.warehouseManager"
+                placeholder="请输入管理人员"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="联系方式2">{{formDetail.contactMobile2}}</el-form-item>
+            <el-form-item label="联系方式1">
+              <el-input v-model="formDetail.contactMobile1" placeholder="请输入手机号码" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="联系方式2">
+              <el-input v-model="formDetail.contactMobile2" placeholder="请输入手机号码" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <!-- 仓库类别 -->
             <el-form-item label="仓库类别">
-              <template>
-                <dict-tag :options="dict.type.masterdata_warehouse_category" :value="formDetail.warehouseCategory"/>
-              </template>
+              <el-select
+                v-model="formDetail.warehouseCategory"
+                placeholder="仓库类别"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_category"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="占地面积">{{formDetail.useArea}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="最大容量">{{formDetail.maximumCapacity}}</el-form-item>
+            <el-form-item label="占地面积">
+              <el-input v-model="formDetail.useArea" placeholder="请输入占地面积"
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="最大容量">
+              <el-input v-model="formDetail.maximumCapacity" placeholder="请输入最大容量" 
+                :disabled="true"
+                style="width: 200px" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="计量单位">
-              <template>
-                <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="formDetail.measurementUnit"/>
-              </template>
+              <el-select
+                v-model="formDetail.measurementUnit"
+                placeholder="计量单位"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8"></el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="备注">{{formDetail.warehouseRemarks}}</el-form-item>
+            <el-form-item label="备注">
+              <el-input v-model="formDetail.warehouseRemarks" placeholder="请输入备注" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
