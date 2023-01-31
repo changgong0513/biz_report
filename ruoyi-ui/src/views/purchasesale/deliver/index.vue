@@ -501,143 +501,220 @@
         <el-row>
           <!-- 发货编号 -->
           <el-col :span="8">
-            <el-form-item label="发货编号">{{formDetail.deliverId}}</el-form-item>
+            <el-form-item label="发货编号">
+              <el-input v-model="formDetail.deliverId" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 销售订单编号 -->
           <el-col :span="8">
-            <el-form-item label="销售订单编号">{{formDetail.saleOrderId}}</el-form-item>
+            <el-form-item label="销售订单编号">
+              <el-input v-model="formDetail.saleOrderId" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 销售合同编号 -->
           <el-col :span="8">
-            <el-form-item label="销售合同编号">{{formDetail.saleContractId}}</el-form-item>
+            <el-form-item label="销售合同编号">
+              <el-input v-model="formDetail.saleContractId" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
-            <el-form-item label="经办人" prop="handledBy">{{formDetail.handledBy}}</el-form-item>
+            <el-form-item label="经办人" prop="handledBy">
+              <el-input v-model="formDetail.handledBy" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 发货日期 -->
           <el-col :span="8">
-            <el-form-item label="发货日期" prop="deliverDate">{{formDetail.deliverDate}}</el-form-item>
+            <el-form-item label="发货日期" prop="deliverDate">
+              <el-input v-model="formDetail.deliverDate" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 客户编号 -->
           <el-col :span="8">
-            <el-form-item label="客户编号" prop="clientId">{{formDetail.clientId}}</el-form-item>
+            <el-form-item label="客户编号" prop="clientId">
+              <el-input v-model="formDetail.clientId" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 客户姓名 -->
           <el-col :span="8">
-            <el-form-item label="客户姓名" prop="clientName">{{formDetail.clientName}}</el-form-item>
+            <el-form-item label="客户姓名" prop="clientName">
+              <el-input v-model="formDetail.clientName" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 物料编号 -->
           <el-col :span="8">
-            <el-form-item label="物料编号" prop="materialId">{{formDetail.materialId}}</el-form-item>
+            <el-form-item label="物料编号" prop="materialId">
+              <el-input v-model="formDetail.materialId" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 物料名称 -->
           <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">{{formDetail.materialName}}</el-form-item>
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input v-model="formDetail.materialName" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 合同单价 -->
           <el-col :span="8">
-            <el-form-item label="合同单价" prop="contractPrice">{{formDetail.contractPrice}}</el-form-item>
+            <el-form-item label="合同单价" prop="contractPrice">
+              <el-input v-model="formDetail.contractPrice" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 计量单位 -->
           <el-col :span="8">
-            <el-form-item label="计量单位" prop="measurementUnit">{{formDetail.measurementUnit}}</el-form-item>
+            <el-form-item label="计量单位" prop="measurementUnit">
+              <el-input v-model="formDetail.measurementUnit" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 发货方式 -->
           <el-col :span="8">
             <el-form-item label="发货方式" prop="deliverMode">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.purchasesale_deliver_mode" :value="formDetail.deliverMode"/>
-              </template>
+              </template> -->
+              <el-select
+                v-model="formDetail.deliverMode"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_deliver_mode"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 仓库编号 -->
           <el-col :span="8">
-            <el-form-item label="仓库编号" prop="warehouseCode">{{formDetail.warehouseCode}}</el-form-item>
+            <el-form-item label="仓库编号" prop="warehouseCode">
+              <el-input v-model="formDetail.warehouseCode" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 仓库名称 -->
           <el-col :span="8">
-            <el-form-item label="仓库名称" prop="warehouseName">{{formDetail.warehouseName}}</el-form-item>
+            <el-form-item label="仓库名称" prop="warehouseName">
+              <el-input v-model="formDetail.warehouseName" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 发货数量 -->
           <el-col :span="8">
-            <el-form-item label="发货数量" prop="deliverQuantity">{{formDetail.deliverQuantity}}</el-form-item>
+            <el-form-item label="发货数量" prop="deliverQuantity">
+              <el-input v-model="formDetail.deliverQuantity" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 核算数量 -->
           <el-col :span="8">
-            <el-form-item label="核算数量" prop="checkQuantity">{{formDetail.checkQuantity}}</el-form-item>
+            <el-form-item label="核算数量" prop="checkQuantity">
+              <el-input v-model="formDetail.checkQuantity" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 核算单价 -->
           <el-col :span="8">
-            <el-form-item label="核算单价" prop="checkPrice">{{formDetail.checkPrice}}</el-form-item>
+            <el-form-item label="核算单价" prop="checkPrice">
+              <el-input v-model="formDetail.checkPrice" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 核算金额 -->
           <el-col :span="8">
-            <el-form-item label="核算金额" prop="checkMoney">{{formDetail.checkMoney}}</el-form-item>
+            <el-form-item label="核算金额" prop="checkMoney">
+              <el-input v-model="formDetail.checkMoney" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
-            <el-form-item label="货损数量" prop="cargoDamageQuantity">{{formDetail.cargoDamageQuantity}}</el-form-item>
+            <el-form-item label="货损数量" prop="cargoDamageQuantity">
+              <el-input v-model="formDetail.cargoDamageQuantity" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 货损金额 -->
           <el-col :span="8">
-            <el-form-item label="货损金额" prop="cargoDamageMoney">{{formDetail.cargoDamageMoney}}</el-form-item>
+            <el-form-item label="货损金额" prop="cargoDamageMoney">
+              <el-input v-model="formDetail.cargoDamageMoney" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 运输方式 -->
           <el-col :span="8">
             <el-form-item label="运输方式" prop="transportMode">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.purchasesale_transport_mode" :value="formDetail.transportMode"/>
-              </template>
+              </template> -->
+              <el-select
+                v-model="formDetail.transportMode"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_transport_mode"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
-            <el-form-item label="运输单号" prop="transportNumber">{{formDetail.transportNumber}}</el-form-item>
+            <el-form-item label="运输单号" prop="transportNumber">
+              <el-input v-model="formDetail.transportNumber" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 运输金额 -->
           <el-col :span="8">
-            <el-form-item label="运输金额" prop="transportMoney">{{formDetail.transportMoney}}</el-form-item>
+            <el-form-item label="运输金额" prop="transportMoney">
+              <el-input v-model="formDetail.transportMoney" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 其他金额 -->
           <el-col :span="8">
-            <el-form-item label="其他金额" prop="otherMoney">{{formDetail.otherMoney}}</el-form-item>
+            <el-form-item label="其他金额" prop="otherMoney">
+              <el-input v-model="formDetail.otherMoney" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 预期到货日期 -->
           <el-col :span="8">
-            <el-form-item label="预期到货日期" prop="expectArrivalDate">{{formDetail.expectArrivalDate}}</el-form-item>
+            <el-form-item label="预期到货日期" prop="expectArrivalDate">
+              <el-input v-model="formDetail.expectArrivalDate" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 要求到货日期 -->
           <el-col :span="8">
-            <el-form-item label="要求到货日期" prop="requireArrivalDate">{{formDetail.requireArrivalDate}}</el-form-item>
+            <el-form-item label="要求到货日期" prop="requireArrivalDate">
+              <el-input v-model="formDetail.requireArrivalDate" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
           <!-- 账期（关联采购（销售）订单信息表的账期） -->
           <el-col :span="8">
             <el-form-item label="账期" prop="accountPeriod">
-              <div style="margin-left: 10px; width: 60px">{{formDetail.accountPeriod}}（天）</div>
+              <div style="margin-left: 10px; width: 60px">
+                <el-input v-model="formDetail.accountPeriod" :disabled="true" />（天）</div>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 备注 -->
           <el-col :span="24">
-            <el-form-item label="备注" prop="deliverRemark">{{formDetail.deliverRemark}}</el-form-item>
+            <el-form-item label="备注" prop="deliverRemark">
+              <el-input v-model="formDetail.deliverRemark" :disabled="true" style="width: 200px" />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
