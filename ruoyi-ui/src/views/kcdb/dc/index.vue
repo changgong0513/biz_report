@@ -323,73 +323,134 @@
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="调拨单号" prop="dh">{{formDetail.dh}}</el-form-item>
+            <el-form-item label="调拨单号" prop="dh">
+              <el-input v-model="formDetail.dh" :disabled="true" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="所属部门" prop="fhbm">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.purchasesale_belong_dept" :value="formDetail.fhbm"/>
-              </template>
+              </template> -->
+              <treeselect v-model="formDetail.fhbm" 
+                :options="deptOptions" :show-count="true" 
+                :disabled="true" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="调拨类型" prop="lx">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.kcdb_db_type" :value="formDetail.lx"/>
-              </template>
+              </template> -->
+              <el-select
+                v-model="form.lx"
+                clearable
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.kcdb_db_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="仓库名称" prop="fhckmc">{{formDetail.fhckmc}}</el-form-item>
+            <el-form-item label="仓库名称" prop="fhckmc">
+              <el-input v-model="formDetail.fhckmc" :disabled="true" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">{{formDetail.materialName}}</el-form-item>
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input v-model="formDetail.materialName" :disabled="true" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="运输方式" prop="ysfs">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.purchasesale_transport_mode" :value="formDetail.ysfs"/>
-              </template>
+              </template> -->
+              <el-select
+                v-model="formDetail.ysfs"
+                clearable
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_transport_mode"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="结算方式" prop="jsfs">
-              <template>
+              <!-- <template>
                 <dict-tag :options="dict.type.purchasesale_settlement_method" :value="formDetail.jsfs"/>
-              </template>
+              </template> -->
+              <el-select
+                v-model="formDetail.jsfs"
+                clearable
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_settlement_method"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="调拨数量" prop="dbsl">{{formDetail.dbsl}}</el-form-item>
+            <el-form-item label="调拨数量" prop="dbsl">
+              <el-input v-model="formDetail.dbsl" :disabled="true" />
+            </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="结算单价" prop="jsdj">{{formDetail.jsdj}}</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="金额" prop="jsdj">{{formDetail.dbje}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="批次号" prop="pch" v-if="formDetail.lx == '1'">{{formDetail.pch}}</el-form-item>
-            <el-form-item label="卸货数量" prop="xhsl" v-else>{{formDetail.xhsl}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="调拨日期" prop="dbrq">{{formDetail.dbrq}}</el-form-item>
+            <el-form-item label="结算单价" prop="jsdj">
+              <el-input v-model="formDetail.jsdj" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="内勤人员" prop="dbrq">{{formDetail.nqry}}</el-form-item>
+            <el-form-item label="金额" prop="dbje">
+              <el-input v-model="formDetail.dbje" :disabled="true" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="批次号" prop="pch" v-if="formDetail.lx == '1'">
+              <el-input v-model="formDetail.pch" :disabled="true" />
+            </el-form-item>
+            <el-form-item label="卸货数量" prop="xhsl" v-else>
+              <el-input v-model="formDetail.xhsl" :disabled="true" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="调拨日期" prop="dbrq">
+              <el-input v-model="formDetail.dbrq" :disabled="true" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="内勤人员" prop="nqry">
+              <el-input v-model="formDetail.nqry" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="16">
-            <el-form-item label="备注" prop="bz">{{formDetail.bz}}</el-form-item>
+            <el-form-item label="备注" prop="bz">
+              <el-input v-model="formDetail.bz" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
