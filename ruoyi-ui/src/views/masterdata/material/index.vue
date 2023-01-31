@@ -138,14 +138,28 @@
     <!-- 物料数据详细 -->
     <el-dialog title="物料数据详细" :visible.sync="openDetail" width="400px" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="80px">
-        <el-form-item label="物料编码">{{formDetail.materialId}}</el-form-item>
-        <el-form-item label="物料名称">{{formDetail.materialName}}</el-form-item>
-        <el-form-item label="计量单位">
-          <template>
-            <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="formDetail.materialUnit"/>
-          </template>
+        <el-form-item label="物料名称">
+          <el-input v-model="formDetail.materialName" placeholder="请输入物料名称" :disabled="true" style="width: 240px" />
         </el-form-item>
-        <el-form-item label="开票别名">{{formDetail.billingAlias}}</el-form-item>
+        <el-form-item label="计量单位">
+          <el-select
+            v-model="formDetail.materialUnit"
+            placeholder="请输入计量单位"
+            clearable
+            :disabled="true"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+              :key="dict.value"
+              :label="dict.label"
+              :value="parseInt(dict.value)"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开票别名">
+          <el-input v-model="formDetail.billingAlias" placeholder="请输入开票别名，多个别名用逗号分隔" :disabled="true" style="width: 240px" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="openDetail = false">关 闭</el-button>
