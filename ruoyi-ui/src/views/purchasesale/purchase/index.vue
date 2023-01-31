@@ -413,110 +413,230 @@
     </el-dialog>
 
     <!-- 采购管理数据详细 -->
-    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="75%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="采购管理数据详细" :visible.sync="openDetail" width="80%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
           <el-col :span="8">
-            <el-form-item label="订单编号">{{formDetail.orderId}}</el-form-item>
+            <el-form-item label="订单编号">
+              <el-input v-model="formDetail.orderId" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
           <!-- 采购类型 -->
           <el-col :span="8">
             <el-form-item label="采购类型">
-              <template>
-                <dict-tag :options="dict.type.contractmgr_contract_type" :value="formDetail.purchaseType"/>
-              </template>
+              <el-select
+                v-model="formDetail.purchaseType"
+                placeholder="采购类型"
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.contractmgr_contract_type"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 合同编号 -->
           <el-col :span="8">
-            <el-form-item label="合同编号" prop="contractId">{{formDetail.contractId}}</el-form-item>
+            <el-form-item label="合同编号" prop="contractId">
+              <el-input v-model="formDetail.contractId" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
-            <el-form-item label="经办人" prop="handledBy">{{formDetail.handledBy}}</el-form-item>
+            <el-form-item label="经办人" prop="handledBy">
+              <el-input v-model="formDetail.handledBy" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
           <!-- 所属部门 -->
           <el-col :span="8">
-            <el-form-item label="所属部门">{{formDetail.deptName}}</el-form-item>
+            <el-form-item label="所属部门">
+              <treeselect v-model="formDetail.belongDept" 
+                :options="deptOptions" 
+                :show-count="true" 
+                placeholder="请选择所属部门" 
+                style="width: 200px;"
+                :disabled="true" />
+            </el-form-item>
           </el-col>
           <!-- 业务日期 -->
           <el-col :span="8">
-            <el-form-item label="业务日期" prop="businessDate">{{formDetail.businessDate}}</el-form-item>
+            <el-form-item label="业务日期" prop="businessDate">
+              <el-date-picker clearable
+                v-model="formDetail.businessDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择业务日期"
+                style="width: 200px"
+                :disabled="true">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- 物料名称 -->
+          <el-col :span="8">
+            <el-form-item label="物料名称" prop="materialName">
+              <el-input 
+                v-model="formDetail.materialName" 
+                placeholder="请输入物料名称" 
+                style="width: 200px"
+                :disabled="true"
+                maxlength="64"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 物料名称 -->
-          <el-col :span="8">
-            <el-form-item label="物料名称" prop="materialName">{{formDetail.materialName}}</el-form-item>
-          </el-col>
           <!-- 采购数量 -->
           <el-col :span="8">
-            <el-form-item label="采购数量" prop="purchaseQuantity">{{formDetail.purchaseQuantity}}</el-form-item>
+            <el-form-item label="采购数量" prop="purchaseQuantity">
+              <el-input v-model="formDetail.purchaseQuantity" placeholder="请输入采购数量" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
           <!-- 供应商名称 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierRealName">{{formDetail.supplierRealName}}</el-form-item>
+            <el-form-item label="供应商名称" prop="supplierRealName">
+              <el-input 
+                v-model="formDetail.supplierRealName" 
+                placeholder="请输入供应商名称" 
+                style="width: 200px"
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
+          </el-col>
+          <!-- 单价 -->
+          <el-col :span="8">
+            <el-form-item label="单价" prop="unitPrice">
+              <el-input v-model="formDetail.unitPrice" placeholder="请输入单价" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 单价 -->
-          <el-col :span="8">
-            <el-form-item label="单价" prop="unitPrice">{{formDetail.unitPrice}}</el-form-item>
-          </el-col>
           <!-- 计量单位 -->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="meteringUnit">
-              <template>
-                <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :value="formDetail.meteringUnit"/>
-              </template>
+              <el-select
+                v-model="formDetail.meteringUnit"
+                placeholder="计量单位"
+                clearable
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 预计到货期 -->
           <el-col :span="8">
-            <el-form-item label="预计到货期" prop="arrivalDate">{{formDetail.arrivalDate}}</el-form-item>
+            <el-form-item label="预计到货期" prop="arrivalDate">
+              <el-date-picker clearable
+                v-model="formDetail.arrivalDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择预计到货期"
+                style="width: 200px"
+                :disabled="true">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- 要求交货期 -->
+          <el-col :span="8">
+            <el-form-item label="要求交货期" prop="requiredDeliveryDate">
+              <el-date-picker clearable
+                v-model="formDetail.requiredDeliveryDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择要求交货期"
+                style="width: 200px"
+                :disabled="true">
+              </el-date-picker>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 要求交货期 -->
-          <el-col :span="8">
-            <el-form-item label="要求交货期" prop="requiredDeliveryDate">{{formDetail.requiredDeliveryDate}}</el-form-item>
-          </el-col>
           <!-- 账期 -->
           <el-col :span="8">
-            <el-form-item label="账期" prop="accountPeriod">{{formDetail.accountPeriod}}</el-form-item>
+            <el-form-item label="账期" prop="accountPeriod">
+              <el-input v-model="formDetail.accountPeriod" placeholder="请输入账期" style="width: 200px" :disabled="true" />
+            </el-form-item>
           </el-col>
           <!-- 到账条件 -->
           <el-col :span="8">
             <el-form-item label="到账条件" prop="arrivalTerms">
-              <dict-tag :options="dict.type.purchasesale_arrival_terms" :value="formDetail.arrivalTerms" style="display: inline" />
-              {{formDetail.arrivalTermsValue}}（天）<!-- 到账条件值 -->
+              <el-select
+                v-model="formDetail.arrivalTerms"
+                placeholder="到账条件"
+                clearable
+                style="width: 100px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_arrival_terms"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+              <!-- 到账条件值 -->
+              <el-input v-model="formDetail.arrivalTermsValue" placeholder="天数" style="margin-left: 10px; width: 50px" :disabled="true" />（天）
+            </el-form-item>
+          </el-col>
+          <!-- 结算方式 -->
+          <el-col :span="8">
+            <el-form-item label="结算方式" prop="settlementMethod">
+              <el-select
+                v-model="formDetail.settlementMethod"
+                placeholder="结算方式"
+                clearable
+                style="width: 200px"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="dict in dict.type.purchasesale_settlement_method"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <!-- 结算方式 -->
-          <el-col :span="8">
-            <el-form-item label="结算方式" prop="settlementMethod">
-              <template>
-                <dict-tag :options="dict.type.purchasesale_settlement_method" :value="formDetail.settlementMethod"/>
-              </template>
-            </el-form-item>
-          </el-col>
           <!-- 是否开票 -->
           <el-col :span="16">
             <el-form-item label="是否开票" prop="isInvoicing">
-              <div v-if="formDetail.isInvoicing == '1'">开</div>
-              <div v-else>否</div>
+              <el-switch
+                :active-value="1"
+                :inactive-value="0"
+                v-model="formDetail.isInvoicing"
+                :disabled="true"
+              ></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <!-- 备注 -->
           <el-col :span="24">
-            <el-form-item label="备注" prop="orderRemark">{{formDetail.orderRemark}}</el-form-item>
+            <el-form-item label="备注" prop="orderRemark">
+              <el-input 
+                v-model="formDetail.orderRemark" 
+                type="textarea" 
+                style="width: 90%"
+                :disabled="true"
+                maxlength="128"
+                show-word-limit />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
