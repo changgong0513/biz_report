@@ -1202,8 +1202,9 @@ export default {
       getOrderAdditional(this.formDetail.orderId).then(response => {
         console.log(JSON.stringify(response.rows));
         response.rows.forEach(element => {
-          this.fileListDetail.push({ name: element.uplloadFilePath, 
-            url: element.uplloadFilePath });
+          if (element.bizVersion != 100) {
+            this.fileListDetail.push({ name: element.uplloadFilePath, url: element.uplloadFilePath });
+          }
         });
       });
 

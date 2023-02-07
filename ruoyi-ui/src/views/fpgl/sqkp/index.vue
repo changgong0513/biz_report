@@ -179,7 +179,7 @@
                 <li :key="file.url" 
                   class="el-upload-list__item ele-upload-list__item-content" 
                   v-for="(file) in contractAdditionalList">
-                  <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
+                  <el-link :underline="false" target="_blank" :disabled="true">
                     <span class="el-icon-document" style="font-size: 12px;"> {{ getFileName(file.name) }} </span>
                   </el-link>
                 </li>
@@ -290,6 +290,7 @@
 
 <script>
 import { listMain, listFpmx, addMain, updateMain, uploadFile, getContractAdditional } from "@/api/fpgl/fpgl";
+import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -373,7 +374,10 @@ export default {
       },
       // 上传附件列表
       contractAdditionalList: [],
-      baseUrl: process.env.VUE_APP_BASE_API
+      baseUrl: process.env.VUE_APP_BASE_API,
+      headers: {
+        Authorization: "Bearer " + getToken()
+      }
     };
   },
   created() {
