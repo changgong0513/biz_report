@@ -112,35 +112,29 @@
     />
 
     <!-- 添加或修改供应商数据对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <h3>基本信息</h3>
+        <h3>基本信息<el-link type="primary" style="font-size: 10px; margin-left: 20px;" href="https://www.gsxt.gov.cn/" target="_blank">信用公示</el-link></h3>
         <el-row>
           <el-col :span="8">
             <el-form-item label="公司名称" prop="companyName">
               <el-input 
                 v-model="form.companyName" 
                 placeholder="请输入公司名称"
-                style="width: 280px"
+                style="width: 200px"
                 maxlength="50"
                 show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="注册城市" prop="registerCity">
-              <el-select
+              <el-cascader
+                size="large"
+                :options="regionOptions"
                 v-model="form.registerCity"
-                placeholder="注册城市"
-                clearable
-                style="width: 280px"
-              >
-                <el-option
-                  v-for="dict in dict.type.masterdata_register_city"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+                filterable
+                @change="handleRegionChange">
+              </el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -148,18 +142,17 @@
               <el-input 
                 v-model="form.registeredCapital" 
                 placeholder="请输入注册资金" 
-                style="width: 280px" />
+                style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          
           <el-col :span="8">
             <el-form-item label="企业法人" prop="legalPerson">
               <el-input 
                 v-model="form.legalPerson" 
                 placeholder="请输入企业法人"
-                style="width: 280px"
+                style="width: 200px"
                 maxlength="50"
                 show-word-limit />
             </el-form-item>
@@ -169,7 +162,7 @@
               <el-input 
                 v-model="form.faxNumber" 
                 placeholder="请输入传真号码xxx-xxxxxxxx" 
-                style="width: 280px"
+                style="width: 200px"
                 maxlength="12"
                 show-word-limit />
             </el-form-item>
@@ -179,7 +172,7 @@
               <el-input 
                 v-model="form.zipCode" 
                 placeholder="请输入邮编" 
-                style="width: 280px" 
+                style="width: 200px" 
                 maxlength="6"
                 show-word-limit />
             </el-form-item>
@@ -213,7 +206,7 @@
               <el-input 
                 v-model="form.contactsName" 
                 placeholder="请输入姓名" 
-                style="width: 280px" 
+                style="width: 200px" 
                 maxlength="50"
                 show-word-limit />
             </el-form-item>
@@ -223,7 +216,9 @@
               <el-input 
                 v-model="form.contactsMobile" 
                 placeholder="请输入手机" 
-                style="width: 280px" />
+                style="width: 200px"
+                maxlength="11"
+                show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -231,7 +226,7 @@
               <el-input 
                 v-model="form.contactsEmail" 
                 placeholder="请输入电子邮箱" 
-                style="width: 280px"
+                style="width: 200px"
                 maxlength="128"
                 show-word-limit />
             </el-form-item>
@@ -256,7 +251,7 @@
               <el-input 
                 v-model="form.sjrxm" 
                 placeholder="请输入姓名" 
-                style="width: 280px" 
+                style="width: 200px" 
                 maxlength="50"
                 show-word-limit />
             </el-form-item>
@@ -266,7 +261,7 @@
               <el-input 
                 v-model="form.sjrdh" 
                 placeholder="请输入电话" 
-                style="width: 280px" />
+                style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -274,7 +269,7 @@
               <el-input 
                 v-model="form.sjrdz" 
                 placeholder="请输入地址" 
-                style="width: 280px"
+                style="width: 200px"
                 maxlength="128"
                 show-word-limit />
             </el-form-item>
@@ -289,7 +284,8 @@
                 v-model="form.depositBank"
                 placeholder="开户行"
                 clearable
-                style="width: 280px"
+                filterable
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_deposit_bank"
@@ -305,7 +301,7 @@
               <el-input 
                 v-model="form.accountNumber" 
                 placeholder="请输入账号" 
-                style="width: 280px" 
+                style="width: 200px" 
                 maxlength="32"
                 show-word-limit />
             </el-form-item>
@@ -317,7 +313,7 @@
               <el-input 
                 v-model="form.taxNumber" 
                 placeholder="请输入税号" 
-                style="width: 280px" 
+                style="width: 200px" 
                 maxlength="32"
                 show-word-limit />
             </el-form-item>
@@ -328,7 +324,8 @@
                 v-model="form.invoiceType"
                 placeholder="发票类型"
                 clearable
-                style="width: 280px"
+                filterable
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_invoice_type"
@@ -359,7 +356,7 @@
     </el-dialog>
 
     <!-- 供应商数据详细 -->
-    <el-dialog title="供应商数据详细" :visible.sync="openDetail" width="75%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="供应商数据详细" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <h3>基本信息</h3>
         <el-row>
@@ -367,7 +364,7 @@
             <el-form-item label="公司名称">
               <el-input 
                 v-model="formDetail.companyName" 
-                placeholder="请输入公司名称"
+                placeholder=""
                 :disabled="true"
                 style="width: 200px"
                 maxlength="50"
@@ -376,27 +373,22 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="注册城市">
-              <el-select
+              <el-cascader
+                size="large"
+                :options="regionOptions"
                 v-model="formDetail.registerCity"
-                placeholder="注册城市"
+                filterable
                 clearable
                 :disabled="true"
-                style="width: 200px"
-              >
-                <el-option
-                  v-for="dict in dict.type.masterdata_register_city"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </el-select>
+                @change="handleRegionChange">
+              </el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="注册资金">
               <el-input 
                 v-model="formDetail.registeredCapital" 
-                placeholder="请输入注册资金" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" />
             </el-form-item>
@@ -408,7 +400,7 @@
             <el-form-item label="企业法人">
               <el-input 
                 v-model="formDetail.legalPerson" 
-                placeholder="请输入企业法人"
+                placeholder=""
                 :disabled="true"
                 style="width: 200px"
                 maxlength="50"
@@ -419,7 +411,7 @@
             <el-form-item label="传真号码">
               <el-input 
                 v-model="formDetail.faxNumber" 
-                placeholder="请输入传真号码xxx-xxxxxxxx" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px"
                 maxlength="12"
@@ -430,7 +422,7 @@
             <el-form-item label="邮编">
               <el-input 
                 v-model="formDetail.zipCode" 
-                placeholder="请输入邮编" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px"
                 maxlength="6"
@@ -443,7 +435,7 @@
             <el-form-item label="公司地址">
               <el-input 
                 v-model="formDetail.companyAdress" 
-                placeholder="请输入公司地址"
+                placeholder=""
                 :disabled="true"
                 maxlength="128"
                 show-word-limit />
@@ -453,7 +445,7 @@
             <el-form-item label="公司网址">
               <el-input 
                 v-model="formDetail.companyWebsite" 
-                placeholder="请输入公司网址"
+                placeholder=""
                 :disabled="true"
                 maxlength="128"
                 show-word-limit />
@@ -467,7 +459,7 @@
             <el-form-item label="姓名">
               <el-input 
                 v-model="formDetail.contactsName" 
-                placeholder="请输入姓名" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" 
                 maxlength="50"
@@ -478,7 +470,7 @@
             <el-form-item label="手机">
               <el-input 
                 v-model="formDetail.contactsMobile" 
-                placeholder="请输入手机" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" />
             </el-form-item>
@@ -487,7 +479,7 @@
             <el-form-item label="电子邮箱">
               <el-input 
                 v-model="formDetail.contactsEmail" 
-                placeholder="请输入电子邮箱" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px"
                 maxlength="128"
@@ -500,7 +492,7 @@
             <el-form-item label="办公地点">
               <el-input 
                 v-model="formDetail.contactsOfficeLocation" 
-                placeholder="请输入办公地点"
+                placeholder=""
                 :disabled="true"
                 maxlength="128"
                 show-word-limit />
@@ -514,7 +506,7 @@
             <el-form-item label="姓名">
               <el-input 
                 v-model="formDetail.sjrxm" 
-                placeholder="请输入姓名" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px"
                 maxlength="50"
@@ -525,7 +517,7 @@
             <el-form-item label="电话">
               <el-input 
                 v-model="formDetail.sjrdh" 
-                placeholder="请输入电话" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" />
             </el-form-item>
@@ -534,7 +526,7 @@
             <el-form-item label="地址">
               <el-input 
                 v-model="formDetail.sjrdz" 
-                placeholder="请输入地址" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px"
                 maxlength="128"
@@ -549,7 +541,7 @@
             <el-form-item label="开户行">
               <el-select
                 v-model="formDetail.depositBank"
-                placeholder="开户行"
+                placeholder=""
                 clearable
                 :disabled="true"
                 style="width: 200px"
@@ -567,7 +559,7 @@
             <el-form-item label="账号">
               <el-input 
                 v-model="formDetail.accountNumber" 
-                placeholder="请输入账号" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" 
                 maxlength="32"
@@ -580,7 +572,7 @@
             <el-form-item label="税号">
               <el-input 
                 v-model="formDetail.taxNumber" 
-                placeholder="请输入税号" 
+                placeholder="" 
                 :disabled="true"
                 style="width: 200px" 
                 maxlength="32"
@@ -591,7 +583,7 @@
             <el-form-item label="发票类型">
               <el-select
                 v-model="formDetail.invoiceType"
-                placeholder="发票类型"
+                placeholder=""
                 clearable
                 :disabled="true"
                 style="width: 200px"
@@ -611,7 +603,7 @@
             <el-form-item label="发票地址">
               <el-input 
                 v-model="formDetail.invoiceAddress" 
-                placeholder="请输入发票地址" 
+                placeholder="" 
                 :disabled="true"
                 maxlength="128"
                 show-word-limit />
@@ -628,6 +620,7 @@
 
 <script>
 import { listClient, addClient, getClient, updateClient, delClient } from "@/api/masterdata/client";
+import { regionData } from "element-china-area-data"
 
 export default {
   name: "Supplier",
@@ -672,6 +665,9 @@ export default {
         children: "children",
         label: "label"
       },
+      // 省市区级联数据
+      regionOptions: regionData,
+      selectedOptions: [],
       // 表单校验
       rules: {
         // 公司名称
@@ -781,12 +777,17 @@ export default {
       const baseId = row.baseId || this.ids
       getClient(baseId).then(response => {
         this.form = response.data;
+        this.form.registerCity = this.form.registerCity.split('-');
         this.open = true;
         this.title = "修改供应商";
       });
     },
     /** 提交按钮 */
     submitForm: function() {
+      // 省市区级联选择器数组转字符串
+      let changgedRegisterCity = this.form.registerCity;
+      this.form.registerCity = changgedRegisterCity.join('-');
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.baseId != undefined) {
@@ -826,9 +827,23 @@ export default {
     },
     /** 详细按钮操作 */
     handleView(row) {
-      this.openDetail = true;
       this.formDetail = row;
+      if (this.formDetail.registerCity.indexOf('-')) {
+        this.formDetail.registerCity = this.formDetail.registerCity.split('-');
+      }
+
+      this.openDetail = true;
+    },
+    /** 省市区级联选择器变更后 */
+    handleRegionChange (value) {
+      console.log(value)
     }
   }
 };
 </script>
+
+<style scoped>
+  .el-dialog__body {
+    padding: 0px;
+  }
+</style>
