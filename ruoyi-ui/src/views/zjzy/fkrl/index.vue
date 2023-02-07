@@ -455,6 +455,19 @@ export default {
     getList() {
       this.loading = true;
       listFk(this.queryParams).then(response => {
+        
+        response.rows.forEach(element => {
+          if(element.fkKhmc.startsWith('["')){
+            element.fkKhmc = element.fkKhmc.substr(2, element.length);
+          }
+
+          if(element.fkKhmc.endsWith('"]'))  {
+            let index = element.fkKhmc.indexOf(']');
+            element.fkKhmc = element.fkKhmc.substr(0, index - 1);
+          }
+
+          element.fkKhmc = element.fkKhmc.replaceAll('"', '');
+        });
         this.fkList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -578,7 +591,8 @@ export default {
       this.openFkrl = true;
       this.titleFkrl = "付款认领";
       this.formFkrl.fkId = row.fkId;
-      this.formFkrl.FkJe = row.FkJe;
+      this.formFkrl.fkJe = row.fkJe;
+      this.formFkrl.fkrlJe = row.fkJe;
     },
     /** 付款认领提交按钮 */
     submitFormFkrl() {
