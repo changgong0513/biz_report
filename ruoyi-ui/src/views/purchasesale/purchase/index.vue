@@ -222,13 +222,30 @@
           </el-col>
           <!-- 供应商名称 -->
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">
-              <el-input 
-                v-model="form.supplierName" 
+            <el-form-item label="供应商名称" prop="supplierRealName">
+              <!-- <el-input 
+                v-model="form.supplierRealName" 
                 placeholder="请输入供应商名称" 
                 style="width: 240px"
                 maxlength="128"
-                show-word-limit />
+                show-word-limit /> -->
+              <el-select
+                v-model="form.supplierRealName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入供应商名称关键字"
+                style="width: 240px"
+                :remote-method="remoteMethodSupplierName"
+                :loading="remoteLoadingSupplierName">
+                <el-option
+                  v-for="item in optionsSupplierName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 单价 -->
@@ -852,6 +869,7 @@
 
 import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase, deleteUploadFile, getOrderAdditional } from "@/api/purchasesale/purchasesale";
 import { listReceipt } from "@/api/purchasesale/receipt";
+import { listClient } from "@/api/masterdata/client";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
@@ -1004,7 +1022,11 @@ export default {
       defaultProps: {
         children: "children",
         label: "label"
-      }
+      },
+      // 客户名称选择用
+      optionsSupplierName: [],
+      listSupplierName: [],
+      remoteLoadingSupplierName: false
     };
   },
   created() {
@@ -1043,6 +1065,26 @@ export default {
     },
   },
   methods: {
+    /** 根据输入客户姓名关键字，取得客户姓名列表 */
+    remoteMethodSupplierName(query) {
+      if (query !== '') {
+        this.remoteLoadingSupplierName = true;
+        this.queryParams.companyName = query;
+        this.queryParams.recordFlag = 1;
+        listClient(this.queryParams).then(response => {
+          this.remoteLoadingSupplierName = false;
+          this.listSupplierName = response.rows;
+          this.optionsSupplierName = response.rows.map(item => {
+            return { value: `${item.baseId}`, label: `${item.companyName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsSupplierName = [];
+      }
+    },
     /** 查询采购收货销售发货管理列表 */
     getList() {
       this.loading = true;

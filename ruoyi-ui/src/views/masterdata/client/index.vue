@@ -787,7 +787,9 @@ export default {
     submitForm: function() {
       // 省市区级联选择器数组转字符串
       let changgedRegisterCity = this.form.registerCity;
-      this.form.registerCity = changgedRegisterCity.join('-');
+      if (changgedRegisterCity) {
+        this.form.registerCity = changgedRegisterCity.join('-');
+      }
 
       this.$refs["form"].validate(valid => {
         if (valid) {

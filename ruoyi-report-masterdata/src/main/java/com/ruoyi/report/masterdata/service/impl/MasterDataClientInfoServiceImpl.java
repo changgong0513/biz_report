@@ -1,6 +1,8 @@
 package com.ruoyi.report.masterdata.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,5 +104,23 @@ public class MasterDataClientInfoServiceImpl implements IMasterDataClientInfoSer
     public int deleteMasterDataClientInfoByBaseId(String baseId)
     {
         return masterDataClientInfoMapper.deleteMasterDataClientInfoByBaseId(baseId);
+    }
+
+    /**
+     * 取得最大的供应商编号
+     *
+     * @return
+     */
+    public Optional<MasterDataClientInfo> selectMaxSupplierId() {
+        return masterDataClientInfoMapper.selectMaxSupplierId();
+    }
+
+    /**
+     * 取得最大的客户编号
+     *
+     * @return
+     */
+    public Optional<MasterDataClientInfo> selectMaxClientId() {
+        return masterDataClientInfoMapper.selectMaxClientId();
     }
 }

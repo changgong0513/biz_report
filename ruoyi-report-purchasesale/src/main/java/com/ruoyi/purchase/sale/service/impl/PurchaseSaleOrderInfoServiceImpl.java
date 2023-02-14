@@ -108,9 +108,23 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * @return 销售发货集合
      */
     @Override
-    public List<PurchaseSaleOrderInfo> selectSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo)
-    {
-        return purchaseSaleOrderInfoMapper.selectSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+    public List<PurchaseSaleOrderInfo> selectSaleOrderInfoUnionList(PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+
+        List<PurchaseSaleOrderInfo> list = purchaseSaleOrderInfoMapper.selectSaleOrderInfoUnionList(purchaseSaleOrderInfo);
+
+        Map<String, List<PurchaseSaleOrderInfo>> map = list.stream()
+                .collect(Collectors.groupingBy(element -> element.getSupplierName()));
+
+        // 根据客户编号，取得客户名称
+        list.stream().forEach(elment -> {
+            String supplierName = elment.getSupplierName();
+            MasterDataClientInfo supplierData = masterDataClientInfoMapper
+                    .selectMasterDataClientInfoByBaseId(supplierName);
+            String supplierRealName = supplierData.getCompanyName();
+            elment.setSupplierRealName(supplierRealName);
+        });
+
+        return list;
     }
 
     /**

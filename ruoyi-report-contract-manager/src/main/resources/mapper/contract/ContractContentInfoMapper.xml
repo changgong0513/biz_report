@@ -107,7 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contractAgent != null">contract_agent,</if>
             <if test="contractRemark != null">contract_remark,</if>
             <if test="contractStatus != null and contractStatus != ''">contract_status,</if>
-            <if test="belongDeptId != null  and belongDeptId != 0"> and belong_dept_id,</if>
+            <if test="belongDeptId != null  and belongDeptId != 0">belong_dept_id,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null and updateBy != ''">update_by,</if>

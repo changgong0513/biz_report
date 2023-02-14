@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 业务报表Controller
@@ -73,8 +75,29 @@ public class MasterDataClientInfoController extends BaseController
         masterDataClientInfo.setUpdateTime(DateUtils.getNowDate());
         masterDataClientInfo.setCreateBy(SecurityUtils.getUsername());
         masterDataClientInfo.setUpdateBy(SecurityUtils.getUsername());
-        masterDataClientInfo.setBaseId(IdUtils.fastSimpleUUID());
-        System.out.println("------新增业务报表大数据：" + masterDataClientInfo);
+
+        Long recordFLag = masterDataClientInfo.getRecordFlag();
+        if (recordFLag ==  1) {
+            // 供应商管理-供应商
+            Optional<MasterDataClientInfo> optSelMaxSupplierRecord = masterDataClientInfoService.selectMaxSupplierId();
+            if (optSelMaxSupplierRecord.isPresent()) {
+                String baseId = optSelMaxSupplierRecord.get().getBaseId();
+                String currentBaseId = StringUtils.substring(baseId, 3, baseId.length());
+                masterDataClientInfo.setBaseId("GYS" + StringUtils.padl(Integer.parseInt(currentBaseId) + 1, 6));
+            } else {
+                masterDataClientInfo.setBaseId("GYS" + StringUtils.padl(1, 6));
+            }
+        } else if (recordFLag == 2) {
+            // 供应商管理-客户
+            Optional<MasterDataClientInfo> optSelMaxClientRecord = masterDataClientInfoService.selectMaxClientId();
+            if (optSelMaxClientRecord.isPresent()) {
+                String baseId = optSelMaxClientRecord.get().getBaseId();
+                String currentBaseId = StringUtils.substring(baseId, 2, baseId.length());
+                masterDataClientInfo.setBaseId("KH" + StringUtils.padl(Integer.parseInt(currentBaseId) + 1, 6));
+            } else {
+                masterDataClientInfo.setBaseId("KH" + StringUtils.padl(1, 6));
+            }
+        }
 
         return toAjax(masterDataClientInfoService.insertMasterDataClientInfo(masterDataClientInfo));
     }

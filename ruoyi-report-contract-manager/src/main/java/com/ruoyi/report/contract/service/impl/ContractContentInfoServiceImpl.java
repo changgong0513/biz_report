@@ -685,7 +685,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 合同类型
                 if (StringUtils.equals(item.getName(), "合同类型")) {
-                    if (StringUtils.contains(item.getValue(), "收购合同")) {
+                    if (StringUtils.contains(item.getValue(), "收购合同") ||
+                            StringUtils.contains(item.getValue(), "采购合同")) {
                         contract.setContractType("P");
                     } else if (StringUtils.contains(item.getValue(), "物流合同") ||
                             StringUtils.contains(item.getValue(), "销售合同")) {
@@ -1259,7 +1260,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 .stream()
                 .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
 
-                // 钉钉同步过来的合同， 在采购或销售表是否存在
+        // 钉钉同步过来的合同， 在采购或销售表是否存在
         contractContentInfoList.stream().forEach(element -> {
             String contractId = element.getContractId();
             if (contractIdList.contains(contractId)) {
@@ -1267,14 +1268,16 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
             } else {
                 element.setConstractIsExist(0);
             }
+        });
 
+        // 钉钉同步过来的合同， 设置显示的公司名称
+        contractContentInfoList.stream().forEach(element -> {
             // 设置显示的公司名称
-            if (clientMap.containsKey(element.getOppositeCompanyName()) &&
-                    element.getOppositeCompanyName().contains("KH")) {
+            if (clientMap.containsKey(element.getOppositeCompanyName()) && element.getOppositeCompanyName().contains("KH")) {
                 element.setBaseId(element.getOppositeCompanyName());
                 element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
             } else {
-                clientMap.forEach((k,v)->{
+                clientMap.forEach((k, v) -> {
                     if(v.indexOf(element.getOppositeCompanyName()) >= 0){
                         companyBaseId = k;
                         return;

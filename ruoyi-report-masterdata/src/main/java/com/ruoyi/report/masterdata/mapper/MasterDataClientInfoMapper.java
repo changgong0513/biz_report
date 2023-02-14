@@ -1,6 +1,8 @@
 package com.ruoyi.report.masterdata.mapper;
 
 import java.util.List;
+import java.util.Optional;
+
 import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
 
 /**
@@ -66,4 +68,19 @@ public interface MasterDataClientInfoMapper
      * @return 结果
      */
     public int deleteMasterDataClientInfoByBaseIds(String[] baseIds);
+
+
+    /**
+     * 取得最大的供应商编号
+     *
+     * @return
+     */
+    public Optional<MasterDataClientInfo> selectMaxSupplierId();
+
+    /**
+     * 取得最大的客户编号
+     *
+     * @return
+     */
+    public Optional<MasterDataClientInfo> selectMaxClientId();
 }

@@ -695,7 +695,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const contractId = row.contractId || this.ids
+      const contractId = row.contractId || this.ids;
       getContract(contractId).then(response => {
         this.form = response.data;
         if (row.contractId) {
@@ -703,6 +703,7 @@ export default {
         } else {
           this.form.constractIsExist = response.data.constractIsExist;
         }
+        this.form.constractIsExist = row.constractIsExist;
         this.title = "修改合同数据";
         this.isUpdate = true;
       });

@@ -174,6 +174,16 @@
         where base_id = #{baseId}
     </update>
 
+    <!-- 取得最大的供应商编号 -->
+    <select id="selectMaxSupplierId" resultMap="MasterDataClientInfoResult">
+        select max(base_id) as base_id from master_data_client_info where record_flag = 1
+    </select>
+
+    <!-- 取得最大的客户编号 -->
+    <select id="selectMaxClientId" resultMap="MasterDataClientInfoResult">
+        select max(base_id) as base_id from master_data_client_info where record_flag = 2
+    </select>
+
     <delete id="deleteMasterDataClientInfoByBaseId" parameterType="String">
         delete from master_data_client_info where base_id = #{baseId}
     </delete>

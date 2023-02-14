@@ -123,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where
                 t1.contract_id = t2.contract_id
                 and t2.contract_type = 'S'
-                and t1.handled_by = t3.nick_name
+                and t1.handled_by = t3.user_name
 		        and t1.belong_dept = t4.dept_id
         ) tt1 left join sale_deliver_info tt2 on tt1.order_id = tt2.sale_order_id
     </sql>

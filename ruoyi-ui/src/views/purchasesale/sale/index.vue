@@ -124,7 +124,7 @@
       </el-table-column>
       <el-table-column label="所属部门" align="center" prop="deptName" width="100" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="supplierName" width="240" :show-overflow-tooltip="true" />
+      <el-table-column label="客户名称" align="center" prop="supplierRealName" width="240" :show-overflow-tooltip="true" />
       <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.purchase_mgr_order_status" :value="scope.row.orderStatus"/>
@@ -191,9 +191,26 @@
           </el-col>
           <!-- 客户名称 -->
           <el-col :span="8">
-            <el-form-item label="客户名称" prop="supplierName">
-              <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" maxlength="128"
-                show-word-limit />
+            <el-form-item label="客户名称" prop="supplierRealName">
+              <!-- <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" maxlength="128"
+                show-word-limit /> -->
+                <el-select
+                v-model="form.supplierRealName"
+                filterable
+                remote
+                clearable
+                reserve-keyword
+                placeholder="请输入客户名称关键字"
+                style="width: 240px"
+                :remote-method="remoteMethodClientName"
+                :loading="remoteLoadingSClientName">
+                <el-option
+                  v-for="item in optionsClientName"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -387,8 +404,8 @@
           </el-col>
           <!-- 客户名称 -->
           <el-col :span="8">
-            <el-form-item label="客户名称" prop="supplierName">
-              <el-input v-model="formDetail.supplierName" placeholder="请输入供应商名称" :disabled="true" style="width: 240px" maxlength="128"
+            <el-form-item label="客户名称" prop="supplierRealName">
+              <el-input v-model="formDetail.supplierRealName" placeholder="请输入供应商名称" :disabled="true" style="width: 200px" maxlength="128"
                 show-word-limit />
             </el-form-item>
           </el-col>
@@ -542,6 +559,7 @@
 <script>
 
 import { listPurchase, getPurchase, delPurchase, addPurchase, updatePurchase } from "@/api/purchasesale/purchasesale";
+import { listClient } from "@/api/masterdata/client";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -631,7 +649,11 @@ export default {
       },
       isUpdate: false,
       formDetail: {},
-      openDetail: false
+      openDetail: false,
+      // 客户名称选择用
+      optionsClientName: [],
+      listClientName: [],
+      remoteLoadingSClientName: false,
     };
   },
   created() {
@@ -639,6 +661,26 @@ export default {
     this.getDeptTree();
   },
   methods: {
+    /** 根据输入客户姓名关键字，取得客户姓名列表 */
+    remoteMethodClientName(query) {
+      if (query !== '') {
+        this.remoteLoadingSClientName = true;
+        this.queryParams.companyName = query;
+        this.queryParams.recordFlag = 2;
+        listClient(this.queryParams).then(response => {
+          this.remoteLoadingSClientName = false;
+          this.listClientName = response.rows;
+          this.optionsClientName = response.rows.map(item => {
+            return { value: `${item.baseId}`, label: `${item.companyName}` };
+          }).filter(item => {
+            return item.label.toLowerCase()
+              .indexOf(query.toLowerCase()) > -1;
+          });
+        });
+      } else {
+        this.optionsClientName = [];
+      }
+    },
     /** 查询销售收货销售发货管理列表 */
     getList() {
       this.loading = true;

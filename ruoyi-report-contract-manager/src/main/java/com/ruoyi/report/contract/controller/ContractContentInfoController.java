@@ -64,9 +64,6 @@ public class ContractContentInfoController extends BaseController
     @Autowired
     private IMasterDataClientInfoService masterDataClientInfoService;
 
-    @Autowired
-    private IPurchaseSaleOrderInfoService purchaseSaleOrderInfoService;
-
     /**
      * 查询合同管理列表
      */
@@ -83,6 +80,15 @@ public class ContractContentInfoController extends BaseController
 
         // 生成前端显示合同数据列表
         contractContentInfoService.makeModelViewData(list);
+
+        // 管理员不能保存或者生成订单
+        list.stream().forEach(element -> {
+            if (this.getDeptId() == 103 || this.getDeptId() == 100) {
+                element.setConstractIsExist(1);
+            } else {
+                element.setConstractIsExist(0);
+            }
+        });
 
         // 响应请求分页数据
         return getDataTable(list);
@@ -105,7 +111,19 @@ public class ContractContentInfoController extends BaseController
      */
     @GetMapping(value = "/{contractId}")
     public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
-        return AjaxResult.success(contractContentInfoService.selectContractContentInfoByContractId(contractId));
+
+        ContractContentInfo contractContentInfo = contractContentInfoService.selectContractContentInfoByContractId(contractId);
+
+        // 取得所有客户主数据
+        List<MasterDataClientInfo> clientList = masterDataClientInfoService.selectMasterDataClientInfoList(new MasterDataClientInfo());
+        // 客户主数据列表转成Map（key：baseId, value：companyName）
+        Map<String, String> clientMap = clientList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
+
+        contractContentInfo.setBaseId(clientMap.get(contractContentInfo.getOppositeCompanyName()));
+        contractContentInfo.setCompanyName(clientMap.get(contractContentInfo.getOppositeCompanyName()));
+        return AjaxResult.success(contractContentInfo);
     }
 
     /**

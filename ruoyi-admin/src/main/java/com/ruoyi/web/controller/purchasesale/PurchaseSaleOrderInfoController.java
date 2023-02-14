@@ -17,6 +17,8 @@ import com.ruoyi.purchase.sale.service.IPurchaseSaleOrderInfoService;
 import com.ruoyi.report.contract.domain.ContractAdditionalInfo;
 import com.ruoyi.report.contract.domain.UploadData;
 import com.ruoyi.report.contract.service.IContractAdditionalInfoService;
+import com.ruoyi.report.masterdata.domain.MasterDataClientInfo;
+import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 采购收货销售发货管理Controller
@@ -47,6 +50,9 @@ public class PurchaseSaleOrderInfoController extends BaseController {
 
     @Autowired
     private IContractAdditionalInfoService contractAdditionalInfoService;
+
+    @Autowired
+    private IMasterDataClientInfoService masterDataClientInfoService;
 
     @Autowired
     private ServerConfig serverConfig;
@@ -104,7 +110,19 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     //@PreAuthorize("@ss.hasPermi('purchasesale:purchasesale:query')")
     @GetMapping(value = "/{contractId}")
     public AjaxResult getInfo(@PathVariable("contractId") String contractId) {
-        return AjaxResult.success(purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoByContractId(contractId));
+
+        PurchaseSaleOrderInfo purchaseSaleOrderInfo = purchaseSaleOrderInfoService.selectPurchaseSaleOrderInfoByContractId(contractId);
+
+        // 取得所有客户主数据
+        List<MasterDataClientInfo> clientList = masterDataClientInfoService.selectMasterDataClientInfoList(new MasterDataClientInfo());
+        // 客户主数据列表转成Map（key：baseId, value：companyName）
+        Map<String, String> clientMap = clientList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
+
+        purchaseSaleOrderInfo.setSupplierRealName(clientMap.get(purchaseSaleOrderInfo.getSupplierName()));
+
+        return AjaxResult.success(purchaseSaleOrderInfo);
     }
 
     /**
@@ -149,6 +167,8 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     @Log(title = "采购收货销售发货管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PurchaseSaleOrderInfo purchaseSaleOrderInfo) {
+
+        purchaseSaleOrderInfo.setSupplierName(purchaseSaleOrderInfo.getSupplierRealName());
         purchaseSaleOrderInfo.setBizVersion(1L);
         purchaseSaleOrderInfo.setCreateTime(DateUtils.getNowDate());
         purchaseSaleOrderInfo.setUpdateTime(DateUtils.getNowDate());
