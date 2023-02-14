@@ -131,6 +131,9 @@ public class ContractContentInfo extends BaseEntity
     /** 公司名称（我方单位名称、对方单位名称） */
     private String companyName;
 
+    /** 合同所属部门编号 */
+    private Long belongDeptId;
+
     public int getConstractIsExist() {
         return constractIsExist;
     }
@@ -395,6 +398,14 @@ public class ContractContentInfo extends BaseEntity
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public Long getBelongDeptId() {
+        return belongDeptId;
+    }
+
+    public void setBelongDeptId(Long belongDeptId) {
+        this.belongDeptId = belongDeptId;
     }
 
     @Override

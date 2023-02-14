@@ -73,8 +73,18 @@ public class ContractContentInfoController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(ContractContentInfo contractContentInfo) {
 
+        // 设置请求分页数据
         startPage();
+
+        // 查询合同管理列表
+        Long deptId = this.getDeptId();
+        contractContentInfo.setBelongDeptId(deptId);
         List<ContractContentInfo> list = contractContentInfoService.selectContractContentInfoList(contractContentInfo);
+
+        // 生成前端显示合同数据列表
+        contractContentInfoService.makeModelViewData(list);
+
+        // 响应请求分页数据
         return getDataTable(list);
     }
 
@@ -167,7 +177,13 @@ public class ContractContentInfoController extends BaseController
      */
     @PostMapping("/sync")
     public AjaxResult sync(ContractContentInfo contractContentInfo) throws Exception {
-        return toAjax(contractContentInfoService.syncContractContentInfo());
+
+        AjaxResult syncReslut = AjaxResult.success();
+        if (contractContentInfoService.syncContractContentInfo() == 10001) {
+            syncReslut = AjaxResult.error("未取得所有可管理的表单列表");
+        }
+
+        return syncReslut;
     }
 
     /**

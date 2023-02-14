@@ -91,4 +91,12 @@ public interface IContractContentInfoService {
      * @return 结果
      */
     public String importContract(List<ContractContentInfo> contractList, Boolean isUpdateSupport, String operName);
+
+    /**
+     * 生成前端显示合同数据列表
+     *
+     * @param originalContractList
+     * @return
+     */
+    public void makeModelViewData(List<ContractContentInfo> originalContractList);
 }

@@ -788,6 +788,9 @@ export default {
         this.$modal.msgSuccess("同步合同成功");
         this.loading = false;
         this.getList();
+      }).catch(() => {
+        this.loading = false;
+        this.getList();
       });
     },
     /** 查看合同数据 */ 

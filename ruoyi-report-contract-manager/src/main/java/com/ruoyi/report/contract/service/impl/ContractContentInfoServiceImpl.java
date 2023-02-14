@@ -16,6 +16,8 @@ import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiGettokenRequest;
 import com.dingtalk.api.response.OapiGettokenResponse;
+import com.github.pagehelper.util.StringUtil;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -147,57 +149,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      */
     @Override
     public List<ContractContentInfo> selectContractContentInfoList(ContractContentInfo contractContentInfo) {
-
-        // 取得所有采购销售订单
-        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoMapper
-                .selectPurchaseSaleOrderInfoList(new PurchaseSaleOrderInfo());
-
-        // 取得所有采购销售订单对应的合同列表
-        List<String> contractIdList = purchaseSaleOrderInfoList
-                .stream()
-                .map(PurchaseSaleOrderInfo::getContractId)
-                .collect(Collectors.toList());
-
-        // 取得所有客户主数据
-        List<MasterDataClientInfo> clientList =  masterDataClientInfoMapper
-                .selectMasterDataClientInfoList(new MasterDataClientInfo());
-
-        // 客户主数据列表转成Map（key：baseId, value：companyName）
-        Map<String, String> clientMap = clientList
-                .stream()
-                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
-
-        // 取得所有从钉钉同步的合同
-        List<ContractContentInfo> contractContentInfoList = contractContentInfoMapper
-                .selectContractContentInfoList(contractContentInfo);
-
-        // 钉钉同步过来的合同， 在采购或销售表是否存在
-        contractContentInfoList.stream().forEach(element -> {
-            String contractId = element.getContractId();
-            if (contractIdList.contains(contractId)) {
-                element.setConstractIsExist(1);
-            } else {
-                element.setConstractIsExist(0);
-            }
-
-            // 设置显示的公司名称
-            if (clientMap.containsKey(element.getOppositeCompanyName()) &&
-                    element.getOppositeCompanyName().contains("KH")) {
-                element.setBaseId(element.getOppositeCompanyName());
-                element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
-            } else {
-                clientMap.forEach((k,v)->{
-                    if(v.indexOf(element.getOppositeCompanyName()) >= 0){
-                        companyBaseId = k;
-                        return;
-                    }
-                });
-                element.setBaseId(companyBaseId);
-                element.setCompanyName(element.getOppositeCompanyName());
-            }
-        });
-
-        return contractContentInfoList;
+        return contractContentInfoMapper.selectContractContentInfoList(contractContentInfo);
     }
 
     /**
@@ -261,47 +213,86 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         String accessToken = getDingTalkAccessToken();
 
         // 获取当前企业所有可管理的表单
-        // getCurrentEnterpriseAllMgrForm(accessToken);
+//        List <String> processCodeList = getCurrentEnterpriseAllMgrForm(accessToken);
+//        if (processCodeList != null && processCodeList.isEmpty()) {
+//            return 10001; //  未取得所有可管理的表单列表
+//        }
 
         // 获取审批实例ID列表(测试数据用)
-        List<String> ids = getContractForDemo(accessToken);
-        int size = ids.size();
-        for (int i = 0; i < size; i++) {
-            String id = ids.get(i);
-            System.out.println("审批实例ID：" + id);
+        List <String> processCodeList = new ArrayList<>();
+        processCodeList.add("PROC-14C71A8A-12BA-4CD2-99C7-2B8E9F9DB32B"); // 经营一部-合同审批
+        processCodeList.add("PROC-7B80921A-0746-4574-8C93-8C47DCC0B2CC"); // 经营二部-合同审批
+        for (String processCode : processCodeList) {
 
-            ContractContentInfo contract = getContractData(accessToken, id);
+            List<String> contractIdIsEmptyList = new ArrayList<>();
 
-            // 检查合同是否已经导入合同表
-            ContractContentInfo selectContract = null;
-            selectContract = contractContentInfoMapper
-                    .selectContractContentInfoByContractId(contract.getContractId());
-            if (selectContract == null) {
-                contractContentInfoMapper.insertContractContentInfo(contract);
+            List<String> ids = getContract(accessToken, processCode);
+            int size = ids.size();
+            for (int i = 0; i < size; i++) {
+                String id = ids.get(i);
+                System.out.println("审批实例ID：" + id);
+                ContractContentInfo contract = getContractData(accessToken, id);
+                if (StringUtils.isNotBlank(contract.getContractId())) {
+                    // 设置合同所属部门编号
+                    if (StringUtils.equals(processCode, "PROC-14C71A8A-12BA-4CD2-99C7-2B8E9F9DB32B")) {
+                        contract.setBelongDeptId(209L);
+                    } else if (StringUtils.equals(processCode, "PROC-7B80921A-0746-4574-8C93-8C47DCC0B2CC")) {
+                        contract.setBelongDeptId(214L);
+                    } else {
+                        contract.setBelongDeptId(0L);
+                    }
+
+                    // 检查合同是否已经导入合同表
+                    ContractContentInfo selectContract = null;
+                    selectContract = contractContentInfoMapper
+                            .selectContractContentInfoByContractId(contract.getContractId());
+                    if (selectContract == null) {
+                        contract.setBizVersion(1L);
+                        contract.setCreateTime(DateUtils.getNowDate());
+                        contract.setUpdateTime(DateUtils.getNowDate());
+                        contract.setCreateBy(SecurityUtils.getUsername());
+                        contract.setUpdateBy(SecurityUtils.getUsername());
+                        contractContentInfoMapper.insertContractContentInfo(contract);
+                    } else {
+                        contract.setUpdateTime(DateUtils.getNowDate());
+                        contract.setUpdateBy(SecurityUtils.getUsername());
+                        contractContentInfoMapper.updateContractContentInfo(contract);
+                    }
+
+                    // 取得审批数据，添加到审批表和审批记录表
+                    ContractApprovalInfo ccontractApprovalInfo = getContractApprovaData(accessToken, id);
+
+                    // 检查审批数据是否已经导入合同审批信息表
+                    ContractApprovalInfo selContractApprovalInfo = null;
+                    selContractApprovalInfo = contractApprovalInfoMapper.selectContractApprovalInfoByApprovalId(ccontractApprovalInfo.getApprovalId());
+                    if (selContractApprovalInfo == null) {
+                        ccontractApprovalInfo.setBizVersion(1L);
+                        ccontractApprovalInfo.setCreateTime(DateUtils.getNowDate());
+                        ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
+                        ccontractApprovalInfo.setCreateBy(SecurityUtils.getUsername());
+                        ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
+                        contractApprovalInfoMapper.insertContractApprovalInfo(ccontractApprovalInfo);
+                    } else {
+                        ccontractApprovalInfo.setBizVersion(1L);
+                        ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
+                        ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
+                        contractApprovalInfoMapper.updateContractApprovalInfo(ccontractApprovalInfo);
+                    }
+                } else {
+                    // 合同编号为空的场合
+                    contractIdIsEmptyList.add(id);
+                }
             }
 
-            // 取得审批数据，添加到审批表和审批记录表
-            ContractApprovalInfo ccontractApprovalInfo = getContractApprovaData(accessToken, id);
-
-            // 检查审批数据是否已经导入合同审批信息表
-            ContractApprovalInfo selContractApprovalInfo = null;
-            selContractApprovalInfo = contractApprovalInfoMapper.selectContractApprovalInfoByApprovalId(ccontractApprovalInfo.getApprovalId());
-            if (selContractApprovalInfo == null) {
-                ccontractApprovalInfo.setBizVersion(1L);
-                ccontractApprovalInfo.setCreateTime(DateUtils.getNowDate());
-                ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
-                ccontractApprovalInfo.setCreateBy(SecurityUtils.getUsername());
-                ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
-                contractApprovalInfoMapper.insertContractApprovalInfo(ccontractApprovalInfo);
-            } else {
-                ccontractApprovalInfo.setBizVersion(1L);
-                ccontractApprovalInfo.setUpdateTime(DateUtils.getNowDate());
-                ccontractApprovalInfo.setUpdateBy(SecurityUtils.getUsername());
-                contractApprovalInfoMapper.updateContractApprovalInfo(ccontractApprovalInfo);
+            // 合同编号为空汇总
+            System.out.println("Process COde：" + processCode);
+            System.out.println("合同编号为空的审批实例总数：" + contractIdIsEmptyList.size());
+            for (String instanceId : contractIdIsEmptyList) {
+                System.out.println("合同编号为空的审批实例ID：" + instanceId);
             }
         }
 
-        return 1;
+        return 1; // 成功
     }
 
     /**
@@ -433,40 +424,73 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      *
      * @param accessToken 钉钉访问令牌
      */
-    private void getCurrentEnterpriseAllMgrForm(final String accessToken) throws Exception {
+    private List<String> getCurrentEnterpriseAllMgrForm(final String accessToken) throws Exception {
+
         com.aliyun.dingtalkworkflow_1_0.Client client = createClient();
         GetManageProcessByStaffIdHeaders getManageProcessByStaffIdHeaders = new GetManageProcessByStaffIdHeaders();
         getManageProcessByStaffIdHeaders.xAcsDingtalkAccessToken = accessToken;
-        GetManageProcessByStaffIdRequest getManageProcessByStaffIdRequest = new GetManageProcessByStaffIdRequest()
-                .setUserId("282350193529366375");
 
-        try {
-            GetManageProcessByStaffIdResponse resp = client
-                    .getManageProcessByStaffIdWithOptions(getManageProcessByStaffIdRequest,
-                            getManageProcessByStaffIdHeaders, new RuntimeOptions());
+//        GetManageProcessByStaffIdRequest getManageProcessByStaffIdRequest = new GetManageProcessByStaffIdRequest()
+//                .setUserId("282350193529366375");
 
-            int size = resp.getBody().getResult().size();
-            for (int i = 0; i < size; i++) {
-                GetManageProcessByStaffIdResponseBody.GetManageProcessByStaffIdResponseBodyResult responseBodyResult = null;
-                responseBodyResult = resp.getBody().getResult().get(i);
-                System.out.println(responseBodyResult.getFlowTitle() + "------" + responseBodyResult.getProcessCode());
-            }
-        } catch (TeaException err) {
-            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
-                // err 中含有 code 和 message 属性，可帮助开发定位问题
-                System.out.println("TeaException");
-                System.out.println(err.code);
-                System.out.println(err.message);
-            }
-        } catch (Exception _err) {
-            TeaException err = new TeaException(_err.getMessage(), _err);
-            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
-                // err 中含有 code 和 message 属性，可帮助开发定位问题
-                System.out.println("Exception");
-                System.out.println(err.code);
-                System.out.println(err.message);
+        String[] syncUserIds = new String[] {
+//                "1054566453903766",
+//                "1054582138808487376",
+//                "1023291525-1101082476",
+//                "173703126738684904",
+//                "013123634833456429",
+//                "621832300920030353",
+//                "1054575040791042",
+//                "1002693800788633",
+//                "214729110429276521",
+//                "1729613335655268",
+//                "310864301924151987",
+                "282350193529366375"
+        };
+
+        List<String> processCodeList = new ArrayList<>();
+
+        for (int index = 0; index < syncUserIds.length; index++) {
+
+            GetManageProcessByStaffIdRequest getManageProcessByStaffIdRequest = new GetManageProcessByStaffIdRequest()
+                .setUserId(syncUserIds[index]);
+
+            try {
+                GetManageProcessByStaffIdResponse resp = client
+                        .getManageProcessByStaffIdWithOptions(getManageProcessByStaffIdRequest,
+                                getManageProcessByStaffIdHeaders, new RuntimeOptions());
+
+                int size = resp.getBody().getResult().size();
+                for (int i = 0; i < size; i++) {
+                    GetManageProcessByStaffIdResponseBody.GetManageProcessByStaffIdResponseBodyResult responseBodyResult = null;
+                    responseBodyResult = resp.getBody().getResult().get(i);
+                    System.out.println(responseBodyResult.getFlowTitle() + "------" + responseBodyResult.getProcessCode());
+                    if (StringUtils.contains(responseBodyResult.getFlowTitle(), "合同")) {
+                        // 存储合同表单
+                        processCodeList.add(responseBodyResult.getProcessCode());
+                    }
+                }
+            } catch (TeaException err) {
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("TeaException-[index: " + index + "]-[userId: " + syncUserIds[index] + "]-[code: " + err.code + "]-[message: " + err.message + "]");
+                }
+            } catch (Exception _err) {
+                TeaException err = new TeaException(_err.getMessage(), _err);
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("Exception-[index: " + index + "]-[userId: " + syncUserIds[index] + "]-[code: " + err.code + "]-[message: " + err.message + "]");
+                }
             }
         }
+
+        System.out.println("-------------------------合同开始-------------------------");
+        for (String processCode : processCodeList) {
+            System.out.println(processCode);
+        }
+        System.out.println("-------------------------合同结束-------------------------");
+
+        return processCodeList;
     }
 
     /**
@@ -475,36 +499,120 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      * @param accessToken
      * @throws Exception
      */
-    private List<String> getContractForDemo(final String accessToken) throws Exception {
-        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders listProcessInstanceIdsHeaders = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders();
+    private List<String> getContractForDemo(final String accessToken, List <String> processCodeList) throws Exception {
+
+        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders listProcessInstanceIdsHeaders =
+                new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders();
         listProcessInstanceIdsHeaders.xAcsDingtalkAccessToken = accessToken;
-        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest = new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest()
-                .setProcessCode("PROC-53AEE967-1CA5-43CF-9489-CAF178BC1E46") // 测试API
-                .setStartTime(1664553600000L)
-                .setNextToken(0L)
-                .setMaxResults(10L);
-        try {
-            ListProcessInstanceIdsResponse resp = client.listProcessInstanceIdsWithOptions(listProcessInstanceIdsRequest, listProcessInstanceIdsHeaders, new com.aliyun.teautil.models.RuntimeOptions());
-            System.out.println("审批实例ID列表：" + resp.getBody().getResult().getList());
-            return resp.getBody().getResult().getList();
-        } catch (TeaException err) {
-            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
-                // err 中含有 code 和 message 属性，可帮助开发定位问题
-                System.out.println("TeaException");
-                System.out.println(err.code);
-                System.out.println(err.message);
-            }
-        } catch (Exception _err) {
-            TeaException err = new TeaException(_err.getMessage(), _err);
-            if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
-                // err 中含有 code 和 message 属性，可帮助开发定位问题
-                System.out.println("Exception");
-                System.out.println(err.code);
-                System.out.println(err.message);
+
+        List<String> instanceList = new ArrayList<>();
+        for (int i = 0; i < processCodeList.size(); i++) {
+            String processCode = processCodeList.get(i);
+            long curTime = System.currentTimeMillis();
+            com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest =
+                    new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest()
+//                    .setProcessCode("PROC-53AEE967-1CA5-43CF-9489-CAF178BC1E46") // 测试API
+                    .setProcessCode(processCode)
+//                    .setStartTime(1667232000000L)
+                    .setStartTime(1667232000000L)
+//                    .setEndTime(1675958400000L)
+                    .setNextToken(0L).setMaxResults(10L);
+
+            try {
+                ListProcessInstanceIdsResponse resp = client.listProcessInstanceIdsWithOptions(listProcessInstanceIdsRequest,
+                        listProcessInstanceIdsHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+//                System.out.println("审批实例ID列表：" + resp.getBody().getResult().getList());
+                instanceList.addAll(resp.getBody().getResult().getList());
+//                return resp.getBody().getResult().getList();
+            } catch (TeaException err) {
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("TeaException");
+                    System.out.println(err.code);
+                    System.out.println(err.message);
+                }
+            } catch (Exception _err) {
+                TeaException err = new TeaException(_err.getMessage(), _err);
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("Exception");
+                    System.out.println(err.code);
+                    System.out.println(err.message);
+                }
             }
         }
 
-        return null;
+        System.out.println("-------------------------审批实例开始-------------------------");
+        System.out.println("-------------------------获取审批实例ID列表总数："+ instanceList.size() + "-------------------------");
+        for (String isntance : instanceList) {
+            System.out.println(isntance);
+        }
+        System.out.println("-------------------------审批实例结束-------------------------");
+
+        return instanceList;
+    }
+
+    /**
+     * 获取审批实例ID列表
+     *
+     * @param accessToken
+     * @throws Exception
+     */
+    private List<String> getContract(final String accessToken, final String processCode) throws Exception {
+
+        com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders listProcessInstanceIdsHeaders =
+                new com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsHeaders();
+        listProcessInstanceIdsHeaders.xAcsDingtalkAccessToken = accessToken;
+
+        // https://open.dingtalk.com/document/orgapp/obtain-an-approval-list-of-instance-ids
+        List<String> instanceList = new ArrayList<>();
+        Long nextToken = 0L;
+        while (nextToken >= 0L) {
+            com.aliyun.dingtalkworkflow_1_0.models.ListProcessInstanceIdsRequest listProcessInstanceIdsRequest =
+                    new com.aliyun.dingtalkworkflow_1_0.models
+                            .ListProcessInstanceIdsRequest()
+                            .setProcessCode(processCode)
+                            .setStartTime(1667232000000L) // 2022-11-01 00:00:00------至今
+                            .setNextToken(nextToken)
+                            .setMaxResults(20L);
+            try {
+                ListProcessInstanceIdsResponse resp = client.listProcessInstanceIdsWithOptions(listProcessInstanceIdsRequest,
+                        listProcessInstanceIdsHeaders, new com.aliyun.teautil.models.RuntimeOptions());
+                String tempNextToken = resp.getBody().getResult().getNextToken();
+                if (StringUtils.isNotBlank(tempNextToken)) {
+                    nextToken = Long.parseLong(tempNextToken);
+                } else {
+                    break;
+                }
+                instanceList.addAll(resp.getBody().getResult().getList());
+            } catch (TeaException err) {
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("TeaException");
+                    System.out.println(err.code);
+                    System.out.println(err.message);
+                    break;
+                }
+            } catch (Exception _err) {
+                TeaException err = new TeaException(_err.getMessage(), _err);
+                if (!com.aliyun.teautil.Common.empty(err.code) && !com.aliyun.teautil.Common.empty(err.message)) {
+                    // err 中含有 code 和 message 属性，可帮助开发定位问题
+                    System.out.println("Exception");
+                    System.out.println(err.code);
+                    System.out.println(err.message);
+                    break;
+                }
+            }
+        }
+
+        System.out.println("-------------------------审批实例开始-------------------------");
+        System.out.println("-------------------------获取审批实例ID列表总数："+ instanceList.size() + "-------------------------");
+        for (String instance : instanceList) {
+            System.out.println(instance);
+        }
+        System.out.println("-------------------------审批实例结束-------------------------");
+
+        return instanceList;
     }
 
     /**
@@ -597,11 +705,15 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 签约日期
                 if (StringUtils.equals(item.getName(), "签约日期")) {
-                    contract.setSignDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        contract.setSignDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+                    }
                 }
                 // 交货日期
                 if (StringUtils.equals(item.getName(), "交货日期")) {
-                    contract.setDeliveryDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue())) {
+                        contract.setDeliveryDate(DateUtils.dateTime(DateUtils.YYYY_MM_DD, item.getValue()));
+                    }
                 }
                 // 我方单位名称
                 if (StringUtils.equals(item.getName(), "我方单位名称")) {
@@ -625,14 +737,14 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 合同单价
                 if (StringUtils.equals(item.getName(), "合同单价")) {
-                    if (StringUtils.isNotBlank(item.getValue())) {
-                        contract.setContractPrice(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue()) && isDigit(item.getValue())) {
+                        contract.setContractPrice(new BigDecimal(getDigit(item.getValue())));
                     }
                 }
                 // 合同总价
                 if (StringUtils.equals(item.getName(), "合同总价")) {
-                    if (StringUtils.isNotBlank(item.getValue())) {
-                        contract.setContractTotal(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue()) && isDigit(item.getValue())) {
+                        contract.setContractTotal(new BigDecimal(getDigit(item.getValue())));
                     }
                 }
                 // 账期方式
@@ -649,11 +761,15 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 港口到厂运费
                 if (StringUtils.equals(item.getName(), "港口到厂运费")) {
-                    contract.setPortToFactoryFare(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue()) && isDigit(item.getValue())) {
+                        contract.setPortToFactoryFare(new BigDecimal(getDigit(item.getValue())));
+                    }
                 }
                 // 港口到港口运费
                 if (StringUtils.equals(item.getName(), "港口到港口运费")) {
-                    contract.setPortToPortFare(new BigDecimal(item.getValue()));
+                    if (StringUtils.isNotBlank(item.getValue()) && isDigit(item.getValue())) {
+                        contract.setPortToPortFare(new BigDecimal(getDigit(item.getValue())));
+                    }
                 }
                 // 其他
                 if (StringUtils.equals(item.getName(), "其他")) {
@@ -1117,6 +1233,60 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
     }
 
     /**
+     * 生成前端显示合同数据列表
+     *
+     * @param contractContentInfoList
+     * @return
+     */
+    public void makeModelViewData(List<ContractContentInfo> contractContentInfoList) {
+
+        // 取得所有采购销售订单
+        List<PurchaseSaleOrderInfo> purchaseSaleOrderInfoList = purchaseSaleOrderInfoMapper
+                .selectPurchaseSaleOrderInfoList(new PurchaseSaleOrderInfo());
+
+        // 取得所有采购销售订单对应的合同列表
+        List<String> contractIdList = purchaseSaleOrderInfoList
+                .stream()
+                .map(PurchaseSaleOrderInfo::getContractId)
+                .collect(Collectors.toList());
+
+        // 取得所有客户主数据
+        List<MasterDataClientInfo> clientList =  masterDataClientInfoMapper
+                .selectMasterDataClientInfoList(new MasterDataClientInfo());
+
+        // 客户主数据列表转成Map（key：baseId, value：companyName）
+        Map<String, String> clientMap = clientList
+                .stream()
+                .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
+
+                // 钉钉同步过来的合同， 在采购或销售表是否存在
+        contractContentInfoList.stream().forEach(element -> {
+            String contractId = element.getContractId();
+            if (contractIdList.contains(contractId)) {
+                element.setConstractIsExist(1);
+            } else {
+                element.setConstractIsExist(0);
+            }
+
+            // 设置显示的公司名称
+            if (clientMap.containsKey(element.getOppositeCompanyName()) &&
+                    element.getOppositeCompanyName().contains("KH")) {
+                element.setBaseId(element.getOppositeCompanyName());
+                element.setCompanyName(clientMap.get(element.getOppositeCompanyName()));
+            } else {
+                clientMap.forEach((k,v)->{
+                    if(v.indexOf(element.getOppositeCompanyName()) >= 0){
+                        companyBaseId = k;
+                        return;
+                    }
+                });
+                element.setBaseId(companyBaseId);
+                element.setCompanyName(element.getOppositeCompanyName());
+            }
+        });
+    }
+
+    /**
      * // 将日期字符串（包含T,Z）转化为Date类型.
      *
      * @param utDate
@@ -1140,5 +1310,41 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         }
 
         return targetDate;
+    }
+
+    /**
+     *
+     *
+     * @param value
+     * @return
+     */
+    private boolean isDigit(final String value) {
+        String regEx = "[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(value);
+        String result = m.replaceAll("").trim();
+        if (StringUtils.isNotBlank(result)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     *
+     * @param value
+     * @return
+     */
+    private String getDigit(final String value) {
+        String regEx = "[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(value);
+        String result = m.replaceAll("").trim();
+        if (StringUtils.isNotBlank(result)) {
+            return result;
+        }
+
+        return "0";
     }
 }
