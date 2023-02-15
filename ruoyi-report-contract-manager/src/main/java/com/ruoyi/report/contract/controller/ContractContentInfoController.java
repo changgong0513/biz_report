@@ -121,8 +121,22 @@ public class ContractContentInfoController extends BaseController
                 .stream()
                 .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
 
-        contractContentInfo.setBaseId(clientMap.get(contractContentInfo.getOppositeCompanyName()));
-        contractContentInfo.setCompanyName(clientMap.get(contractContentInfo.getOppositeCompanyName()));
+        clientMap.forEach((key, value)->{
+            if (StringUtils.contains(value, contractContentInfo.getOppositeCompanyName())) {
+                contractContentInfo.setBaseId(key);
+                contractContentInfo.setCompanyName(contractContentInfo.getOppositeCompanyName());
+            }
+
+            return;
+        });
+
+        // 管理员不能保存或者生成订单
+        if (this.getDeptId() == 103 || this.getDeptId() == 100) {
+            contractContentInfo.setConstractIsExist(1);
+        } else {
+            contractContentInfo.setConstractIsExist(0);
+        }
+
         return AjaxResult.success(contractContentInfo);
     }
 

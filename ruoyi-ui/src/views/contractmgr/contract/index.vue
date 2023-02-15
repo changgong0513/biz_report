@@ -698,12 +698,7 @@ export default {
       const contractId = row.contractId || this.ids;
       getContract(contractId).then(response => {
         this.form = response.data;
-        if (row.contractId) {
-          this.form.constractIsExist = row.constractIsExist;
-        } else {
-          this.form.constractIsExist = response.data.constractIsExist;
-        }
-        this.form.constractIsExist = row.constractIsExist;
+        this.form.constractIsExist = response.data.constractIsExist;
         this.title = "修改合同数据";
         this.isUpdate = true;
       });
