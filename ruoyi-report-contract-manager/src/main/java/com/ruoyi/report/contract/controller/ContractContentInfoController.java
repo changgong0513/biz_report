@@ -121,7 +121,7 @@ public class ContractContentInfoController extends BaseController
                 .stream()
                 .collect(Collectors.toMap(MasterDataClientInfo::getBaseId, MasterDataClientInfo::getCompanyName));
 
-        clientMap.forEach((key, value)->{
+        clientMap.forEach((key, value) -> {
             if (StringUtils.contains(value, contractContentInfo.getOppositeCompanyName())) {
                 contractContentInfo.setBaseId(key);
                 contractContentInfo.setCompanyName(contractContentInfo.getOppositeCompanyName());

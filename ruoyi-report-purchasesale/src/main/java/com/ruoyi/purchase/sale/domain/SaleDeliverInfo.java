@@ -1,11 +1,13 @@
 package com.ruoyi.purchase.sale.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.poi.hpsf.Decimal;
 
 /**
  * 发货管理对象 sale_deliver_info
@@ -51,7 +53,7 @@ public class SaleDeliverInfo extends BaseEntity
     private String materialName;
 
     /** 合同单价 */
-    private Long contractPrice;
+    private BigDecimal contractPrice;
 
     /** 计量单位 */
     private String measurementUnit;
@@ -67,22 +69,22 @@ public class SaleDeliverInfo extends BaseEntity
     private String warehouseName;
 
     /** 发货数量 */
-    private Long deliverQuantity;
+    private BigDecimal deliverQuantity;
 
     /** 核算数量 */
-    private Long checkQuantity;
+    private BigDecimal checkQuantity;
 
     /** 核算单价 */
-    private Long checkPrice;
+    private BigDecimal checkPrice;
 
     /** 核算金额 */
-    private Long checkMoney;
+    private BigDecimal checkMoney;
 
     /** 货损数量 */
-    private Long cargoDamageQuantity;
+    private BigDecimal cargoDamageQuantity;
 
     /** 货损金额 */
-    private Long cargoDamageMoney;
+    private BigDecimal cargoDamageMoney;
 
     /** 运输方式 */
     private String transportMode;
@@ -91,10 +93,10 @@ public class SaleDeliverInfo extends BaseEntity
     private String transportNumber;
 
     /** 运费金额 */
-    private Long transportMoney;
+    private BigDecimal transportMoney;
 
     /** 其他金额 */
-    private Long otherMoney;
+    private BigDecimal otherMoney;
 
     /** 预期到货日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -113,265 +115,236 @@ public class SaleDeliverInfo extends BaseEntity
     /** 版本号 */
     private Long bizVersion;
 
-    public void setDeliverId(String deliverId) 
-    {
+    public String getDeliverId() {
+        return deliverId;
+    }
+
+    public void setDeliverId(String deliverId) {
         this.deliverId = deliverId;
     }
 
-    public String getDeliverId() 
-    {
-        return deliverId;
+    public String getSaleOrderId() {
+        return saleOrderId;
     }
-    public void setSaleOrderId(String saleOrderId) 
-    {
+
+    public void setSaleOrderId(String saleOrderId) {
         this.saleOrderId = saleOrderId;
     }
 
-    public String getSaleOrderId() 
-    {
-        return saleOrderId;
+    public String getSaleContractId() {
+        return saleContractId;
     }
-    public void setSaleContractId(String saleContractId) 
-    {
+
+    public void setSaleContractId(String saleContractId) {
         this.saleContractId = saleContractId;
     }
 
-    public String getSaleContractId() 
-    {
-        return saleContractId;
+    public String getHandledBy() {
+        return handledBy;
     }
-    public void setHandledBy(String handledBy) 
-    {
+
+    public void setHandledBy(String handledBy) {
         this.handledBy = handledBy;
     }
 
-    public String getHandledBy() 
-    {
-        return handledBy;
+    public Date getDeliverDate() {
+        return deliverDate;
     }
-    public void setDeliverDate(Date deliverDate) 
-    {
+
+    public void setDeliverDate(Date deliverDate) {
         this.deliverDate = deliverDate;
     }
 
-    public Date getDeliverDate() 
-    {
-        return deliverDate;
+    public String getClientId() {
+        return clientId;
     }
-    public void setClientId(String clientId) 
-    {
+
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public String getClientId() 
-    {
-        return clientId;
+    public String getClientName() {
+        return clientName;
     }
-    public void setClientName(String clientName) 
-    {
+
+    public void setClientName(String clientName) {
         this.clientName = clientName;
     }
 
-    public String getClientName() 
-    {
-        return clientName;
+    public Long getMaterialId() {
+        return materialId;
     }
-    public void setMaterialId(Long materialId) 
-    {
+
+    public void setMaterialId(Long materialId) {
         this.materialId = materialId;
     }
 
-    public Long getMaterialId() 
-    {
-        return materialId;
+    public String getMaterialName() {
+        return materialName;
     }
-    public void setMaterialName(String materialName) 
-    {
+
+    public void setMaterialName(String materialName) {
         this.materialName = materialName;
     }
 
-    public String getMaterialName() 
-    {
-        return materialName;
+    public BigDecimal getContractPrice() {
+        return contractPrice;
     }
-    public void setContractPrice(Long contractPrice) 
-    {
+
+    public void setContractPrice(BigDecimal contractPrice) {
         this.contractPrice = contractPrice;
     }
 
-    public Long getContractPrice() 
-    {
-        return contractPrice;
+    public String getMeasurementUnit() {
+        return measurementUnit;
     }
-    public void setMeasurementUnit(String measurementUnit) 
-    {
+
+    public void setMeasurementUnit(String measurementUnit) {
         this.measurementUnit = measurementUnit;
     }
 
-    public String getMeasurementUnit() 
-    {
-        return measurementUnit;
+    public String getDeliverMode() {
+        return deliverMode;
     }
-    public void setDeliverMode(String deliverMode) 
-    {
+
+    public void setDeliverMode(String deliverMode) {
         this.deliverMode = deliverMode;
     }
 
-    public String getDeliverMode() 
-    {
-        return deliverMode;
+    public String getWarehouseCode() {
+        return warehouseCode;
     }
-    public void setWarehouseCode(String warehouseCode) 
-    {
+
+    public void setWarehouseCode(String warehouseCode) {
         this.warehouseCode = warehouseCode;
     }
 
-    public String getWarehouseCode() 
-    {
-        return warehouseCode;
+    public String getWarehouseName() {
+        return warehouseName;
     }
-    public void setWarehouseName(String warehouseName) 
-    {
+
+    public void setWarehouseName(String warehouseName) {
         this.warehouseName = warehouseName;
     }
 
-    public String getWarehouseName() 
-    {
-        return warehouseName;
+    public BigDecimal getDeliverQuantity() {
+        return deliverQuantity;
     }
-    public void setDeliverQuantity(Long deliverQuantity) 
-    {
+
+    public void setDeliverQuantity(BigDecimal deliverQuantity) {
         this.deliverQuantity = deliverQuantity;
     }
 
-    public Long getDeliverQuantity() 
-    {
-        return deliverQuantity;
+    public BigDecimal getCheckQuantity() {
+        return checkQuantity;
     }
-    public void setCheckQuantity(Long checkQuantity) 
-    {
+
+    public void setCheckQuantity(BigDecimal checkQuantity) {
         this.checkQuantity = checkQuantity;
     }
 
-    public Long getCheckQuantity() 
-    {
-        return checkQuantity;
+    public BigDecimal getCheckPrice() {
+        return checkPrice;
     }
-    public void setCheckPrice(Long checkPrice) 
-    {
+
+    public void setCheckPrice(BigDecimal checkPrice) {
         this.checkPrice = checkPrice;
     }
 
-    public Long getCheckPrice() 
-    {
-        return checkPrice;
+    public BigDecimal getCheckMoney() {
+        return checkMoney;
     }
-    public void setCheckMoney(Long checkMoney) 
-    {
+
+    public void setCheckMoney(BigDecimal checkMoney) {
         this.checkMoney = checkMoney;
     }
 
-    public Long getCheckMoney() 
-    {
-        return checkMoney;
+    public BigDecimal getCargoDamageQuantity() {
+        return cargoDamageQuantity;
     }
-    public void setCargoDamageQuantity(Long cargoDamageQuantity) 
-    {
+
+    public void setCargoDamageQuantity(BigDecimal cargoDamageQuantity) {
         this.cargoDamageQuantity = cargoDamageQuantity;
     }
 
-    public Long getCargoDamageQuantity() 
-    {
-        return cargoDamageQuantity;
+    public BigDecimal getCargoDamageMoney() {
+        return cargoDamageMoney;
     }
-    public void setCargoDamageMoney(Long cargoDamageMoney) 
-    {
+
+    public void setCargoDamageMoney(BigDecimal cargoDamageMoney) {
         this.cargoDamageMoney = cargoDamageMoney;
     }
 
-    public Long getCargoDamageMoney() 
-    {
-        return cargoDamageMoney;
+    public String getTransportMode() {
+        return transportMode;
     }
-    public void setTransportMode(String transportMode) 
-    {
+
+    public void setTransportMode(String transportMode) {
         this.transportMode = transportMode;
     }
 
-    public String getTransportMode() 
-    {
-        return transportMode;
+    public String getTransportNumber() {
+        return transportNumber;
     }
-    public void setTransportNumber(String transportNumber) 
-    {
+
+    public void setTransportNumber(String transportNumber) {
         this.transportNumber = transportNumber;
     }
 
-    public String getTransportNumber() 
-    {
-        return transportNumber;
+    public BigDecimal getTransportMoney() {
+        return transportMoney;
     }
-    public void setTransportMoney(Long transportMoney) 
-    {
+
+    public void setTransportMoney(BigDecimal transportMoney) {
         this.transportMoney = transportMoney;
     }
 
-    public Long getTransportMoney() 
-    {
-        return transportMoney;
+    public BigDecimal getOtherMoney() {
+        return otherMoney;
     }
-    public void setOtherMoney(Long otherMoney) 
-    {
+
+    public void setOtherMoney(BigDecimal otherMoney) {
         this.otherMoney = otherMoney;
     }
 
-    public Long getOtherMoney() 
-    {
-        return otherMoney;
+    public Date getExpectArrivalDate() {
+        return expectArrivalDate;
     }
-    public void setExpectArrivalDate(Date expectArrivalDate) 
-    {
+
+    public void setExpectArrivalDate(Date expectArrivalDate) {
         this.expectArrivalDate = expectArrivalDate;
     }
 
-    public Date getExpectArrivalDate() 
-    {
-        return expectArrivalDate;
-    }
-    public void setRequireArrivalDate(Date requireArrivalDate) 
-    {
-        this.requireArrivalDate = requireArrivalDate;
-    }
-
-    public Date getRequireArrivalDate() 
-    {
+    public Date getRequireArrivalDate() {
         return requireArrivalDate;
     }
 
-    public void setAccountPeriod(int accountPeriod) { this.accountPeriod = accountPeriod; }
+    public void setRequireArrivalDate(Date requireArrivalDate) {
+        this.requireArrivalDate = requireArrivalDate;
+    }
 
-    public int getAccountPeriod()
-    {
+    public int getAccountPeriod() {
         return accountPeriod;
     }
 
-    public void setDeliverRemark(String deliverRemark)
-    {
+    public void setAccountPeriod(int accountPeriod) {
+        this.accountPeriod = accountPeriod;
+    }
+
+    public String getDeliverRemark() {
+        return deliverRemark;
+    }
+
+    public void setDeliverRemark(String deliverRemark) {
         this.deliverRemark = deliverRemark;
     }
 
-    public String getDeliverRemark()
-    {
-        return deliverRemark;
-    }
-    public void setBizVersion(Long bizVersion) 
-    {
-        this.bizVersion = bizVersion;
+    public Long getBizVersion() {
+        return bizVersion;
     }
 
-    public Long getBizVersion() 
-    {
-        return bizVersion;
+    public void setBizVersion(Long bizVersion) {
+        this.bizVersion = bizVersion;
     }
 
     @Override

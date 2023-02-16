@@ -150,7 +150,7 @@
     />
 
     <!-- 添加或修改采购收货销售发货管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <!-- 发货编号 -->
@@ -169,9 +169,10 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入销售合同编号关键字"
-                style="width: 240px"
+                style="width: 200px"
                 :remote-method="remoteMethodSaleContract"
-                :loading="remoteLoadingSaleContract">
+                :loading="remoteLoadingSaleContract"
+                @change="selChangeSaleContract">
                 <el-option
                   v-for="item in optionsSaleContract"
                   :key="item.value"
@@ -184,7 +185,7 @@
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
-              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" />
+              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 发货日期 -->
@@ -195,7 +196,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择发货日期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -215,7 +216,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入客户编号关键字"
-                style="width: 240px"
+                style="width: 200px"
                 :remote-method="remoteMethodClientName"
                 :loading="remoteLoadingSClientName"
                 @change="selChangeClientName">
@@ -237,7 +238,7 @@
                 remote
                 clearable
                 reserve-keyword
-                style="width: 240px"
+                style="width: 200px"
                 placeholder="请输入物料编号关键字"
                 :remote-method="remoteMethodMaterialId"
                 :loading="remoteLoadingMaterialId"
@@ -262,7 +263,7 @@
                 remote
                 clearable
                 reserve-keyword
-                style="width: 240px"
+                style="width: 200px"
                 placeholder="请输入物料名称关键字"
                 :remote-method="remoteMethodMaterialName"
                 :loading="remoteLoadingMaterialName"
@@ -279,7 +280,7 @@
           <!-- 合同单价 -->
           <el-col :span="8">
             <el-form-item label="合同单价" prop="contractPrice">
-              <el-input v-model="form.contractPrice" placeholder="请输入合同单价" style="width: 240px" />
+              <el-input v-model="form.contractPrice" placeholder="请输入合同单价" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 计量单位 -->
@@ -289,7 +290,7 @@
                 v-model="form.measurementUnit"
                 placeholder="计量单位"
                 clearable
-                style="width: 240px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
@@ -309,7 +310,7 @@
                 v-model="form.deliverMode"
                 placeholder="发货方式"
                 clearable
-                style="width: 240px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.purchasesale_deliver_mode"
@@ -330,7 +331,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入仓库编号关键字"
-                style="width: 240px"
+                style="width: 200px"
                 :remote-method="remoteWarehouseCode"
                 :loading="remoteLoadingWarehouse"
                 @change="selChangeWarehouse">
@@ -353,7 +354,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入仓库名称关键字"
-                style="width: 240px"
+                style="width: 200px"
                 :remote-method="remoteWarehouseName"
                 :loading="remoteLoadingWarehouseName"
                 @change="selChangeWarehouseId">
@@ -371,19 +372,19 @@
           <!-- 发货数量 -->
           <el-col :span="8">
             <el-form-item label="发货数量" prop="deliverQuantity">
-              <el-input v-model="form.deliverQuantity" placeholder="请输入发货数量" style="width: 240px" />
+              <el-input v-model="form.deliverQuantity" placeholder="请输入发货数量" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 核算数量 -->
           <el-col :span="8">
             <el-form-item label="核算数量" prop="checkQuantity">
-              <el-input v-model="form.checkQuantity" placeholder="请输入核算数量" style="width: 240px" />
+              <el-input v-model="form.checkQuantity" placeholder="请输入核算数量" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 核算单价 -->
           <el-col :span="8">
             <el-form-item label="核算单价" prop="checkPrice">
-              <el-input v-model="form.checkPrice" placeholder="请输入核算单价" style="width: 240px" />
+              <el-input v-model="form.checkPrice" placeholder="请输入核算单价" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -391,19 +392,19 @@
           <!-- 核算金额 -->
           <el-col :span="8">
             <el-form-item label="核算金额" prop="checkMoney">
-              <el-input v-model="form.checkMoney" placeholder="请输入核算金额" style="width: 240px" />
+              <el-input v-model="form.checkMoney" placeholder="请输入核算金额" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 货损数量 -->
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">
-              <el-input v-model="form.cargoDamageQuantity" placeholder="请输入货损数量" style="width: 240px" />
+              <el-input v-model="form.cargoDamageQuantity" placeholder="请输入货损数量" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 货损金额 -->
           <el-col :span="8">
             <el-form-item label="货损金额" prop="cargoDamageMoney">
-              <el-input v-model="form.cargoDamageMoney" placeholder="请输入货损金额" style="width: 240px" />
+              <el-input v-model="form.cargoDamageMoney" placeholder="请输入货损金额" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -415,7 +416,7 @@
                 v-model="form.transportMode"
                 placeholder="运输方式"
                 clearable
-                style="width: 240px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.purchasesale_transport_mode"
@@ -429,13 +430,13 @@
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
-              <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 240px" />
+              <el-input v-model="form.transportNumber" placeholder="请输入运输单号" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 运输金额 -->
           <el-col :span="8">
             <el-form-item label="运输金额" prop="transportMoney">
-              <el-input v-model="form.transportMoney" placeholder="请输入运输金额" style="width: 240px" />
+              <el-input v-model="form.transportMoney" placeholder="请输入运输金额" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -443,7 +444,7 @@
           <!-- 其他金额 -->
           <el-col :span="8">
             <el-form-item label="其他金额" prop="otherMoney">
-              <el-input v-model="form.otherMoney" placeholder="请输入其他金额" style="width: 240px" />
+              <el-input v-model="form.otherMoney" placeholder="请输入其他金额" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 预期到货日期 -->
@@ -454,7 +455,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择预期到货日期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -466,7 +467,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择要求到货日期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -475,7 +476,7 @@
           <!-- 账期（关联采购（销售）订单信息表的账期） -->
           <el-col :span="8">
             <el-form-item label="账期" prop="accountPeriod">
-              <el-input v-model="form.accountPeriod" placeholder="天数" style="margin-left: 10px; width: 60px" />（天）
+              <el-input v-model="form.accountPeriod" placeholder="天数" style="width: 80px" /><span style="margin-left: 10px;">（天）</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -483,7 +484,7 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="deliverRemark">
-              <el-input v-model="form.deliverRemark" type="textarea" style="width: 90%" maxlength="128"
+              <el-input v-model="form.deliverRemark" type="textarea" maxlength="128"
                 show-word-limit />
             </el-form-item>
           </el-col>
@@ -496,7 +497,7 @@
     </el-dialog>
 
     <!--查看销售发货详细对话框 -->
-    <el-dialog :title="title" :visible.sync="openDetail" width="70%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" label-width="100px">
         <el-row>
           <!-- 发货编号 -->
@@ -505,26 +506,20 @@
               <el-input v-model="formDetail.deliverId" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-          <!-- 销售订单编号 -->
-          <el-col :span="8">
-            <el-form-item label="销售订单编号">
-              <el-input v-model="formDetail.saleOrderId" :disabled="true" style="width: 200px" />
-            </el-form-item>
-          </el-col>
           <!-- 销售合同编号 -->
           <el-col :span="8">
             <el-form-item label="销售合同编号">
               <el-input v-model="formDetail.saleContractId" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
               <el-input v-model="formDetail.handledBy" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 发货日期 -->
           <el-col :span="8">
             <el-form-item label="发货日期" prop="deliverDate">
@@ -537,14 +532,14 @@
               <el-input v-model="formDetail.clientId" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 客户姓名 -->
           <el-col :span="8">
             <el-form-item label="客户姓名" prop="clientName">
               <el-input v-model="formDetail.clientName" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 物料编号 -->
           <el-col :span="8">
             <el-form-item label="物料编号" prop="materialId">
@@ -557,18 +552,34 @@
               <el-input v-model="formDetail.materialName" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 合同单价 -->
           <el-col :span="8">
             <el-form-item label="合同单价" prop="contractPrice">
               <el-input v-model="formDetail.contractPrice" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 计量单位 -->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="measurementUnit">
-              <el-input v-model="formDetail.measurementUnit" :disabled="true" style="width: 200px" />
+              <!-- <template>
+                <dict-tag :options="dict.type.masterdata_warehouse_measurement_unit" :disabled="true" :value="formDetail.measurementUnit" style="width: 200px"/>
+              </template> -->
+              <el-select
+                v-model="formDetail.measurementUnit"
+                placeholder="计量单位"
+                clearable
+                :disabled="true"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="parseInt(dict.value)"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <!-- 发货方式 -->
@@ -592,14 +603,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 仓库编号 -->
           <el-col :span="8">
             <el-form-item label="仓库编号" prop="warehouseCode">
               <el-input v-model="formDetail.warehouseCode" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 仓库名称 -->
           <el-col :span="8">
             <el-form-item label="仓库名称" prop="warehouseName">
@@ -612,14 +623,14 @@
               <el-input v-model="formDetail.deliverQuantity" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 核算数量 -->
           <el-col :span="8">
             <el-form-item label="核算数量" prop="checkQuantity">
               <el-input v-model="formDetail.checkQuantity" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 核算单价 -->
           <el-col :span="8">
             <el-form-item label="核算单价" prop="checkPrice">
@@ -632,14 +643,14 @@
               <el-input v-model="formDetail.checkMoney" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 货损数量 -->
           <el-col :span="8">
             <el-form-item label="货损数量" prop="cargoDamageQuantity">
               <el-input v-model="formDetail.cargoDamageQuantity" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 货损金额 -->
           <el-col :span="8">
             <el-form-item label="货损金额" prop="cargoDamageMoney">
@@ -667,14 +678,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 运输单号 -->
           <el-col :span="8">
             <el-form-item label="运输单号" prop="transportNumber">
               <el-input v-model="formDetail.transportNumber" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 运输金额 -->
           <el-col :span="8">
             <el-form-item label="运输金额" prop="transportMoney">
@@ -687,14 +698,14 @@
               <el-input v-model="formDetail.otherMoney" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <!-- 预期到货日期 -->
           <el-col :span="8">
             <el-form-item label="预期到货日期" prop="expectArrivalDate">
               <el-input v-model="formDetail.expectArrivalDate" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <!-- 要求到货日期 -->
           <el-col :span="8">
             <el-form-item label="要求到货日期" prop="requireArrivalDate">
@@ -702,10 +713,9 @@
             </el-form-item>
           </el-col>
           <!-- 账期（关联采购（销售）订单信息表的账期） -->
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item label="账期" prop="accountPeriod">
-              <div style="margin-left: 10px; width: 60px">
-                <el-input v-model="formDetail.accountPeriod" :disabled="true" />（天）</div>
+              <div><el-input v-model="formDetail.accountPeriod" :disabled="true" style="width: 80px;" /><span style="margin-left: 10px;">（天）</span></div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -713,7 +723,7 @@
           <!-- 备注 -->
           <el-col :span="24">
             <el-form-item label="备注" prop="deliverRemark">
-              <el-input v-model="formDetail.deliverRemark" :disabled="true" style="width: 200px" />
+              <el-input v-model="formDetail.deliverRemark" :disabled="true" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -805,7 +815,8 @@ export default {
           { required: true, message: "发货日期不能为空", trigger: "blur" }
         ],
         contractPrice: [
-          { required: true, message: "合同单价不能为空", trigger: "blur" }
+          { required: true, message: "合同单价不能为空", trigger: "blur" },
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的合同单价", trigger: "blur" }
         ],
         measurementUnit: [
           { required: true, message: "计量单位不能为空", trigger: "blur" }
@@ -813,6 +824,30 @@ export default {
         deliverMode: [
           { required: true, message: "发货方式不能为空", trigger: "change" }
         ],
+        deliverQuantity: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的发货数量", trigger: "blur" }
+        ],
+        checkQuantity: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的核算数量", trigger: "blur" }
+        ],
+        checkPrice: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的核算单价", trigger: "blur" }
+        ],
+        checkMoney: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的核算金额", trigger: "blur" }
+        ],
+        cargoDamageQuantity: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的货损数量", trigger: "blur" }
+        ],
+        cargoDamageMoney: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的货损金额", trigger: "blur" }
+        ],
+        transportMoney: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的运费金额", trigger: "blur" }
+        ],
+        transportMoney: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的其他金额", trigger: "blur" }
+        ]
       },
       isUpdate: false,
       formDetail: {},
@@ -845,6 +880,9 @@ export default {
   },
   created() {
     this.getList();
+    listMaterialData(this.queryParams).then(response => {
+      this.listMaterialName = response.rows;
+    });
   },
   methods: {
     /** 根据输入销售合同编号关键字，取得合同编号列表 */
@@ -969,6 +1007,27 @@ export default {
         this.optionsWarehouseName = [];
       }
     },
+    /** 销售合同编号下拉列表框，选择值改变后回调方法 */
+    selChangeSaleContract(selValue) {
+
+      let selSaleContract = this.listSaleContract.find(item => {
+        return item.orderId === selValue;
+      });
+      
+      this.form.handledBy = selSaleContract.handledBy; // 经办人
+      this.form.clientId = selSaleContract.supplierName; // 客户编号
+      this.form.clientName = selSaleContract.supplierRealName; // 客户姓名
+
+      let selMaterialData = this.listMaterialName.find(item => {
+        return item.materialName == selSaleContract.materialName;
+      });
+      
+      this.form.materialId = selMaterialData.materialId; // 物料编号
+      this.form.materialName = selSaleContract.materialName; // 物料名称
+      this.form.contractPrice = selSaleContract.unitPrice; // 合同单价
+      this.form.measurementUnit = parseInt(selSaleContract.meteringUnit); // 计量单位
+
+    },
     /** 客户姓名下拉列表框，选择值改变后回调方法 */
     selChangeClientName(selValue) {
       console.log("输入的客户姓名关键字是：" + selValue);
@@ -1090,6 +1149,7 @@ export default {
       const deliverId = this.ids
       getDeliver(deliverId).then(response => {
         this.form = response.data;
+        this.form.measurementUnit = parseInt(response.data.measurementUnit);
         this.open = true;
         this.title = "修改发货信息";
         this.isUpdate = true;
@@ -1135,7 +1195,37 @@ export default {
     /** 查看发货数据 */ 
     handleView(row) {
       this.formDetail = row;
+      this.formDetail.measurementUnit = parseInt(row.measurementUnit);
+      this.title = "查看发货信息";
       this.openDetail = true;
+    },
+    /** 金额格式校验 */
+    getNumberResult(num, decimal = 2) {
+      if (!num) return '';
+      num = num[num.length - 1] === '.' && num.match(/\./g).length === 1 ? num : parseFloat(num);
+      if(isNaN(num)) return'';
+      num = num.toString();
+      // 初次阻止0-9及.以外的字符
+      if (!/^[0-9,.]*$/.test(num)) return num.slice(0, -1);
+
+      const reg = /^(([1-9][0-9]*\.[0-9][0-9]?)|([0]\.[0-9][0-9]?)|([1-9][0-9]*)|([0]{1}))$/;
+      if (!reg.test(num) && num.match(/\./g).length > 1) {
+        num = num.slice(0, -1)
+      } else if (num.includes('.') && num.match(/\./g).length > 1) {
+        num = num.slice(0, -1)
+      } else if (num.includes('.') && !parseInt(decimal)) {
+        num = num.slice(0, -1)
+      } else if (num.includes('.') && num.split('.')[1].length > decimal) {
+        num = num.slice(0, -1)
+      }
+    
+      if (num.includes('.')) {
+        const index = num.indexOf('.');
+        const len = num.length;
+        return len - 1 - index > decimal ? num.slice(0, index + decimal + 1) : num
+      } else {
+        return num;
+      }
     }
   }
 };

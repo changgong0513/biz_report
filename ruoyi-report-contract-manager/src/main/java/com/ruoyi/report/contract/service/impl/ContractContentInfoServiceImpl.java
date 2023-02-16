@@ -90,6 +90,8 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
 
     private static com.aliyun.dingtalkworkflow_1_0.Client client = null;
 
+    private Map<String, Integer> materialMap = new HashMap<>();
+
     static {
         try {
             client = createClient();
@@ -209,6 +211,14 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
      */
     @Override
     public int syncContractContentInfo() throws Exception {
+
+        // 取得主数据管理中所有物料列表
+        List<MasterDataMaterialInfo> masterDataMaterialInfoList =  masterDataMaterialInfoMapper
+                .selectMasterDataMaterialInfoList(new MasterDataMaterialInfo());
+        // 取得物料名称 -> 物料编号的Map
+        materialMap = masterDataMaterialInfoList.stream().collect(Collectors
+                .toMap(MasterDataMaterialInfo::getMaterialName, MasterDataMaterialInfo::getMaterialId));
+
         // 获取当前企业钉钉访问令牌
         String accessToken = getDingTalkAccessToken();
 
@@ -680,7 +690,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 System.out.println(item.getName() + "------" + item.getValue());
                 // 货物名称
                 if (StringUtils.equals(item.getName(), "货物名称")) {
-                    contract.setGoodsId(UUID.randomUUID().toString().trim().replace("-", ""));
+                    contract.setGoodsId(String.valueOf(materialMap.get(item.getValue())));
                     contract.setGoodsName(item.getValue());
                 }
                 // 合同类型
