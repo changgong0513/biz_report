@@ -587,11 +587,15 @@ export default {
     },
     /** 认领按钮操作 */
     handleFkrl(row) {
-      this.resetFkrl();
+      this.formHkrl = {
+        fkrlBmbh: null,
+        fkrlPch: null,
+        fkrlHtbh: null,
+        fkrlJe: null,
+      };
+
       this.openFkrl = true;
       this.titleFkrl = "付款认领";
-      this.formFkrl.fkId = row.fkId;
-      this.formFkrl.fkJe = row.fkJe;
       this.formFkrl.fkrlJe = row.fkJe;
     },
     /** 付款认领提交按钮 */
