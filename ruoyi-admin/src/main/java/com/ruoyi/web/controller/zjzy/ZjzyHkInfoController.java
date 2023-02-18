@@ -81,6 +81,10 @@ public class ZjzyHkInfoController extends BaseController
     public void export(HttpServletResponse response, ZjzyHkInfo zjzyHkInfo)
     {
         List<ZjzyHkInfo> list = zjzyHkInfoService.selectZjzyHkInfoList(zjzyHkInfo);
+        for (ZjzyHkInfo item: list) {
+            item.setHkRealKhmc(item.getHkKhmc());
+        }
+
         ExcelUtil<ZjzyHkInfo> util = new ExcelUtil<ZjzyHkInfo>(ZjzyHkInfo.class);
         util.exportExcel(response, list, "回款认领数据");
     }

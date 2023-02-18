@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectZjzyHkInfoByHkId" parameterType="String" resultMap="ZjzyHkInfoResult">
         <include refid="selectZjzyHkInfoVo"/>
-        where hk_id = #{hkId}
+        where t1.hk_id = #{hkId}
     </select>
 
     <select id="getHkrlTotal" resultType="java.lang.Double">

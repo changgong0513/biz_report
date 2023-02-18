@@ -166,7 +166,7 @@
           <el-input v-model="form.hkHkje" placeholder="请输入回款金额" style="width: 300px;" />
           <span style="margin: 10px;">元</span>
         </el-form-item>
-        <el-form-item label="回款状态" prop="hkHkzt">
+        <!-- <el-form-item label="回款状态" prop="hkHkzt">
           <el-select v-model="form.hkHkzt" placeholder="请选择回款状态" style="width: 300px;">
             <el-option
               v-for="dict in dict.type.zjzy_hkrl_status"
@@ -175,7 +175,7 @@
               :value="dict.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -563,17 +563,22 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加回款认领";
+      this.title = "添加回款";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const hkId = row.hkId || this.ids
-      getHkrl(hkId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改回款认领";
+      let selectHkItem = null;
+      this.hkrlList.forEach(element => {
+        if (element.hkId == hkId) {
+          selectHkItem = element;
+        }
       });
+     
+      this.form = selectHkItem;
+      this.open = true;
+      this.title = "修改回款";
     },
      /** 认领按钮操作 */
     handleHkrl(row) {
@@ -632,9 +637,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/hkrl/export', {
+      this.download('/zjzy/hk/export', {
         ...this.queryParams
-      }, `hkrl_${new Date().getTime()}.xlsx`)
+      }, `回款认领_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     },
     /** 导入按钮操作 */
     handleImport() {
