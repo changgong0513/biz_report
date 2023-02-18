@@ -46,7 +46,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            回款金额
+            利息
           </div>
           <count-to :start-val="0" :end-val="hkrlTotal" :duration="3600" class="card-panel-num" />
         </div>
