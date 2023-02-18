@@ -30,6 +30,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -40,38 +41,6 @@
           @click="handleFkSync"
         >同步</el-button>
       </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['zjzy:fk:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['zjzy:fk:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['zjzy:fk:remove']"
-        >删除</el-button>
-      </el-col> -->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -84,9 +53,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="fkList" @selection-change="handleSelectionChange"
-    @row-dblclick="handleView">
-      <el-table-column type="selection" width="55" align="center" />
+    <el-table v-loading="loading" :data="fkList" @row-dblclick="handleView">
       <el-table-column label="客户名称" align="center" prop="fkKhmc" style="width: 350px;" />
       <el-table-column label="付款账号" align="center" prop="fkZh" />
       <el-table-column label="付款金额" align="center" prop="fkJe" />
@@ -116,76 +83,12 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改付款对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="客户编号" prop="fkKhbh">
-          <el-input v-model="form.fkKhbh" placeholder="请输入客户编号" />
-        </el-form-item>
-        <el-form-item label="客户名称" prop="fkKhmc">
-          <el-input v-model="form.fkKhmc" placeholder="请输入客户名称" />
-        </el-form-item>
-        <el-form-item label="付款账号" prop="fkZh">
-          <el-input v-model="form.fkZh" placeholder="请输入付款账号" />
-        </el-form-item>
-        <el-form-item label="付款金额" prop="fkJe">
-          <el-input v-model="form.fkJe" placeholder="请输入付款金额" />
-        </el-form-item>
-        <el-form-item label="付款状态" prop="fkZt">
-          <el-input v-model="form.fkZt" placeholder="请输入付款状态" />
-        </el-form-item>
-        <el-form-item label="付款事由" prop="fkSy">
-          <el-input v-model="form.fkSy" placeholder="请输入付款事由" />
-        </el-form-item>
-        <el-form-item label="贸易品种编号" prop="fkWlbh">
-          <el-input v-model="form.fkWlbh" placeholder="请输入贸易品种编号" />
-        </el-form-item>
-        <el-form-item label="贸易品种名称" prop="fkWlmc">
-          <el-input v-model="form.fkWlmc" placeholder="请输入贸易品种名称" />
-        </el-form-item>
-        <el-form-item label="其他品种名称" prop="fkQtpzmc">
-          <el-input v-model="form.fkQtpzmc" placeholder="请输入其他品种名称" />
-        </el-form-item>
-        <el-form-item label="资金用途" prop="fkZjyt">
-          <el-input v-model="form.fkZjyt" placeholder="请输入资金用途" />
-        </el-form-item>
-        <el-form-item label="单价" prop="fkDj">
-          <el-input v-model="form.fkDj" placeholder="请输入单价" />
-        </el-form-item>
-        <el-form-item label="数量" prop="fkSl">
-          <el-input v-model="form.fkSl" placeholder="请输入数量" />
-        </el-form-item>
-        <el-form-item label="收款账号" prop="fkSkzh">
-          <el-input v-model="form.fkSkzh" placeholder="请输入收款账号" />
-        </el-form-item>
-        <el-form-item label="开户银行" prop="fkKhyh">
-          <el-input v-model="form.fkKhyh" placeholder="请输入开户银行" />
-        </el-form-item>
-        <el-form-item label="银行行号" prop="fkYhhh">
-          <el-input v-model="form.fkYhhh" placeholder="请输入银行行号" />
-        </el-form-item>
-        <el-form-item label="运输方式" prop="fkYsfs">
-          <el-input v-model="form.fkYsfs" placeholder="请输入运输方式" />
-        </el-form-item>
-        <el-form-item label="装车、到货" prop="fkZcdh">
-          <el-input v-model="form.fkZcdh" placeholder="请输入装车、到货" />
-        </el-form-item>
-        <el-form-item label="备注" prop="fkBz">
-          <el-input v-model="form.fkBz" placeholder="请输入备注" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-
     <!-- 添加或修改付款认领对话框 -->
     <el-dialog :title="titleFkrl" :visible.sync="openFkrl" width="500px" append-to-body>
-      <el-form ref="formFkrl" :model="formFkrl" :rules="rulesFkrl" label-width="110px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-form-item label="认领部门" prop="fkrlBmbh">
           <treeselect 
-            v-model="formFkrl.fkrlBmbh" 
+            v-model="form.fkrlBmbh" 
             :options="deptOptions" 
             :show-count="true" 
             placeholder="请选择认领部门" 
@@ -193,7 +96,7 @@
         </el-form-item>
         <el-form-item label="批次号" prop="fkrlPch">
           <el-select
-            v-model="formFkrl.fkrlPch"
+            v-model="form.fkrlPch"
             filterable
             remote
             clearable
@@ -212,7 +115,7 @@
         </el-form-item>
         <el-form-item label="合同编号" prop="fkrlHtbh">
           <el-select
-            v-model="formFkrl.fkrlHtbh"
+            v-model="form.fkrlHtbh"
             filterable
             remote
             clearable
@@ -230,7 +133,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="认领金额" prop="fkrlJe">
-          <el-input ref="inputHkrlJe" v-model="formFkrl.fkrlJe" placeholder="请输入认领金额" style="width: 240px;" />
+          <el-input v-model="form.fkrlJe" placeholder="请输入认领金额" style="width: 240px;" />
           <span style="margin: 10px;">元</span>
         </el-form-item>
       </el-form>
@@ -263,7 +166,7 @@
 </template>
 
 <script>
-import { listFk, getFk, delFk, addFk, updateFk, fkSync, addFkrl, listFkrlDetailList } from "@/api/zjzy/fkrl";
+import { listFk, addFk, updateFk, fkSync, addFkrl, listFkrlDetailList } from "@/api/zjzy/fkrl";
 import { getHkrlHtbh } from "@/api/zjzy/hkrl";
 import { listClient } from "@/api/masterdata/client";
 import { listPch } from "@/api/masterdata/pch";
@@ -308,51 +211,14 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        fkKhbh: null,
         fkKhmc: null,
         fkZh: null,
-        fkJe: null,
         fkZt: null,
-        fkSy: null,
-        fkWlbh: null,
-        fkWlmc: null,
-        fkQtpzmc: null,
-        fkZjyt: null,
-        fkDj: null,
-        fkSl: null,
-        fkSkzh: null,
-        fkKhyh: null,
-        fkYhhh: null,
-        fkYsfs: null,
-        fkZcdh: null,
-        fkBz: null,
-        bizVersion: null
       },
       // 表单参数
       form: {},
-      formFkrl: {},
       // 表单校验
       rules: {
-        fkKhbh: [
-          { required: true, message: "客户编号不能为空", trigger: "blur" }
-        ],
-        fkKhmc: [
-          { required: true, message: "客户名称不能为空", trigger: "blur" }
-        ],
-        fkZh: [
-          { required: true, message: "付款账号不能为空", trigger: "blur" }
-        ],
-        fkJe: [
-          { required: true, message: "付款金额不能为空", trigger: "blur" }
-        ],
-        fkZt: [
-          { required: true, message: "付款状态不能为空", trigger: "blur" }
-        ],
-        fkSl: [
-          { required: true, message: "数量不能为空", trigger: "blur" }
-        ],
-      },
-      rulesFkrl: {
         fkrlBmbh: [
           { required: true, message: "付款认领部门不能为空", trigger: "blur" }
         ],
@@ -499,12 +365,7 @@ export default {
         fkYhhh: null,
         fkYsfs: null,
         fkZcdh: null,
-        fkBz: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        bizVersion: null
+        fkBz: null
       };
       this.resetForm("form");
     },
@@ -517,28 +378,6 @@ export default {
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.fkId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加付款";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const fkId = row.fkId || this.ids
-      getFk(fkId).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改付款";
-      });
     },
     /** 提交按钮 */
     submitForm() {
@@ -560,24 +399,14 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const fkIds = row.fkId || this.ids;
-      this.$modal.confirm('是否确认删除付款编号为"' + fkIds + '"的数据项？').then(function() {
-        return delFk(fkIds);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
-    },
     /** 导出按钮操作 */
     handleExport() {
       this.download('zjzy/fk/export', {
         ...this.queryParams
       }, `fk_${new Date().getTime()}.xlsx`)
     },
-      /** 同步付款数据 */
-      handleFkSync() {
+    /** 同步付款数据 */
+    handleFkSync() {
       this.loading = true;
       fkSync(this.queryParams).then(response => {
         this.$modal.msgSuccess("同步付款数据成功");
@@ -587,27 +416,27 @@ export default {
     },
     /** 认领按钮操作 */
     handleFkrl(row) {
-      this.formHkrl = {
+      this.form = {
         fkrlBmbh: null,
-        fkrlPch: null,
+        fhkrlPch: null,
         fkrlHtbh: null,
-        fkrlJe: null,
+        fkrlJe: null
       };
 
-      this.openFkrl = true;
       this.titleFkrl = "付款认领";
-      this.formFkrl.fkrlJe = row.fkJe;
+      this.form.fkrlJe = row.fkJe;
+      this.openFkrl = true;
     },
     /** 付款认领提交按钮 */
     submitFormFkrl() {
-      this.$refs["formFkrl"].validate(valid => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
-          if (parseInt(this.formFkrl.fkJe) < parseInt(this.formFkrl.fkrlJe) ) {
+          if (parseInt(this.form.fkJe) < parseInt(this.form.fkrlJe) ) {
             this.$modal.msgError("付款认领金额超过付款金额，请重新输入！");
             return false;
           }
 
-          addFkrl(this.formFkrl).then(response => {
+          addFkrl(this.form).then(response => {
             this.$modal.msgSuccess("付款认领成功");
             this.openHkrl = false;
             this.getList();
@@ -622,15 +451,13 @@ export default {
     },
     /** 表单重置 */
     resetFkrl() {
-      this.formHkrl = {
+      this.form = {
         fkrlBmbh: null,
         fhkrlPch: null,
         fkrlHtbh: null,
-        fkrlJe: null,
-        fkId: null,
-        fkje: null
+        fkrlJe: null
       };
-      this.resetForm("formFkrl");
+      this.resetForm("form");
     },
     /** 查询部门下拉树结构 */
     getDeptTree() {
