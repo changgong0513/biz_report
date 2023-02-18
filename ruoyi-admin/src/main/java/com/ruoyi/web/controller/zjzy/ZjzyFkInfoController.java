@@ -77,49 +77,6 @@ public class ZjzyFkInfoController extends BaseController
         util.exportExcel(response, list, "付款数据");
     }
 
-    /**
-     * 获取付款详细信息
-     */
-    // @PreAuthorize("@ss.hasPermi('zjzy:fk:query')")
-    @GetMapping(value = "/{fkId}")
-    public AjaxResult getInfo(@PathVariable("fkId") String fkId)
-    {
-        return AjaxResult.success(zjzyFkInfoService.selectZjzyFkInfoByFkId(fkId));
-    }
-
-    /**
-     * 新增付款
-     */
-    // @PreAuthorize("@ss.hasPermi('zjzy:fk:add')")
-    @Log(title = "付款", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody ZjzyFkInfo zjzyFkInfo)
-    {
-        return toAjax(zjzyFkInfoService.insertZjzyFkInfo(zjzyFkInfo));
-    }
-
-    /**
-     * 修改付款
-     */
-    // @PreAuthorize("@ss.hasPermi('zjzy:fk:edit')")
-    @Log(title = "付款", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody ZjzyFkInfo zjzyFkInfo)
-    {
-        return toAjax(zjzyFkInfoService.updateZjzyFkInfo(zjzyFkInfo));
-    }
-
-    /**
-     * 删除付款
-     */
-    // @PreAuthorize("@ss.hasPermi('zjzy:fk:remove')")
-    @Log(title = "付款", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{fkIds}")
-    public AjaxResult remove(@PathVariable String[] fkIds)
-    {
-        return toAjax(zjzyFkInfoService.deleteZjzyFkInfoByFkIds(fkIds));
-    }
-
     @GetMapping(value = "/total")
     public AjaxResult getFkrlTotal() {
         return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());

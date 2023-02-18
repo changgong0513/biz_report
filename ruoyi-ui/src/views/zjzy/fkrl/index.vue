@@ -423,7 +423,10 @@ export default {
         fkrlJe: null
       };
 
+      console.log("@@@@@@" + JSON.stringify(row));
+
       this.titleFkrl = "付款认领";
+      this.form.fkId = row.fkId;
       this.form.fkrlJe = row.fkJe;
       this.openFkrl = true;
     },
@@ -438,7 +441,7 @@ export default {
 
           addFkrl(this.form).then(response => {
             this.$modal.msgSuccess("付款认领成功");
-            this.openHkrl = false;
+            this.openFkrl = false;
             this.getList();
           });
         }

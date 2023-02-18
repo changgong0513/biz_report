@@ -2,6 +2,9 @@ package com.ruoyi.web.controller.zjzy;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,8 +78,12 @@ public class ZjzyFkrlInfoController extends BaseController
     // @PreAuthorize("@ss.hasPermi('fkrl:fkrl:add')")
     @Log(title = "付款认领", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody ZjzyFkrlInfo zjzyFkrlInfo)
-    {
+    public AjaxResult add(@RequestBody ZjzyFkrlInfo zjzyFkrlInfo) {
+        zjzyFkrlInfo.setBizVersion("1");
+        zjzyFkrlInfo.setCreateTime(DateUtils.getNowDate());
+        zjzyFkrlInfo.setUpdateTime(DateUtils.getNowDate());
+        zjzyFkrlInfo.setCreateBy(SecurityUtils.getUsername());
+        zjzyFkrlInfo.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(zjzyFkrlInfoService.insertZjzyFkrlInfo(zjzyFkrlInfo));
     }
 
