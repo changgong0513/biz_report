@@ -1,11 +1,13 @@
 package com.ruoyi.report.masterdata.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.poi.hpsf.Decimal;
 
 /**
  * 批次号管理对象 masterdata_pch_info
@@ -45,6 +47,10 @@ public class MasterdataPchInfo extends BaseEntity
 
     /** 版本号 */
     private Long bizVersion;
+
+    /** 利率 */
+    @Excel(name = "利率")
+    private BigDecimal moneyRate;
 
     public String getId() {
         return id;
@@ -108,6 +114,14 @@ public class MasterdataPchInfo extends BaseEntity
 
     public void setBizVersion(Long bizVersion) {
         this.bizVersion = bizVersion;
+    }
+
+    public BigDecimal getMoneyRate() {
+        return moneyRate;
+    }
+
+    public void setMoneyRate(BigDecimal moneyRate) {
+        this.moneyRate = moneyRate;
     }
 
     @Override

@@ -138,34 +138,39 @@
     />
 
     <!-- 添加或修改批次号管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="450px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="批次号" prop="pch">
-          <el-input v-model="form.pch" placeholder="请输入批次号" />
+          <el-input v-model="form.pch" placeholder="请输入批次号" style="width: 260px;" />
         </el-form-item>
         <el-form-item label="名称" prop="pchmc">
-          <el-input v-model="form.pchmc" placeholder="请输入名称" />
+          <el-input v-model="form.pchmc" placeholder="请输入名称" style="width: 260px;" />
         </el-form-item>
         <el-form-item label="所属部门" prop="belongDept">
           <treeselect v-model="form.belongDept" 
             :options="deptOptions" 
             :show-count="true" 
             placeholder="请选择所属部门" 
-            style="width: 240px;" />
+            style="width: 260px;" />
         </el-form-item>
         <el-form-item label="所属年份" prop="ssnf">
           <el-date-picker clearable
             v-model="form.ssnf"
             type="year"
             value-format="yyyy"
-            placeholder="请选择所属年份">
+            placeholder="请选择所属年份"
+            style="width: 260px;">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="利率" prop="moneyRate">
+          <el-input-number v-model="form.moneyRate" :precision="2" :step="0.01" :max="10" style="width: 260px;"/>
         </el-form-item>
         <el-form-item label="状态" prop="pchzt">
           <el-select
-            v-model="queryParams.pchzt"
+            v-model="form.pchzt"
             placeholder="请输入状态"
             clearable
+            style="width: 260px;"
           >
             <el-option
               v-for="dict in dict.type.masterdata_pch_status"
@@ -230,6 +235,12 @@ export default {
       rules: {
         pch: [
           { required: true, message: "批次号不能为空", trigger: "blur" }
+        ],
+        belongDept: [
+          { required: true, message: "所属部门不能为空", trigger: "change" }
+        ],
+        moneyRate: [
+          { required: true, message: "利率不能为空", trigger: "blur" }
         ]
       },
       // 部门树选项
@@ -295,6 +306,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.form.pchzt = '1';
       this.title = "添加批次号管理";
     },
     /** 修改按钮操作 */

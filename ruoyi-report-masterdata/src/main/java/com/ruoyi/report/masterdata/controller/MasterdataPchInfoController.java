@@ -4,6 +4,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.report.masterdata.domain.MasterdataPchInfo;
@@ -107,6 +109,11 @@ public class MasterdataPchInfoController extends BaseController
         params.setBelongDept(masterdataPchInfo.getBelongDept());
         int cnt = masterdataPchInfoService.selectPchCounts(params);
         if (cnt == 0) {
+            masterdataPchInfo.setBizVersion(1L);
+            masterdataPchInfo.setCreateTime(DateUtils.getNowDate());
+            masterdataPchInfo.setUpdateTime(DateUtils.getNowDate());
+            masterdataPchInfo.setCreateBy(SecurityUtils.getUsername());
+            masterdataPchInfo.setUpdateBy(SecurityUtils.getUsername());
             result = toAjax(masterdataPchInfoService.insertMasterdataPchInfo(masterdataPchInfo));
         } else {
             result = AjaxResult.error("新增批次号已存在，请重新输入新的批次号!");

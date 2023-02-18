@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="belongDept"    column="belong_dept"    />
         <result property="ssnf"    column="ssnf"    />
         <result property="pchzt"    column="pchzt"    />
+        <result property="moneyRate"    column="money_rate"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -19,7 +20,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectMasterdataPchInfoVo">
-        select id, pch, pchmc, belong_dept, ssnf, pchzt, create_by, create_time, update_by, update_time, biz_version from masterdata_pch_info
+        select
+            id, pch, pchmc, belong_dept, ssnf, pchzt, money_rate, create_by, create_time, update_by, update_time, biz_version
+        from
+            masterdata_pch_info
     </sql>
 
     <select id="selectMasterdataPchInfoList" parameterType="MasterdataPchInfo" resultMap="MasterdataPchInfoResult">
@@ -30,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="belongDept != null  and belongDept != ''"> and belong_dept = #{belongDept}</if>
             <if test="ssnf != null "> and ssnf = #{ssnf}</if>
             <if test="pchzt != null  and pchzt != ''"> and pchzt = #{pchzt}</if>
-            <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
+            <if test="moneyRate != null "> and money_rate = #{moneyRate}</if>
         </where>
     </select>
     
@@ -51,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 取得批次号下拉列表数据sql -->
     <sql id="selectPchListVo">
         select
-            id, pch, pchmc, belong_dept, ssnf, pchzt,
+            id, pch, pchmc, belong_dept, ssnf, pchzt, money_rate,
             create_by, create_time, update_by, update_time, biz_version
         from
             masterdata_pch_info
@@ -72,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="belongDept != null and belongDept != ''">belong_dept,</if>
             <if test="ssnf != null">ssnf,</if>
             <if test="pchzt != null and pchzt != ''">pchzt,</if>
+            <if test="moneyRate != null">money_rate,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -84,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="belongDept != null and belongDept != ''">#{belongDept},</if>
             <if test="ssnf != null">#{ssnf},</if>
             <if test="pchzt != null and pchzt != ''">#{pchzt},</if>
+            <if test="moneyRate != null">#{moneyRate},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -100,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="belongDept != null">belong_dept = #{belongDept},</if>
             <if test="ssnf != null">ssnf = #{ssnf},</if>
             <if test="pchzt != null and pchzt != ''">pchzt = #{pchzt},</if>
+            <if test="moneyRate != null">money_rate = #{moneyRate},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>

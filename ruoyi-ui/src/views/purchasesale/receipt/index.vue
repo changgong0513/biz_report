@@ -350,21 +350,21 @@
         <el-divider />
         <h3>折干计算</h3>
         <el-row>
-          <!-- 水分值 -->
+          <!-- 潮粮水分 -->
           <el-col :span="8">
-            <el-form-item label="水分值" prop="dryCalWaterValue">
+            <el-form-item label="潮粮水分" prop="dryCalWaterValue">
               <el-input v-model="form.dryCalWaterValue" placeholder="请输入水分值" style="width: 240px" />
             </el-form-item>
           </el-col>
-          <!-- 烘干率 -->
+          <!-- 预计烘干水分 -->
           <el-col :span="8">
-            <el-form-item label="烘干率" prop="dryCalDryingRate">
+            <el-form-item label="预计烘干水分" prop="dryCalDryingRate">
               <el-input v-model="form.dryCalDryingRate" placeholder="请输入烘干率" style="width: 240px" />
             </el-form-item>
           </el-col>
-          <!-- 比例范围 -->
+          <!-- 烘干比例 -->
           <el-col :span="8">
-            <el-form-item label="比例范围" prop="dryCalScaleRange">
+            <el-form-item label="烘干比例" prop="dryCalScaleRange">
               <el-input v-model="form.dryCalScaleRange" placeholder="请输入比例范围1.2-1.3之间" style="width: 240px" />
             </el-form-item>
           </el-col>
@@ -554,21 +554,21 @@
         <el-divider />
         <h3>折干计算</h3>
         <el-row>
-          <!-- 水分值 -->
+          <!-- 潮粮水分 -->
           <el-col :span="8">
-            <el-form-item label="水分值" prop="dryCalWaterValue">
+            <el-form-item label="潮粮水分" prop="dryCalWaterValue">
               <el-input v-model="formDetail.dryCalWaterValue" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-          <!-- 烘干率 -->
+          <!-- 预计烘干水分 -->
           <el-col :span="8">
-            <el-form-item label="烘干率" prop="dryCalDryingRate">
+            <el-form-item label="预计烘干水分" prop="dryCalDryingRate">
               <el-input v-model="formDetail.dryCalDryingRate" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
-          <!-- 比例范围 -->
+          <!-- 烘干比例 -->
           <el-col :span="8">
-            <el-form-item label="比例范围" prop="dryCalScaleRange">
+            <el-form-item label="烘干比例" prop="dryCalScaleRange">
               <el-input v-model="formDetail.dryCalScaleRange" :disabled="true" style="width: 200px" />
             </el-form-item>
           </el-col>
@@ -902,6 +902,8 @@ export default {
       this.open = true;
       this.title = "添加收货信息";
       this.isUpdate = false;
+      this.form.dryCalDryingRate = 14.5;
+      this.form.dryCalScaleRange = 1.2;
     },
     /** 修改按钮操作 */
     handleUpdate() {
@@ -996,7 +998,7 @@ export default {
           parseFloat(this.form.dryCalScaleRange)))/100 * 
           parseFloat(this.form.dryCalSettlementWeight);
       
-      this.form.dryCalResult = this.form.dryCalResult.toFixed(2);
+      this.form.dryCalResult = this.form.dryCalResult.toFixed(3);
     },
     /** 取得批次号下拉列表 */
     getDeptPch() {
