@@ -2,6 +2,7 @@ package com.ruoyi.zjzy.mapper;
 
 import java.util.List;
 import com.ruoyi.zjzy.domain.ZjzyFkInfo;
+import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
 
 /**
  * 付款Mapper接口
@@ -73,4 +74,11 @@ public interface ZjzyFkInfoMapper
      * @return 结果
      */
     public int deleteZjzyFkInfoByFkIds(String[] fkIds);
+
+    /**
+     * 查询占用统计列表
+     *
+     * @return
+     */
+    public List<ZjzyStatisticsInfo> selectZjzyStatisticsList(ZjzyStatisticsInfo zjzyStatisticsInfo);
 }

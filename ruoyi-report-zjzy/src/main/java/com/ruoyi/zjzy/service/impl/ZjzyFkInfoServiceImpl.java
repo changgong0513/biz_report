@@ -2,6 +2,7 @@ package com.ruoyi.zjzy.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper;
@@ -111,5 +112,14 @@ public class ZjzyFkInfoServiceImpl implements IZjzyFkInfoService
     public int deleteZjzyFkInfoByFkId(String fkId)
     {
         return zjzyFkInfoMapper.deleteZjzyFkInfoByFkId(fkId);
+    }
+
+    /**
+     * 查询占用统计列表
+     *
+     * @return
+     */
+    public List<ZjzyStatisticsInfo> selectZjzyStatisticsList(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        return zjzyFkInfoMapper.selectZjzyStatisticsList(zjzyStatisticsInfo);
     }
 }

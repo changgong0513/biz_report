@@ -42,10 +42,28 @@
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
+
+    <el-table v-loading="loading" :data="zytjList" @row-dblclick="handleView">
+      <el-table-column label="所属部门" align="center" prop="tjBmmc" style="width: 350px;" />
+      <el-table-column label="批次号" align="center" prop="tjPch" />
+      <el-table-column label="付款总额" align="center" prop="tjFkje" />
+      <el-table-column label="回款总额" align="center" prop="tjHkje" />
+      <el-table-column label="占用总额" align="center" prop="tjZyje" />
+      <el-table-column label="利息" align="center" prop="tjLx" />
+    </el-table>
+    
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
   </div>
 </template>
 
 <script>
+import { listZytj } from "@/api/zjzy/fkrl";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -67,6 +85,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      // 占用统计列表
+      zytjList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -101,7 +121,12 @@ export default {
     },
     /** 查询占用统计列表 */
     getList() {
-      
+      this.loading = true;
+      listZytj(this.queryParams).then(response => {
+        this.zytjList = response.rows;
+        this.total = response.total;
+        this.loading = false;
+      });
     },
     // 取消按钮
     cancel() {
@@ -130,6 +155,10 @@ export default {
         ...this.queryParams
       }, `占用统计_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     },
+    /** 查看占用统计详情 */ 
+    handleView(row) {
+      console.log(JSON.stringify(row));
+    }
   }
 }
 </script>

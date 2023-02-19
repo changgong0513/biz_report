@@ -76,3 +76,14 @@ export function getFkrlTotal() {
     method: 'get'
   })
 }
+
+// 查询占用统计列表
+export function listZytj(query) {
+  return request({
+    url: '/zjzy/fk/zytj/list',
+    method: 'get',
+    params: query
+  })
+}
+
+

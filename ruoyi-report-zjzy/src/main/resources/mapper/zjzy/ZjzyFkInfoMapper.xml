@@ -34,6 +34,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bizVersion"    column="biz_version"    />
     </resultMap>
 
+    <!-- 占用统计列表返回值 -->
+    <resultMap type="ZjzyStatisticsInfo" id="ZjzyStatisticsInfoResult">
+        <result property="tjBmbh"    column="fkrl_bmbh"    />
+        <result property="tjBmmc"    column="dept_name"    />
+        <result property="tjPch"    column="fkrl_pch"    />
+        <result property="tjFkje"    column="sum_fkje"    />
+        <result property="tjHkje"    column="sum_hkje"    />
+        <result property="tjZyje"    column="zjzy"    />
+        <result property="tjLx"    column="zjzy_interest"    />
+    </resultMap>
+
     <sql id="selectZjzyFkInfoVo">
         select
             t1.fk_id, t1.fk_khbh, t1.fk_khmc, t1.fk_zh, t1.fk_je, t1.fk_zt,
@@ -185,4 +196,84 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{fkId}
         </foreach>
     </delete>
+
+    <!-- 占用统计 -->
+    <!-- 占用统计列表用sql -->
+    <sql id="selectZjzyStatisticsListVo">
+        SELECT
+            IFNULL(zjzytj.fkrl_bmbh, zjzytj.hkrl_bmbh) AS fkrl_bmbh,
+            IFNULL(zjzytj.fkrl_pch, zjzytj.hkrl_pch) AS fkrl_pch,
+            IFNULL(zjzytj.sum_fkje, 0) AS sum_fkje,
+            IFNULL(zjzytj.sum_hkje, 0) AS sum_hkje,
+            (IFNULL(zjzytj.sum_fkje, 0) - IFNULL(zjzytj.sum_hkje, 0)) AS zjzy,
+            round((IFNULL(zjzytj.sum_fkje, 0) - IFNULL(zjzytj.sum_hkje, 0)) * zsjpch.money_rate / 100, 2) AS zjzy_interest,
+            dept.dept_name AS dept_name
+
+        FROM
+        (
+            SELECT
+                tt1.fkrl_bmbh, tt1.fkrl_pch, tt1.sum_fkje, tt2.hkrl_bmbh, tt2.hkrl_pch, tt2.sum_hkje
+            FROM
+            (
+                SELECT
+                    t1.fkrl_bmbh,
+                    t1.fkrl_pch,
+                    SUM( t1.fkrl_je ) AS sum_fkje
+                FROM
+                    zjzy_fkrl_info t1
+                GROUP BY
+                    t1.fkrl_bmbh,
+                    t1.fkrl_pch
+            ) tt1
+            LEFT JOIN
+            (
+                SELECT
+                    t2.hkrl_bmbh,
+                    t2.hkrl_pch,
+                    SUM( t2.hkrl_je ) AS sum_hkje
+                FROM
+                    zjzy_hkrl_info t2
+                GROUP BY
+                    t2.hkrl_bmbh,
+                    t2.hkrl_pch
+            ) tt2
+            ON tt1.fkrl_bmbh = tt2.hkrl_bmbh AND tt1.fkrl_pch = tt2.hkrl_pch
+            UNION
+            SELECT
+                tt1.fkrl_bmbh, tt1.fkrl_pch, tt1.sum_fkje, tt2.hkrl_bmbh, tt2.hkrl_pch, tt2.sum_hkje
+            FROM
+            (
+                SELECT
+                    t1.fkrl_bmbh,
+                    t1.fkrl_pch,
+                    SUM( t1.fkrl_je ) AS sum_fkje
+                FROM
+                    zjzy_fkrl_info t1
+                GROUP BY
+                    t1.fkrl_bmbh,
+                    t1.fkrl_pch
+            ) tt1
+            RIGHT JOIN
+            (
+                SELECT
+                    t2.hkrl_bmbh,
+                    t2.hkrl_pch,
+                    SUM( t2.hkrl_je ) AS sum_hkje
+                FROM
+                    zjzy_hkrl_info t2
+                GROUP BY
+                    t2.hkrl_bmbh,
+                    t2.hkrl_pch
+            ) tt2
+            ON tt1.fkrl_bmbh = tt2.hkrl_bmbh AND tt1.fkrl_pch = tt2.hkrl_pch
+        ) zjzytj, masterdata_pch_info zsjpch, sys_dept dept
+        WHERE
+            IFNULL(zjzytj.fkrl_pch,zjzytj.hkrl_pch) = zsjpch.pch AND
+            IFNULL(zjzytj.fkrl_bmbh, zjzytj.hkrl_bmbh) = dept.dept_id
+    </sql>
+    <!-- 查询占用统计列表 -->
+    <select id="selectZjzyStatisticsList" parameterType="ZjzyStatisticsInfo" resultMap="ZjzyStatisticsInfoResult">
+        <include refid="selectZjzyStatisticsListVo"/>
+    </select>
+
 </mapper>

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.report.contract.domain.ContractContentInfo;
+import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,5 +81,17 @@ public class ZjzyFkInfoController extends BaseController
     @GetMapping(value = "/total")
     public AjaxResult getFkrlTotal() {
         return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());
+    }
+
+    /**
+     * 查询占用统计列表
+     *
+     * @return
+     */
+    @GetMapping("/zytj/list")
+    public TableDataInfo zjzyStatisticslist(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        startPage();
+        List<ZjzyStatisticsInfo> list = zjzyFkInfoService.selectZjzyStatisticsList(zjzyStatisticsInfo);
+        return getDataTable(list);
     }
 }
