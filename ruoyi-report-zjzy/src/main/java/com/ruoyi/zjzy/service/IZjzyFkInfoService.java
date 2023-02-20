@@ -3,6 +3,7 @@ package com.ruoyi.zjzy.service;
 import java.util.List;
 import com.ruoyi.zjzy.domain.ZjzyFkInfo;
 import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
+import com.ruoyi.zjzy.domain.ZytjHistoryInfo;
 
 /**
  * 付款Service接口
@@ -81,4 +82,27 @@ public interface IZjzyFkInfoService
      * @return
      */
     public List<ZjzyStatisticsInfo> selectZjzyStatisticsList(ZjzyStatisticsInfo zjzyStatisticsInfo);
+
+    /**
+     * 查询占用统计记录
+     *
+     * @return
+     */
+    public List<ZytjHistoryInfo> selectZytjRecords(ZjzyStatisticsInfo zjzyStatisticsInfo);
+
+    /**
+     * 添加占用统计记录
+     *
+     * @param zjzyStatisticsInfo
+     * @return
+     */
+    public int insertZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo);
+
+    /**
+     * 更新占用统计记录
+     *
+     * @param zjzyStatisticsInfo
+     * @return
+     */
+    public int updateZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo);
 }

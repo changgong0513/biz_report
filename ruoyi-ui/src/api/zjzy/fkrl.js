@@ -86,4 +86,16 @@ export function listZytj(query) {
   })
 }
 
+// 查询占用统计历史明细列表
+export function listZytjHistoryData(query) {
+  return request({
+    url: '/zjzy/fk/zytj/history/list',
+    method: 'get',
+    params: query
+  })
+}
+
+
+
+
 

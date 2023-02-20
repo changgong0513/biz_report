@@ -46,10 +46,10 @@
     <el-table v-loading="loading" :data="zytjList" @row-dblclick="handleView">
       <el-table-column label="所属部门" align="center" prop="tjBmmc" style="width: 350px;" />
       <el-table-column label="批次号" align="center" prop="tjPch" />
-      <el-table-column label="付款总额" align="center" prop="tjFkje" />
-      <el-table-column label="回款总额" align="center" prop="tjHkje" />
-      <el-table-column label="占用总额" align="center" prop="tjZyje" />
-      <el-table-column label="利息" align="center" prop="tjLx" />
+      <el-table-column label="付款金额（元）" align="center" prop="tjFkje" />
+      <el-table-column label="回款金额（元）" align="center" prop="tjHkje" />
+      <el-table-column label="占用金额（元）" align="center" prop="tjZyje" />
+      <el-table-column label="利息（元）" align="center" prop="tjLx" />
     </el-table>
     
     <pagination
@@ -59,11 +59,42 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-  </div>
+
+    <!-- 占用统计历史列表 start -->
+    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body :close-on-click-modal="false">
+      <el-table v-loading="loadingZytjHistory" :data="listZytjHistory">
+        <el-table-column label="统计时间" align="center" prop="tjJssj" style="width: 350px;">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.tjJssj, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属部门" align="center" prop="tjBmmc" style="width: 350px;" />
+        <el-table-column label="批次号" align="center" prop="tjPch" />
+        <el-table-column label="付款金额（元）" align="center" prop="tjFkje" />
+        <el-table-column label="回款金额（元）" align="center" prop="tjHkje" />
+        <el-table-column label="占用金额（元）" align="center" prop="tjZyje" />
+        <el-table-column label="利息（元）" align="center" prop="tjLx" />
+        <el-table-column label="利率" align="center" prop="tjJsll" />
+      </el-table>
+    
+      <pagination
+        v-show="zytjHistoryTotal > 0"
+        :total="zytjHistoryTotal"
+        :page.sync="queryParams.zytjHistoryPageNum"
+        :limit.sync="queryParams.zytjHistoryPageSize"
+        @pagination="getZytjHistoryList"
+      />
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">关 闭</el-button>
+      </div>
+      </el-dialog>
+      <!-- 占用统计详细列表 end -->
+    </div>
 </template>
 
 <script>
-import { listZytj } from "@/api/zjzy/fkrl";
+import { listZytj, listZytjHistoryData } from "@/api/zjzy/fkrl";
 import { deptTreeSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -75,6 +106,8 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      // 资金占用统计遮罩层
+      loadingZytjHistory: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -85,8 +118,12 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      // 占用统计总条数
+      zytjHistoryTotal: 0,
       // 占用统计列表
       zytjList: [],
+      // 占用统计历史列表
+      listZytjHistory: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -95,6 +132,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        zytjHistoryPageNum: 1,
+        zytjHistoryPageSize: 10,
         pch: null,
         belongDept: null
       },
@@ -155,9 +194,24 @@ export default {
         ...this.queryParams
       }, `占用统计_${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}.xlsx`)
     },
-    /** 查看占用统计详情 */ 
+    /** 查看占用统计历史 */ 
     handleView(row) {
-      console.log(JSON.stringify(row));
+      this.queryParams.tjPch = row.tjPch;
+      this.queryParams.tjBmbh = row.tjBmbh;
+      this.getZytjHistoryList();
+      
+    },
+    /** 查询占用统计历史明细列表 */
+    getZytjHistoryList() {
+      listZytjHistoryData(this.queryParams).then(response => {
+        this.listZytjHistory = response.rows;
+        this.zytjHistoryTotal = response.total;;
+        this.title = "占用统计历史";
+        this.loadingZytjHistory = false;
+        this.open = true;
+      });
+
+      console.log(JSON.stringify(this.listZytjHistory));
     }
   }
 }

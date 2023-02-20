@@ -43,6 +43,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="tjHkje"    column="sum_hkje"    />
         <result property="tjZyje"    column="zjzy"    />
         <result property="tjLx"    column="zjzy_interest"    />
+        <result property="tjJsll"    column="money_rate"    />
+        <result property="tjJssj"    column="tj_jssj"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
+    </resultMap>
+
+    <!-- 占用统计列表返回值 -->
+    <resultMap type="ZytjHistoryInfo" id="ZytjHistoryesult">
+        <result property="tjBmbh"    column="tj_bmbh"    />
+        <result property="tjBmmc"    column="tj_bmmc"    />
+        <result property="tjPch"    column="tj_pch"    />
+        <result property="tjFkje"    column="tj_fkje"    />
+        <result property="tjHkje"    column="tj_hkje"    />
+        <result property="tjZyje"    column="tj_zyje"    />
+        <result property="tjLx"    column="tj_lx"    />
+        <result property="tjJsll"    column="tj_jsll"    />
+        <result property="tjJssj"    column="tj_jssj"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bizVersion"    column="biz_version"    />
     </resultMap>
 
     <sql id="selectZjzyFkInfoVo">
@@ -207,8 +232,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             IFNULL(zjzytj.sum_hkje, 0) AS sum_hkje,
             (IFNULL(zjzytj.sum_fkje, 0) - IFNULL(zjzytj.sum_hkje, 0)) AS zjzy,
             round((IFNULL(zjzytj.sum_fkje, 0) - IFNULL(zjzytj.sum_hkje, 0)) * zsjpch.money_rate / 100, 2) AS zjzy_interest,
-            dept.dept_name AS dept_name
-
+            dept.dept_name AS dept_name,
+            zsjpch.money_rate AS money_rate
         FROM
         (
             SELECT
@@ -271,9 +296,90 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             IFNULL(zjzytj.fkrl_pch,zjzytj.hkrl_pch) = zsjpch.pch AND
             IFNULL(zjzytj.fkrl_bmbh, zjzytj.hkrl_bmbh) = dept.dept_id
     </sql>
+
+    <!-- 查询占用统计记录用sql -->
+    <sql id="selectZytjRecordsVo">
+        SELECT
+            tj_id, tj_bmbh, tj_bmmc, tj_pch, tj_fkje, tj_hkje, tj_zyje, tj_lx, tj_jsll, tj_jssj,
+            create_by, create_time, update_by, update_time
+        FROM
+            zjzy_zytj_info
+    </sql>
+
     <!-- 查询占用统计列表 -->
     <select id="selectZjzyStatisticsList" parameterType="ZjzyStatisticsInfo" resultMap="ZjzyStatisticsInfoResult">
         <include refid="selectZjzyStatisticsListVo"/>
     </select>
+
+    <!-- 查询占用统计记录 -->
+    <select id="selectZytjRecords" parameterType="ZjzyStatisticsInfo" resultMap="ZytjHistoryesult">
+        <include refid="selectZytjRecordsVo"/>
+        <where>
+            <if test="tjBmbh != null  and tjBmbh != ''"> tj_bmbh = #{tjBmbh}</if>
+            <if test="tjPch != null  and tjPch != ''"> and tj_pch = #{tjPch}</if>
+            <if test="tjFkje != null  and tjFkje != ''"> and tj_fkje = #{tjFkje}</if>
+            <if test="tjHkje != null  and tjHkje != ''"> and tj_hkje = #{tjHkje}</if>
+            <if test="tjZyje != null  and tjZyje != ''"> and tj_zyje = #{tjZyje}</if>
+            <if test="tjLx != null  and tjLx != ''"> and tj_lx = #{tjLx}</if>
+        </where>
+    </select>
+
+    <!-- 添加占用统计记录 -->
+    <insert id="insertZjzyStatisticsInfo" parameterType="ZjzyStatisticsInfo" useGeneratedKeys="true" keyProperty="tjId">
+        insert into zjzy_zytj_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tjBmbh != null and tjBmbh != ''">tj_bmbh,</if>
+            <if test="tjBmmc != null and tjBmmc != ''">tj_bmmc,</if>
+            <if test="tjPch != null and tjPch != ''">tj_pch,</if>
+            <if test="tjFkje != null and tjFkje != ''">tj_fkje,</if>
+            <if test="tjHkje != null and tjHkje != ''">tj_hkje,</if>
+            <if test="tjZyje != null and tjZyje != ''">tj_zyje,</if>
+            <if test="tjLx != null and tjLx  != ''">tj_lx,</if>
+            <if test="tjJsll != null and tjJsll != ''">tj_jsll,</if>
+            <if test="tjJssj != null and tjJssj != ''">tj_jssj,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tjBmbh != null and tjBmbh != ''">#{tjBmbh},</if>
+            <if test="tjBmmc != null and tjBmmc != ''">#{tjBmmc},</if>
+            <if test="tjPch != null and tjPch != ''">#{tjPch},</if>
+            <if test="tjFkje != null and tjFkje != ''">#{tjFkje},</if>
+            <if test="tjHkje != null and tjHkje != ''">#{tjHkje},</if>
+            <if test="tjZyje != null and tjZyje != ''">#{tjZyje},</if>
+            <if test="tjLx != null and tjLx != ''">#{tjLx},</if>
+            <if test="tjJsll != null and tjJsll != ''">#{tjJsll},</if>
+            <if test="tjJssj != null and tjJssj != ''">#{tjJssj},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bizVersion != null">#{bizVersion},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新占用统计记录 -->
+    <update id="updateZjzyStatisticsInfo" parameterType="ZjzyStatisticsInfo">
+        update zjzy_zytj_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tjBmbh != null and tjBmbh != ''">tj_bmbh = #{tjBmbh},</if>
+            <if test="tjBmmc != null and tjBmmc != ''">tj_bmmc = #{tjBmmc},</if>
+            <if test="tjPch != null and tjPch != ''">tj_pch = #{tjPch},</if>
+            <if test="tjFkje != null and tjFkje != ''">tj_fkje = #{tjFkje},</if>
+            <if test="tjHkje != null and tjHkje != ''">tj_hkje = #{tjHkje},</if>
+            <if test="tjZyje != null and tjZyje != ''">tj_zyje = #{tjZyje},</if>
+            <if test="tjLx != null and tjLx != ''">tj_lx = #{tjLx},</if>
+            <if test="tjJsll != null and tjJsll != ''">tj_jsll = #{tjJsll},</if>
+            <if test="tjJssj != null and tjJssj != ''">tj_jssj = #{tjJssj},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bizVersion != null">biz_version = #{bizVersion},</if>
+        </trim>
+        where fk_id = #{fkId}
+    </update>
 
 </mapper>

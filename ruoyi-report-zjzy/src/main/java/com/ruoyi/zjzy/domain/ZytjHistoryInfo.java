@@ -1,11 +1,10 @@
 package com.ruoyi.zjzy.domain;
 
-import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class ZjzyStatisticsInfo extends BaseEntity {
+public class ZytjHistoryInfo extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 

@@ -3,6 +3,7 @@ package com.ruoyi.zjzy.service.impl;
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
+import com.ruoyi.zjzy.domain.ZytjHistoryInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.zjzy.mapper.ZjzyFkInfoMapper;
@@ -121,5 +122,34 @@ public class ZjzyFkInfoServiceImpl implements IZjzyFkInfoService
      */
     public List<ZjzyStatisticsInfo> selectZjzyStatisticsList(ZjzyStatisticsInfo zjzyStatisticsInfo) {
         return zjzyFkInfoMapper.selectZjzyStatisticsList(zjzyStatisticsInfo);
+    }
+
+    /**
+     * 查询占用统计记录
+     *
+     * @return
+     */
+    public List<ZytjHistoryInfo> selectZytjRecords(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        return zjzyFkInfoMapper.selectZytjRecords(zjzyStatisticsInfo);
+    }
+
+    /**
+     * 添加占用统计记录
+     *
+     * @param zjzyStatisticsInfo
+     * @return
+     */
+    public int insertZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        return zjzyFkInfoMapper.insertZjzyStatisticsInfo(zjzyStatisticsInfo);
+    }
+
+    /**
+     * 更新占用统计记录
+     *
+     * @param zjzyStatisticsInfo
+     * @return
+     */
+    public int updateZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        return zjzyFkInfoMapper.updateZjzyStatisticsInfo(zjzyStatisticsInfo);
     }
 }

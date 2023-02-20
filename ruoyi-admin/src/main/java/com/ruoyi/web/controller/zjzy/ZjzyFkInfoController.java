@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
+import com.ruoyi.zjzy.domain.ZytjHistoryInfo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -90,8 +94,35 @@ public class ZjzyFkInfoController extends BaseController
      */
     @GetMapping("/zytj/list")
     public TableDataInfo zjzyStatisticslist(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+
         startPage();
         List<ZjzyStatisticsInfo> list = zjzyFkInfoService.selectZjzyStatisticsList(zjzyStatisticsInfo);
+
+        zjzyStatisticsInfo.setTjJssj(DateUtils.dateTimeNow());
+        zjzyStatisticsInfo.setCreateTime(DateUtils.getNowDate());
+        zjzyStatisticsInfo.setUpdateTime(DateUtils.getNowDate());
+        zjzyStatisticsInfo.setCreateBy(SecurityUtils.getUsername());
+        zjzyStatisticsInfo.setUpdateBy(SecurityUtils.getUsername());
+        for (ZjzyStatisticsInfo record : list) {
+            record.setTjJssj(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.getNowDate()));
+            record.setCreateTime(DateUtils.getNowDate());
+            record.setUpdateTime(DateUtils.getNowDate());
+            record.setCreateBy(SecurityUtils.getUsername());
+            record.setUpdateBy(SecurityUtils.getUsername());
+            List<ZytjHistoryInfo> existZytjRecrods = zjzyFkInfoService.selectZytjRecords(record);
+            if (existZytjRecrods.size() == 0) {
+                zjzyFkInfoService.insertZjzyStatisticsInfo(record);
+            }
+        }
+
+        return getDataTable(list);
+    }
+
+    @GetMapping("/zytj/history/list")
+    public TableDataInfo listZytjHistoryData(ZjzyStatisticsInfo zjzyStatisticsInfo) {
+        startPage();
+        List<ZytjHistoryInfo> list = zjzyFkInfoService.selectZytjRecords(zjzyStatisticsInfo);
+
         return getDataTable(list);
     }
 }
