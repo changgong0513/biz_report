@@ -93,5 +93,5 @@ public interface IPurchaseSaleOrderInfoService {
      *
      * @param list
      */
-    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list);
+    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list, final String contractType);
 }

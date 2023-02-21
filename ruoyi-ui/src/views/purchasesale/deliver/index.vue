@@ -134,11 +134,15 @@
           <span>{{ parseTime(scope.row.deliverDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="销售订单" align="center" prop="saleOrderId" width="150" />
+      <el-table-column label="销售订单" align="center" prop="saleContractId" width="150" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="150" :show-overflow-tooltip="true" />
       <el-table-column label="仓库名称" align="center" prop="warehouseName" width="200" :show-overflow-tooltip="true" />
       <el-table-column label="物料名称" align="center" prop="materialName" width="200" :show-overflow-tooltip="true" />
-      <el-table-column label="订单状态" align="center" prop="orderStatus" width="100" />
+      <el-table-column label="订单状态" align="center" prop="deliverStatus" width="100">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.deliver_status" :value="scope.row.deliverStatus"/>
+        </template>
+      </el-table-column>
     </el-table>
     
     <pagination
@@ -384,7 +388,8 @@
           <!-- 核算单价 -->
           <el-col :span="8">
             <el-form-item label="核算单价" prop="checkPrice">
-              <el-input v-model="form.checkPrice" placeholder="请输入核算单价" style="width: 200px" />
+              <!-- <el-input v-model="calCheckPrice" placeholder="请输入核算单价" style="width: 200px" /> -->
+              {{calCheckPrice}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -746,7 +751,8 @@ export default {
   name: "Deliver",
   dicts: ['purchasesale_purchase_type', 'purchasesale_belong_dept', 'masterdata_warehouse_measurement_unit', 
           'purchasesale_arrival_terms', 'purchasesale_settlement_method', 'purchasesale_receipt_order_status', 
-          'purchasesale_transport_mode', 'purchasesale_deliver_mode', 'masterdata_warehouse_measurement_unit'],
+          'purchasesale_transport_mode', 'purchasesale_deliver_mode', 'masterdata_warehouse_measurement_unit',
+          'deliver_status'],
   data() {
     return {
       // 遮罩层
@@ -825,6 +831,7 @@ export default {
           { required: true, message: "发货方式不能为空", trigger: "change" }
         ],
         deliverQuantity: [
+          { required: true, message: "发货数量不能为空", trigger: "blur" },
           { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的发货数量", trigger: "blur" }
         ],
         checkQuantity: [
@@ -883,6 +890,17 @@ export default {
     listMaterialData(this.queryParams).then(response => {
       this.listMaterialName = response.rows;
     });
+  },
+  computed: {
+    /** 计算核算单价 */
+    calCheckPrice: function () {
+      if (this.form.checkMoney && this.form.checkQuantity) {
+        let tempCalValue = Number(this.form.checkMoney) / Number(this.form.checkQuantity);
+        return tempCalValue.toFixed(2);
+      }
+      
+      return 0;
+    },
   },
   methods: {
     /** 根据输入销售合同编号关键字，取得合同编号列表 */

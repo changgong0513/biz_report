@@ -231,9 +231,10 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
      * 设置采购订单状态和完成率
      *
      * @param list
+     * @param contractType
      */
     @Override
-    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list) {
+    public void setPurchaseOrderStatusAndCompletionRate(List<PurchaseSaleOrderInfo> list, final String contractType) {
 
         if (list == null || list.size() == 0) {
             return;

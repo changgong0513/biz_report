@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.purchasesale;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,6 +48,17 @@ public class SaleDeliverInfoController extends BaseController
     {
         startPage();
         List<SaleDeliverInfo> list = saleDeliverInfoService.selectSaleDeliverInfoList(saleDeliverInfo);
+
+        list.stream().forEach(element -> {
+            if (element.getDeliverQuantity().compareTo(new BigDecimal(0)) > 0) {
+                // 已发货
+                element.setDeliverStatus("1");
+            } else {
+                // 待发货
+                element.setDeliverStatus("2");
+            }
+        });
+
         return getDataTable(list);
     }
 

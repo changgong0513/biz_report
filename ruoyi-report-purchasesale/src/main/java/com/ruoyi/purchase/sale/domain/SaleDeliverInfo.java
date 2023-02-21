@@ -24,10 +24,10 @@ public class SaleDeliverInfo extends BaseEntity
     private String deliverId;
 
     /** 销售订单编号 */
-    @Excel(name = "销售订单编号")
     private String saleOrderId;
 
     /** 销售合同编号 */
+    @Excel(name = "销售合同编号")
     private String saleContractId;
 
     /** 经办人 */
@@ -111,6 +111,9 @@ public class SaleDeliverInfo extends BaseEntity
 
     /** 备注 */
     private String deliverRemark;
+
+    /** 发货单状态 */
+    private String deliverStatus;
 
     /** 版本号 */
     private Long bizVersion;
@@ -337,6 +340,14 @@ public class SaleDeliverInfo extends BaseEntity
 
     public void setDeliverRemark(String deliverRemark) {
         this.deliverRemark = deliverRemark;
+    }
+
+    public String getDeliverStatus() {
+        return deliverStatus;
+    }
+
+    public void setDeliverStatus(String deliverStatus) {
+        this.deliverStatus = deliverStatus;
     }
 
     public Long getBizVersion() {

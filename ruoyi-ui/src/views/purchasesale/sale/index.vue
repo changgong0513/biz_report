@@ -125,13 +125,14 @@
       <el-table-column label="所属部门" align="center" prop="deptName" width="100" />
       <el-table-column label="经办人" align="center" prop="handledBy" width="100" :show-overflow-tooltip="true" />
       <el-table-column label="客户名称" align="center" prop="supplierRealName" width="240" :show-overflow-tooltip="true" />
-      <el-table-column label="订单状态" align="center" prop="orderStatus" width="100">
+      <el-table-column label="合同状态" align="center" prop="orderStatus" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.purchase_mgr_order_status" :value="scope.row.orderStatus"/>
         </template>
       </el-table-column>
       <el-table-column label="物料名称" align="center" prop="materialName" width="150" :show-overflow-tooltip="true" />
       <el-table-column label="核算金额" align="center" prop="checkMoney" width="80" :show-overflow-tooltip="true" />
+      <el-table-column label="完成率" align="center" prop="completionRate" width="100" />
     </el-table>
     
     <pagination
