@@ -74,7 +74,7 @@
           <div class="card-panel-text">
             利息
           </div>
-          <count-to :start-val="0" :end-val="hkrlTotal" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="zytjLxTotal" :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -101,7 +101,7 @@ export default {
   components: {
     CountTo
   },
-  props:['purchaseCounts', 'saleCounts', 'zjzyTotal', 'hkrlTotal', 'fkrlTotal'],
+  props:['purchaseCounts', 'saleCounts', 'zjzyTotal', 'hkrlTotal', 'fkrlTotal', 'zytjLxTotal'],
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)

@@ -7,6 +7,7 @@
       :zjzyTotal="calZjzyTotal"
       :hkrlTotal="hkrlTotal"
       :fkrlTotal="fkrlTotal"
+      :zytjLxTotal="zytjLxTotal"
      />
 
     <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
@@ -45,8 +46,7 @@ import BarChart from './dashboard/BarChart'
 
 import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
 import { getHkrlTotal, getHkTotalByYearMonth } from "@/api/zjzy/hkrl";
-import { getFkrlTotal } from "@/api/zjzy/fkrl";
-
+import { getFkrlTotal, getZytjLxTotal } from "@/api/zjzy/fkrl";
 
 const lineChartData = {
   newVisitis: {
@@ -84,6 +84,7 @@ export default {
       zjzyTotal: 0, // 资金占用总额
       hkrlTotal: 0, // 回款认领总额
       fkrlTotal: 0, // 付款认领总额
+      zytjLxTotal: 0, // 资金占用利息总金额
       // 父组件向子组件传递对象步骤1
       barData: {
         xAxisData: [],
@@ -97,6 +98,7 @@ export default {
     this.handleSetPanelGroupHkrlData();
     this.handleSetPanelGroupFkrlData();
     this.handleSetPanelGroupHkTotalData();
+    this.handleSetPanelGroupZytjLxData();
   },
   computed: {
     /** 资金占用 */
@@ -134,6 +136,13 @@ export default {
     handleSetPanelGroupFkrlData() {
       getFkrlTotal().then(response => {
         this.fkrlTotal = response.data;
+      });
+    },
+    /** 取得各个部门和各个批次号资金占用利息总金额 */
+    handleSetPanelGroupZytjLxData() {
+      getZytjLxTotal().then(response => {
+        console.log("@@@@@@" + response.data);
+        this.zytjLxTotal = response.data;
       });
     },
     /** 根据年月分组，取得年月回款总金额 */

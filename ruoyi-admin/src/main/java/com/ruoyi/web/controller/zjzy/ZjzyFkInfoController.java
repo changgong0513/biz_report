@@ -125,4 +125,9 @@ public class ZjzyFkInfoController extends BaseController
 
         return getDataTable(list);
     }
+
+    @GetMapping(value = "/zytj/lx/total")
+    public AjaxResult getZytjLxTotal() {
+        return AjaxResult.success(zjzyFkInfoService.getZytjLxTotal());
+    }
 }

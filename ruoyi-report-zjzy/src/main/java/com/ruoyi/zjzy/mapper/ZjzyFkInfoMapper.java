@@ -105,4 +105,11 @@ public interface ZjzyFkInfoMapper
      * @return
      */
     public int updateZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo);
+
+    /**
+     * 占用统计利息总额
+     *
+     * @return 结果
+     */
+    public double getZytjLxTotal();
 }

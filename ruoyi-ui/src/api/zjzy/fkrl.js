@@ -95,6 +95,14 @@ export function listZytjHistoryData(query) {
   })
 }
 
+// 取得各个部门和各个批次号资金占用利息总金额
+export function getZytjLxTotal() {
+  return request({
+    url: '/zjzy/fk/zytj/lx/total',
+    method: 'get'
+  })
+}
+
 
 
 

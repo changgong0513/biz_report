@@ -152,4 +152,13 @@ public class ZjzyFkInfoServiceImpl implements IZjzyFkInfoService
     public int updateZjzyStatisticsInfo(ZjzyStatisticsInfo zjzyStatisticsInfo) {
         return zjzyFkInfoMapper.updateZjzyStatisticsInfo(zjzyStatisticsInfo);
     }
+
+    /**
+     * 占用统计利息总额
+     *
+     * @return 结果
+     */
+    public double getZytjLxTotal() {
+        return zjzyFkInfoMapper.getZytjLxTotal();
+    }
 }
