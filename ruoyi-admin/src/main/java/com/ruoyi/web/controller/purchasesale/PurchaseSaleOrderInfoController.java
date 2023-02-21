@@ -60,6 +60,9 @@ public class PurchaseSaleOrderInfoController extends BaseController {
     // 合同类型：采购合同
     private final static String CONST_CONTRACT_TYPE_PURCHASE = "P";
 
+    // 合同类型：销售合同
+    private final static String CONST_CONTRACT_TYPE_SALE = "S";
+
     /**
      * 查询采购收货销售发货管理列表
      */

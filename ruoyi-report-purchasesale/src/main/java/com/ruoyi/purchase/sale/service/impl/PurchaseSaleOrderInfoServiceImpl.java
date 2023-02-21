@@ -240,7 +240,7 @@ public class PurchaseSaleOrderInfoServiceImpl implements IPurchaseSaleOrderInfoS
             return;
         }
 
-        // 设置订单状态和完成率
+        // 设置合同状态和完成率
         list.stream().forEach(element -> {
             // 采购数量（来自于采购管理）
             long purchaseQuantity = element.getPurchaseQuantity();
