@@ -75,6 +75,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="belongDeptId != null  and belongDeptId != 0 and belongDeptId != 100 and belongDeptId != 103"> and belong_dept_id = #{belongDeptId}</if>
             <if test="bizVersion != null "> and biz_version = #{bizVersion}</if>
         </where>
+        order by
+            create_time desc
     </select>
     
     <select id="selectContractContentInfoByContractId" parameterType="String" resultMap="ContractContentInfoResult">

@@ -1,5 +1,8 @@
 <template>
   <div class="dashboard-editor-container">
+    <!-- <iframe name="myiframe" id="myrame" src="http://192.168.56.101:33052/scooper-dispatch-web/#/main/front?token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImRhbmRvbmciLCJ1c2VySWQiOjI1LCJJbnZhbGlkVGltZSI6IlRodSBNYXIgMjMgMTM6Mzc6NTYgQ1NUIDIwMjMifQ.ptt1_jEGCw9bsW5TWRwKGT0A9piH7E__n6wIO2lQerM_25" frameborder="0" align="left" width="200" height="200" scrolling="no">
+      <p>你的浏览器不支持iframe标签</p>
+    </iframe> -->
 
     <panel-group @handleSetLineChartData="handleSetLineChartData" 
       :purchaseCounts="purchaseCounts"

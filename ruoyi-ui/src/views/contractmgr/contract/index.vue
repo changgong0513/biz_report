@@ -145,21 +145,26 @@
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange"
       @row-dblclick="handleUpdate">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="合同编号" align="center" prop="contractId" width="150" />
+      <el-table-column label="合同编号" align="center" prop="contractId" width="200" />
       <el-table-column label="签约日期" align="center" prop="signDate" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.signDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="合同名称" align="center" prop="contractName" width="280" :show-overflow-tooltip="true" />
-      <el-table-column label="客户名称" align="center" prop="companyName" width="280" :show-overflow-tooltip="true" />
-      <el-table-column label="合同总价" align="center" prop="contractTotal" width="80" />
-      <el-table-column label="审批状态" align="center" prop="contractStatus" width="80">
+      <el-table-column label="合同名称" align="center" prop="contractName" width="200" :show-overflow-tooltip="true" />
+      <el-table-column label="合同类型" align="center" prop="contractType" width="80">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.contractmgr_contract_type" :value="scope.row.contractType"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户名称" align="center" prop="companyName" width="350" :show-overflow-tooltip="true" />
+      <el-table-column label="合同总价" align="center" prop="contractTotal" width="100" />
+      <el-table-column label="审批状态" align="center" prop="contractStatus" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.contractmgr_contract_approval_status" :value="scope.row.contractStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="上传合同" align="center" class-name="small-padding fixed-width"  width="100">
         <template slot-scope="scope">
           <el-upload
             ref="uploadRef"
@@ -185,7 +190,7 @@
     />
 
     <!-- 添加或修改合同内容对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="90%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-row>
           <el-col :span="8">
@@ -196,7 +201,7 @@
                 remote
                 clearable
                 reserve-keyword
-                style="width: 280px"
+                style="width: 200px"
                 placeholder="请输入货物名称关键字"
                 :remote-method="remoteMethodGoodsName"
                 :loading="remoteLoadingGoodsName">
@@ -215,7 +220,7 @@
                 v-model="form.contractType"
                 placeholder="合同类型"
                 clearable
-                style="width: 280px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.contractmgr_contract_type"
@@ -228,7 +233,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同名称" prop="contractName">
-              <el-input v-model="form.contractName" placeholder="请输入合同名称"  style="width: 280px"
+              <el-input v-model="form.contractName" placeholder="请输入合同名称"  style="width: 200px"
                 maxlength="64" show-word-limit />
             </el-form-item>
           </el-col>
@@ -237,7 +242,7 @@
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
               <el-input v-model="form.contractId" placeholder="请输入合同编号" 
-              :disabled="isUpdate" style="width: 280px"
+              :disabled="isUpdate" style="width: 200px"
               maxlength="64" show-word-limit />
             </el-form-item>
           </el-col>
@@ -248,7 +253,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择签约日期"
-                style="width: 280px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -259,7 +264,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择交货日期"
-                style="width: 280px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -267,13 +272,13 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="我方单位名称" prop="ourCompanyName">
-              <el-input v-model="form.ourCompanyName" placeholder="请输入我方单位名称" style="width: 280px"
+              <el-input v-model="form.ourCompanyName" placeholder="请输入我方单位名称" style="width: 200px"
                 maxlength="128" show-word-limit />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="我方负责人" prop="ourPrincipal">
-              <el-input v-model="form.ourPrincipal" placeholder="请输入我方负责人" style="width: 280px"
+              <el-input v-model="form.ourPrincipal" placeholder="请输入我方负责人" style="width: 200px"
                 maxlength="32" show-word-limit />
             </el-form-item>
           </el-col>
@@ -286,7 +291,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入对方单位名称关键字"
-                style="width: 280px"
+                style="width: 200px"
                 :remote-method="remoteMethodClientName"
                 :loading="remoteLoadingSClientName"
                 @change="selChangeClientName">
@@ -303,18 +308,18 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="对方负责人" prop="oppositePrincipal">
-              <el-input v-model="form.oppositePrincipal" placeholder="请输入对方负责人" style="width: 280px"
+              <el-input v-model="form.oppositePrincipal" placeholder="请输入对方负责人" style="width: 200px"
                 maxlength="32" show-word-limit />
             </el-form-item>
         </el-col>
           <el-col :span="8">
             <el-form-item label="合同数量" prop="contractQuantity">
-              <el-input v-model="form.contractQuantity" placeholder="请输入合同数量" style="width: 280px" />
+              <el-input v-model="form.contractQuantity" placeholder="请输入合同数量" style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同单价" prop="contractPrice">
-              <el-input v-model="form.contractPrice" placeholder="请输入合同单价" style="width: 280px" />
+              <el-input v-model="form.contractPrice" placeholder="请输入合同单价" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -324,29 +329,29 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="交货方式" prop="deliveryMethod">
-              <el-input v-model="form.deliveryMethod" placeholder="请输入交货方式" style="width: 280px" />
+              <el-input v-model="form.deliveryMethod" placeholder="请输入交货方式" style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="港口到厂运费" prop="portToFactoryFare">
-              <el-input v-model="form.portToFactoryFare" placeholder="请输入港口到厂运费" style="width: 280px" />
+              <el-input v-model="form.portToFactoryFare" placeholder="请输入港口到厂运费" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="港口到港口运费" prop="portToPortFare">
-              <el-input v-model="form.portToPortFare" placeholder="请输入港口到港口运费" style="width: 280px" />
+              <el-input v-model="form.portToPortFare" placeholder="请输入港口到港口运费" style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="其他" prop="contractOther">
-              <el-input v-model="form.contractOther" placeholder="请输入其他" style="width: 280px" />
+              <el-input v-model="form.contractOther" placeholder="请输入其他" style="width: 200px" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="代理或合作方" prop="contractAgent">
-              <el-input v-model="form.contractAgent" placeholder="请输入代理或合作方" style="width: 280px" />
+              <el-input v-model="form.contractAgent" placeholder="请输入代理或合作方" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -696,6 +701,7 @@ export default {
     handleUpdate(row) {
       this.reset();
       const contractId = row.contractId || this.ids;
+      console.log("@@@@@@" + contractId);
       getContract(contractId).then(response => {
         this.form = response.data;
         this.form.constractIsExist = response.data.constractIsExist;
@@ -741,6 +747,11 @@ export default {
     },
     /** 提交按钮 */
     submitForm(actionType) {
+      if (this.form.contractId.includes("/")) {
+        this.$modal.msgError(`合同编号包含非法字符[/]!`);
+        return;
+      }
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.isUpdate) {

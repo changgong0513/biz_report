@@ -703,7 +703,7 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                         contract.setContractType("S");
                     } else {
                         // 其他合同类型
-                        contract.setContractType("Q1");
+                        contract.setContractType("Q");
                     }
                 }
                 // 合同名称
@@ -712,7 +712,11 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 }
                 // 合同编号
                 if (StringUtils.equals(item.getName(), "合同编号")) {
-                    contract.setContractId(item.getValue());
+                    if (!StringUtils.contains(item.getValue(), "/")) {
+                        contract.setContractId(item.getValue());
+                    } else {
+                        throw new Exception("同步的合同编号包含非法字符[/]");
+                    }
                 }
                 // 签约日期
                 if (StringUtils.equals(item.getName(), "签约日期")) {
