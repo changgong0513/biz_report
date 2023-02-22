@@ -56,7 +56,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2022-2022 中粟 All Rights Reserved.</span>
+      <span>Copyright © 2022-2023 中粟 All Rights Reserved.</span>
     </div>
   </div>
 </template>
