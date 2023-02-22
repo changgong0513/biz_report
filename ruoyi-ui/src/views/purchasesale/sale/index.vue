@@ -144,25 +144,25 @@
     />
 
     <!-- 添加或修改销售收货销售发货管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="80%" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="60%" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
           <el-col :span="8">
             <el-form-item label="订单编号">
-              <el-input v-model="form.orderId" placeholder="请输入订单编号" :disabled="this.isUpdate" style="width: 240px" />
+              <el-input v-model="form.orderId" placeholder="请输入订单编号" :disabled="this.isUpdate" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 合同编号 -->
           <el-col :span="8">
             <el-form-item label="合同编号" prop="contractId">
-              <el-input v-model="form.contractId" placeholder="请输入合同编号" :disabled="this.isUpdate" style="width: 240px" />
+              <el-input v-model="form.contractId" placeholder="请输入合同编号" :disabled="this.isUpdate" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 经办人 -->
           <el-col :span="8">
             <el-form-item label="经办人" prop="handledBy">
-              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 240px" maxlength="16"
+              <el-input v-model="form.handledBy" placeholder="请输入经办人" style="width: 200px" maxlength="16"
                 show-word-limit />
             </el-form-item>
           </el-col>
@@ -175,7 +175,7 @@
                 :options="deptOptions" 
                 :show-count="true" 
                 placeholder="请选择所属部门" 
-                style="width: 240px;" />
+                style="width: 200px;" />
             </el-form-item>
           </el-col>
           <!-- 业务日期 -->
@@ -186,15 +186,13 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择业务日期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <!-- 客户名称 -->
           <el-col :span="8">
             <el-form-item label="客户名称" prop="supplierRealName">
-              <!-- <el-input v-model="form.supplierName" placeholder="请输入供应商名称" style="width: 240px" maxlength="128"
-                show-word-limit /> -->
                 <el-select
                 v-model="form.supplierRealName"
                 filterable
@@ -202,7 +200,7 @@
                 clearable
                 reserve-keyword
                 placeholder="请输入客户名称关键字"
-                style="width: 240px"
+                style="width: 200px"
                 :remote-method="remoteMethodClientName"
                 :loading="remoteLoadingSClientName">
                 <el-option
@@ -219,20 +217,20 @@
           <!-- 物料名称 -->
           <el-col :span="8">
             <el-form-item label="物料名称" prop="materialName">
-              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 240px" maxlength="64"
+              <el-input v-model="form.materialName" placeholder="请输入物料名称" style="width: 200px" maxlength="64"
                 show-word-limit />
             </el-form-item>
           </el-col>
           <!-- 销售数量 -->
           <el-col :span="8">
             <el-form-item label="销售数量" prop="purchaseQuantity">
-              <el-input v-model="form.purchaseQuantity" placeholder="请输入销售数量" style="width: 240px" />
+              <el-input v-model="form.purchaseQuantity" placeholder="请输入销售数量" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 单价 -->
           <el-col :span="8">
             <el-form-item label="单价" prop="unitPrice">
-              <el-input v-model="form.unitPrice" placeholder="请输入单价" style="width: 240px" />
+              <el-input v-model="form.unitPrice" placeholder="请输入单价" style="width: 200px" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -244,7 +242,7 @@
                 v-model="form.meteringUnit"
                 placeholder="计量单位"
                 clearable
-                style="width: 240px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.masterdata_warehouse_measurement_unit"
@@ -263,7 +261,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择预计到货期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -275,7 +273,7 @@
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择要求到货期"
-                style="width: 240px">
+                style="width: 200px">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -284,17 +282,17 @@
           <!-- 账期 -->
           <el-col :span="8">
             <el-form-item label="账期" prop="accountPeriod">
-              <el-input v-model="form.accountPeriod" placeholder="请输入账期" style="width: 240px" />
+              <el-input v-model="form.accountPeriod" placeholder="请输入账期" style="width: 200px" />
             </el-form-item>
           </el-col>
           <!-- 到账条件 -->
-          <el-col :span="8">
+          <el-col :span="3">
             <el-form-item label="到账条件" prop="arrivalTerms">
               <el-select
                 v-model="form.arrivalTerms"
                 placeholder="到账条件"
                 clearable
-                style="width: 150px"
+                style="width: 130px"
               >
                 <el-option
                   v-for="dict in dict.type.purchasesale_arrival_terms"
@@ -303,8 +301,12 @@
                   :value="dict.value"
                 />
               </el-select>
-              <!-- 到账条件值 -->
-              <el-input v-model="form.arrivalTermsValue" placeholder="天数" style="margin-left: 10px; width: 60px" />（天）
+            </el-form-item>
+          </el-col>
+          <!-- 到账条件值 -->
+          <el-col :span="5">
+            <el-form-item prop="arrivalTermsValue">
+              <el-input v-model="form.arrivalTermsValue" placeholder="天数" style="width: 60px" />（天）
             </el-form-item>
           </el-col>
           <!-- 结算方式 -->
@@ -314,7 +316,7 @@
                 v-model="form.settlementMethod"
                 placeholder="结算方式"
                 clearable
-                style="width: 240px"
+                style="width: 200px"
               >
                 <el-option
                   v-for="dict in dict.type.purchasesale_settlement_method"
@@ -355,7 +357,7 @@
     </el-dialog>
 
     <!-- 销售管理数据详细 -->
-    <el-dialog title="销售管理数据详细" :visible.sync="openDetail" width="50%" append-to-body :close-on-click-modal="false">
+    <el-dialog title="销售管理数据详细" :visible.sync="openDetail" width="60%" append-to-body :close-on-click-modal="false">
       <el-form ref="formDetail" :model="formDetail" :rules="rules" label-width="100px">
         <el-row>
           <!-- 订单编号 -->
@@ -487,7 +489,7 @@
             </el-form-item>
           </el-col>
           <!-- 到账条件 -->
-          <el-col :span="8">
+          <el-col :span="3">
             <el-form-item label="到账条件" prop="arrivalTerms">
               <el-select
                 v-model="formDetail.arrivalTerms"
@@ -503,8 +505,12 @@
                   :value="dict.value"
                 />
               </el-select>
-              <!-- 到账条件值 -->
-              <el-input v-model="formDetail.arrivalTermsValue" placeholder="天数" :disabled="true" style="margin-left: 10px; width: 50px" />（天）
+            </el-form-item>
+          </el-col>
+          <!-- 到账条件值 -->
+          <el-col :span="5">
+            <el-form-item prop="arrivalTerms">
+              <el-input v-model="formDetail.arrivalTermsValue" placeholder="天数" :disabled="true" style="width: 60px" />（天）
             </el-form-item>
           </el-col>
           <!-- 结算方式 -->
@@ -624,10 +630,13 @@ export default {
           { required: true, message: "物料名称不能为空", trigger: "blur" }
         ],
         purchaseQuantity: [
-          { required: true, message: "销售数量不能为空", trigger: "blur" }
+          { required: true, message: "销售数量不能为空", trigger: "blur" },
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的销售数量", trigger: "blur" }
         ],
         unitPrice: [
-          { required: true, message: "单价不能为空", trigger: "blur" }
+          { required: true, message: "单价不能为空", trigger: "blur" },
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的单价", trigger: "blur" }
+
         ],
         meteringUnit: [
           { required: true, message: "计量单位不能为空", trigger: "blur" }
@@ -639,10 +648,14 @@ export default {
           { required: true, message: "要求交货期不能为空", trigger: "blur" }
         ],
         accountPeriod: [
-          { required: true, message: "账期不能为空", trigger: "blur" }
+          { required: true, message: "账期不能为空", trigger: "blur" },
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的账期", trigger: "blur" }
         ],
         arrivalTerms: [
           { required: true, message: "到账条件不能为空", trigger: "blur" }
+        ],
+        arrivalTermsValue: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的到账条件值", trigger: "blur" }
         ],
         settlementMethod: [
           { required: true, message: "结算方式不能为空", trigger: "blur" }
@@ -655,6 +668,12 @@ export default {
       optionsClientName: [],
       listClientName: [],
       remoteLoadingSClientName: false,
+      // 部门树选项
+      deptOptions: [],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      }
     };
   },
   created() {
