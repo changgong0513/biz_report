@@ -99,6 +99,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
+          :disabled="isAdmin"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -458,6 +459,7 @@ import { listClient } from "@/api/masterdata/client";
 import { download } from "@/utils/request";
 import { getToken } from "@/utils/auth";
 import { converTDateToDate } from "@/utils/xmy";
+import Cookies from "js-cookie";
 
 export default {
   name: "Contract",
@@ -557,6 +559,7 @@ export default {
       optionsClientName: [],
       listClientName: [],
       remoteLoadingSClientName: false,
+      isAdmin: false
     };
   },
   filters:{
@@ -568,7 +571,10 @@ export default {
   },
   created() {
     this.getList();
-    console.log(process.env.VUE_APP_BASE_API);
+    const username = Cookies.get("username");
+    if (username == 'admin') {
+      this.isAdmin = true;
+    }
   },
   computed: {
     calContractTotal: function () {
