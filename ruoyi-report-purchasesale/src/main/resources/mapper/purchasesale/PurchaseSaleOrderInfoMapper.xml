@@ -199,7 +199,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             purchase_sale_order_info t
         where
             purchase_type = "P"
-            <if test="belongDept != null  and belongDept != 100 and belongDept != 103">
+            <if test="belongDept != null  and belongDept != 100 and belongDept != 103 and belongDept != 201 and belongDept != 203">
                 and belong_dept = #{belongDept}
             </if>
     </select>
@@ -211,7 +211,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             purchase_sale_order_info t
         where
             purchase_type = "S"
-            <if test="belongDept != null  and belongDept != 100 and belongDept != 103">
+            <if test="belongDept != null  and belongDept != 100 and belongDept != 103 and belongDept != 201 and belongDept != 203">
                 and belong_dept = #{belongDept}
             </if>
     </select>

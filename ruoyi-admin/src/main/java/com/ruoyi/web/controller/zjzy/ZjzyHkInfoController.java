@@ -110,7 +110,7 @@ public class ZjzyHkInfoController extends BaseController
     public AjaxResult getHkrlTotal() {
 
         Long deptId = this.getDeptId();
-        if (deptId == 100 || deptId == 103) {
+        if (deptId == 100 || deptId == 103 || deptId == 201 || deptId == 203) {
             return AjaxResult.success(zjzyHkInfoService.getHkrlTotal());
         }
 

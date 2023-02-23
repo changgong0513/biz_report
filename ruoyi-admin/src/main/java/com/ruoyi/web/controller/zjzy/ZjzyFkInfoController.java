@@ -90,7 +90,7 @@ public class ZjzyFkInfoController extends BaseController
     public AjaxResult getFkrlTotal() {
 
         Long deptId = this.getDeptId();
-        if (deptId == 100 || deptId == 103) {
+        if (deptId == 100 || deptId == 103 || deptId == 201 || deptId == 203) {
             return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());
         }
 
@@ -151,7 +151,7 @@ public class ZjzyFkInfoController extends BaseController
     public AjaxResult getZytjLxTotal() {
 
         Long deptId = this.getDeptId();
-        if (deptId == 100 || deptId == 103) {
+        if (deptId == 100 || deptId == 103 || deptId == 201 || deptId == 203) {
             return AjaxResult.success(zjzyFkInfoService.getZytjLxTotal());
         }
 
