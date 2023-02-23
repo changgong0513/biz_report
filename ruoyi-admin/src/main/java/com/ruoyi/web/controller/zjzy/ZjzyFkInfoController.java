@@ -118,6 +118,12 @@ public class ZjzyFkInfoController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 占用统计历史数据列表
+     *
+     * @param zjzyStatisticsInfo
+     * @return
+     */
     @GetMapping("/zytj/history/list")
     public TableDataInfo listZytjHistoryData(ZjzyStatisticsInfo zjzyStatisticsInfo) {
         startPage();
@@ -126,8 +132,23 @@ public class ZjzyFkInfoController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 占用统计利息总额
+     *
+     * @return
+     */
     @GetMapping(value = "/zytj/lx/total")
     public AjaxResult getZytjLxTotal() {
         return AjaxResult.success(zjzyFkInfoService.getZytjLxTotal());
+    }
+
+    /**
+     * 根据部门编号，占用统计利息总额
+     *
+     * @return
+     */
+    @GetMapping(value = "/zytj/bmbh/lx/total")
+    public AjaxResult getZytjLxTotalByBmbh() {
+        return AjaxResult.success(zjzyFkInfoService.getZytjLxTotalByBmbh(this.getDeptId()));
     }
 }

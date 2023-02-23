@@ -112,4 +112,12 @@ public interface IZjzyFkInfoService
      * @return 结果
      */
     public double getZytjLxTotal();
+
+    /**
+     * 根据部门编号，占用统计利息总额
+     *
+     * @param bmbh 部门编号
+     * @return
+     */
+    public double getZytjLxTotalByBmbh(final double bmbh);
 }

@@ -161,4 +161,14 @@ public class ZjzyFkInfoServiceImpl implements IZjzyFkInfoService
     public double getZytjLxTotal() {
         return zjzyFkInfoMapper.getZytjLxTotal();
     }
+
+    /**
+     * 根据部门编号，占用统计利息总额
+     *
+     * @param bmbh 部门编号
+     * @return
+     */
+    public double getZytjLxTotalByBmbh(final double bmbh) {
+        return zjzyFkInfoMapper.getZytjLxTotalByBmbh(bmbh);
+    }
 }

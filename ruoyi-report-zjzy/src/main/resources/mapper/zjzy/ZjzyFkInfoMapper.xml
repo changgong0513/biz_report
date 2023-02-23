@@ -387,4 +387,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select ifnull(sum(tj_lx), 0) as tj_lx from zjzy_zytj_info where tj_lx > 0
     </select>
 
+    <!-- 根据部门编号，占用统计利息总额 -->
+    <select id="getZytjLxTotalByBmbh" resultType="java.lang.Double">
+        select ifnull(sum(tj_lx), 0) as tj_lx from zjzy_zytj_info where tj_lx > 0 and tj_bmbh = #{tjBmbh}
+    </select>
+
 </mapper>

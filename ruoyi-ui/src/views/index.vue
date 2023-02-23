@@ -45,7 +45,7 @@ import BarChart from './dashboard/BarChart'
 
 import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
 import { getHkrlTotal, getHkTotalByYearMonth, getHkrlTotalByBmbh } from "@/api/zjzy/hkrl";
-import { getFkrlTotal, getZytjLxTotal, getFkrlTotalByBmbh } from "@/api/zjzy/fkrl";
+import { getFkrlTotal, getZytjLxTotal, getFkrlTotalByBmbh, getZytjLxTotalByBmbh } from "@/api/zjzy/fkrl";
 import Cookies from "js-cookie";
 
 const lineChartData = {
@@ -125,7 +125,7 @@ export default {
     /** 取得回款总金额 */
     handleSetPanelGroupHkrlData() {
       const username = Cookies.get("username");
-      if (username == "admin" && username == "zjltest") {
+      if (username == "admin" || username == "zjltest") {
         getHkrlTotal().then(response => {
           this.hkrlTotal = response.data;
         });
@@ -138,7 +138,7 @@ export default {
     /** 取得付款总金额 */
     handleSetPanelGroupFkrlData() {
       const username = Cookies.get("username");
-      if (username == "admin" && username == "zjltest") {
+      if (username == "admin" || username == "zjltest") {
         getFkrlTotal().then(response => {
           this.fkrlTotal = response.data;
         });
@@ -150,9 +150,16 @@ export default {
     },
     /** 取得各个部门和各个批次号资金占用利息总金额 */
     handleSetPanelGroupZytjLxData() {
-      getZytjLxTotal().then(response => {
-        this.zytjLxTotal = response.data;
-      });
+      const username = Cookies.get("username");
+      if (username == "admin" || username == "zjltest") {
+        getZytjLxTotal().then(response => {
+          this.zytjLxTotal = response.data;
+        });
+      } else {
+        getZytjLxTotalByBmbh().then(response => {
+          this.zytjLxTotal = response.data;
+        });
+      }
     },
     /** 根据年月分组，取得年月回款总金额 */
     handleSetPanelGroupHkTotalData() {

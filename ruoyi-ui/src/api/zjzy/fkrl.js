@@ -111,6 +111,14 @@ export function getFkrlTotalByBmbh() {
   })
 }
 
+// 根据部门编号，占用统计利息总额
+export function getZytjLxTotalByBmbh() {
+  return request({
+    url: '/zjzy/fk/zytj/bmbh/lx/total',
+    method: 'get'
+  })
+}
+
 
 
 

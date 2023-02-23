@@ -199,7 +199,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             purchase_sale_order_info t
         where
             purchase_type = "P"
-            and belong_dept = #{belongDept}
+            <if test="belongDept != null  and belongDept != 100 and belongDept != 103">
+                and belong_dept = #{belongDept}
+            </if>
     </select>
 
     <select id="getSaleContractCounts" parameterType="java.lang.String" resultType="java.lang.Integer">
@@ -209,7 +211,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             purchase_sale_order_info t
         where
             purchase_type = "S"
-            and belong_dept = #{belongDept}
+            <if test="belongDept != null  and belongDept != 100 and belongDept != 103">
+                and belong_dept = #{belongDept}
+            </if>
     </select>
         
     <insert id="insertPurchaseSaleOrderInfo" parameterType="PurchaseSaleOrderInfo">
