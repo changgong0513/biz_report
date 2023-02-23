@@ -58,4 +58,12 @@ public interface ZjzyFkrlInfoMapper
      * @return 结果
      */
     public int deleteZjzyFkrlInfoByFkrlIds(String[] fkrlIds);
+
+    /**
+     * 根据部门编号，取得该部门的付款总额
+     *
+     * @param bmbh 部门编号
+     * @return
+     */
+    public double getFkrlTotalByBmbh(final String bmbh);
 }

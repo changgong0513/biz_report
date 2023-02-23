@@ -1,9 +1,5 @@
 <template>
   <div class="dashboard-editor-container">
-    <!-- <iframe name="myiframe" id="myrame" src="http://192.168.56.101:33052/scooper-dispatch-web/#/main/front?token=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyTmFtZSI6ImRhbmRvbmciLCJ1c2VySWQiOjI1LCJJbnZhbGlkVGltZSI6IlRodSBNYXIgMjMgMTM6Mzc6NTYgQ1NUIDIwMjMifQ.ptt1_jEGCw9bsW5TWRwKGT0A9piH7E__n6wIO2lQerM_25" frameborder="0" align="left" width="200" height="200" scrolling="no">
-      <p>你的浏览器不支持iframe标签</p>
-    </iframe> -->
-
     <panel-group @handleSetLineChartData="handleSetLineChartData" 
       :purchaseCounts="purchaseCounts"
       :saleCounts="saleCounts"
@@ -49,7 +45,8 @@ import BarChart from './dashboard/BarChart'
 
 import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
 import { getHkrlTotal, getHkTotalByYearMonth } from "@/api/zjzy/hkrl";
-import { getFkrlTotal, getZytjLxTotal } from "@/api/zjzy/fkrl";
+import { getFkrlTotal, getZytjLxTotal, getFkrlTotalByBmbh } from "@/api/zjzy/fkrl";
+import Cookies from "js-cookie";
 
 const lineChartData = {
   newVisitis: {
@@ -137,14 +134,20 @@ export default {
     },
     /** 取得付款总金额 */
     handleSetPanelGroupFkrlData() {
-      getFkrlTotal().then(response => {
-        this.fkrlTotal = response.data;
-      });
+      const username = Cookies.get("username");
+      if (username == "admin" && username == "zjltest") {
+        getFkrlTotal().then(response => {
+          this.fkrlTotal = response.data;
+        });
+      } else {
+        getFkrlTotalByBmbh().then(response => {
+          this.fkrlTotal = response.data;
+        });
+      }
     },
     /** 取得各个部门和各个批次号资金占用利息总金额 */
     handleSetPanelGroupZytjLxData() {
       getZytjLxTotal().then(response => {
-        console.log("@@@@@@" + response.data);
         this.zytjLxTotal = response.data;
       });
     },

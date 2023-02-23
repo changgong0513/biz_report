@@ -103,6 +103,17 @@ export function getZytjLxTotal() {
   })
 }
 
+// 根据部门编号，取得该部门的付款总额
+export function getFkrlTotalByBmbh() {
+  return request({
+    url: '/zjzy/fkrl/bmbh/total',
+    method: 'get'
+  })
+}
+
+
+
+
 
 
 

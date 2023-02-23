@@ -93,4 +93,14 @@ public class ZjzyFkrlInfoServiceImpl implements IZjzyFkrlInfoService
     {
         return zjzyFkrlInfoMapper.deleteZjzyFkrlInfoByFkrlId(fkrlId);
     }
+
+    /**
+     * 根据部门编号，取得该部门的付款总额
+     *
+     * @param bmbh 部门编号
+     * @return
+     */
+    public double getFkrlTotalByBmbh(final String bmbh) {
+        return zjzyFkrlInfoMapper.getFkrlTotalByBmbh(bmbh);
+    }
 }

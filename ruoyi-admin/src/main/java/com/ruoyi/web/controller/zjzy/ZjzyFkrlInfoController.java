@@ -108,4 +108,16 @@ public class ZjzyFkrlInfoController extends BaseController
     {
         return toAjax(zjzyFkrlInfoService.deleteZjzyFkrlInfoByFkrlIds(fkrlIds));
     }
+
+
+    /**
+     * 根据部门编号，取得该部门的付款总额
+     *
+     * @return
+     */
+    @GetMapping(value = "/bmbh/total")
+    public AjaxResult getZytjLxTotal() {
+        return AjaxResult.success(zjzyFkrlInfoService.getFkrlTotalByBmbh(String.valueOf(this.getDeptId())));
+    }
+
 }
