@@ -540,6 +540,12 @@ export default {
         contractId: [
           { required: true, message: "合同编号不能为空", trigger: "blur" }
         ],
+        contractQuantity: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的合同数量", trigger: "blur" }
+        ],
+        contractPrice: [
+          { pattern: /^[0-9,.]*$/, message: "包括非数字，请输入正确的合同单价", trigger: "blur" }
+        ]
       },
       url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       srcList: [
