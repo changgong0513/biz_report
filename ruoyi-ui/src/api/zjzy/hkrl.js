@@ -86,5 +86,13 @@ export function getHkTotalByYearMonth() {
   })
 }
 
+// 根据部门编号，取得该部门的回款总额
+export function getHkrlTotalByBmbh() {
+  return request({
+    url: '/zjzy/hkrl/bmbh/total',
+    method: 'get'
+  })
+}
+
 
 

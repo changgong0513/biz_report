@@ -132,4 +132,14 @@ public class ZjzyHkrlInfoController extends BaseController
     {
         return toAjax(zjzyHkrlInfoService.deleteZjzyHkrlInfoByHkrlIds(hkrlIds));
     }
+
+    /**
+     * 根据部门编号，取得该部门的回款总额
+     *
+     * @return
+     */
+    @GetMapping(value = "/bmbh/total")
+    public AjaxResult getHkrlTotalByBmbh() {
+        return AjaxResult.success(zjzyHkrlInfoService.getHkrlTotalByBmbh(this.getDeptId()));
+    }
 }

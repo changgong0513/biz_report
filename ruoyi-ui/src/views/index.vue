@@ -44,7 +44,7 @@ import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
 
 import { getPurchaseContractCounts, getSaleContractCounts } from "@/api/purchasesale/purchasesale";
-import { getHkrlTotal, getHkTotalByYearMonth } from "@/api/zjzy/hkrl";
+import { getHkrlTotal, getHkTotalByYearMonth, getHkrlTotalByBmbh } from "@/api/zjzy/hkrl";
 import { getFkrlTotal, getZytjLxTotal, getFkrlTotalByBmbh } from "@/api/zjzy/fkrl";
 import Cookies from "js-cookie";
 
@@ -128,9 +128,16 @@ export default {
     },
     /** 取得回款总金额 */
     handleSetPanelGroupHkrlData() {
-      getHkrlTotal().then(response => {
-        this.hkrlTotal = response.data;
-      });
+      const username = Cookies.get("username");
+      if (username == "admin" && username == "zjltest") {
+        getHkrlTotal().then(response => {
+          this.hkrlTotal = response.data;
+        });
+      } else {
+        getHkrlTotalByBmbh().then(response => {
+          this.hkrlTotal = response.data;
+        });
+      }
     },
     /** 取得付款总金额 */
     handleSetPanelGroupFkrlData() {
