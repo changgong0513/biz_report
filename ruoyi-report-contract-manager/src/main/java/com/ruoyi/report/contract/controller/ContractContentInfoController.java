@@ -148,6 +148,7 @@ public class ContractContentInfoController extends BaseController
     public AjaxResult add(@RequestBody ContractContentInfo contractContentInfo) {
 
         int retCode = 1;
+        contractContentInfo.setBelongDeptId(getDeptId());
         contractContentInfo.setCreateBy(SecurityUtils.getUsername());
         contractContentInfo.setCreateTime(DateUtils.parseDate(DateUtils.getTime()));
         contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
@@ -161,6 +162,13 @@ public class ContractContentInfoController extends BaseController
         contractContentInfo.setGoodsName(material.getMaterialName());
         String actionType = contractContentInfo.getContractActionType();
         if (StringUtils.equals(actionType, "2")) {
+            boolean isExist = contractContentInfoService.isExistContractByContractId(contractContentInfo.getContractId());
+            if (!isExist) {
+                // 未进行保存合同，直接进行生成订单的场合
+                contractContentInfo.setContractStatus("MANUALADD");
+                contractContentInfoService.insertContractContentInfo(contractContentInfo);
+            }
+
             // 根据合同数据，生成到采购表或者销售表的场合
             retCode = contractContentInfoService.importContractDataIntoPurchaseSaleTable(contractContentInfo);
         } else {
@@ -180,6 +188,7 @@ public class ContractContentInfoController extends BaseController
     public AjaxResult edit(@RequestBody ContractContentInfo contractContentInfo) {
 
         int retCode = 1;
+        contractContentInfo.setBelongDeptId(getDeptId());
         contractContentInfo.setUpdateTime(DateUtils.getNowDate());
         contractContentInfo.setUpdateBy(SecurityUtils.getUsername());
 

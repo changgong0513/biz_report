@@ -99,4 +99,12 @@ public interface IContractContentInfoService {
      * @return
      */
     public void makeModelViewData(List<ContractContentInfo> originalContractList);
+
+    /**
+     * 根据合同编号，判断该编号合同是否存在
+     *
+     * @param contractId 合同管理主键
+     * @return 合同管理
+     */
+    public boolean isExistContractByContractId(final String contractId);
 }

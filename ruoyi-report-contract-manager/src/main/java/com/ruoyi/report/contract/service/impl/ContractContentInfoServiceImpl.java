@@ -863,14 +863,16 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
         // 要求交货期 —> 交货日期
         purchaseInfo.setRequiredDeliveryDate(contractInfo.getDeliveryDate());
         // 账期 —> 账期期限中的数字部分
-        String regEx = "[^0-9]";
-        Pattern p = Pattern.compile(regEx);
-        Matcher m = p.matcher(contractInfo.getAccountingPeriod());
-        String result = m.replaceAll("").trim();
-        if (StringUtils.isNotBlank(result)) {
-            purchaseInfo.setPurchaseQuantity(Long.parseLong(result));
-        } else {
-            purchaseInfo.setAccountPeriod(0L);
+        if (StringUtils.isNotBlank(contractInfo.getAccountingPeriod())) {
+            String regEx = "[^0-9]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(contractInfo.getAccountingPeriod());
+            String result = m.replaceAll("").trim();
+            if (StringUtils.isNotBlank(result)) {
+                purchaseInfo.setPurchaseQuantity(Long.parseLong(result));
+            } else {
+                purchaseInfo.setAccountPeriod(0L);
+            }
         }
         // 到账条件 —>  账期期限
         purchaseInfo.setArrivalTerms(contractInfo.getAccountingPeriod());
@@ -1301,6 +1303,21 @@ public class ContractContentInfoServiceImpl implements IContractContentInfoServi
                 element.setCompanyName(element.getOppositeCompanyName());
             }
         });
+    }
+
+    /**
+     * 根据合同编号，判断该编号合同是否存在
+     *
+     * @param contractId 合同管理主键
+     * @return 合同管理
+     */
+    public boolean isExistContractByContractId(final String contractId) {
+        ContractContentInfo contractContentInfo = contractContentInfoMapper.selectContractContentInfoByContractId(contractId);
+        if (contractContentInfo == null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
