@@ -10,6 +10,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.report.contract.domain.ContractContentInfo;
 import com.ruoyi.zjzy.domain.ZjzyStatisticsInfo;
 import com.ruoyi.zjzy.domain.ZytjHistoryInfo;
+import com.ruoyi.zjzy.service.IZjzyFkrlInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,9 @@ public class ZjzyFkInfoController extends BaseController
 {
     @Autowired
     private IZjzyFkInfoService zjzyFkInfoService;
+
+    @Autowired
+    private IZjzyFkrlInfoService zjzyFkrlInfoService;
 
     /**
      * 查询付款列表
@@ -84,7 +88,13 @@ public class ZjzyFkInfoController extends BaseController
 
     @GetMapping(value = "/total")
     public AjaxResult getFkrlTotal() {
-        return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());
+
+        Long deptId = this.getDeptId();
+        if (deptId == 100 || deptId == 103) {
+            return AjaxResult.success(zjzyFkInfoService.getFkrlTotal());
+        }
+
+        return AjaxResult.success(zjzyFkrlInfoService.getFkrlTotalByBmbh(deptId));
     }
 
     /**
@@ -139,7 +149,13 @@ public class ZjzyFkInfoController extends BaseController
      */
     @GetMapping(value = "/zytj/lx/total")
     public AjaxResult getZytjLxTotal() {
-        return AjaxResult.success(zjzyFkInfoService.getZytjLxTotal());
+
+        Long deptId = this.getDeptId();
+        if (deptId == 100 || deptId == 103) {
+            return AjaxResult.success(zjzyFkInfoService.getZytjLxTotal());
+        }
+
+        return AjaxResult.success(zjzyFkInfoService.getZytjLxTotalByBmbh(deptId));
     }
 
     /**

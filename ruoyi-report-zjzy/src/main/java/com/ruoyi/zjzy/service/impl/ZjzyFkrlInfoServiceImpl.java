@@ -100,7 +100,7 @@ public class ZjzyFkrlInfoServiceImpl implements IZjzyFkrlInfoService
      * @param bmbh 部门编号
      * @return
      */
-    public double getFkrlTotalByBmbh(final String bmbh) {
+    public double getFkrlTotalByBmbh(final double bmbh) {
         return zjzyFkrlInfoMapper.getFkrlTotalByBmbh(bmbh);
     }
 }

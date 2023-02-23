@@ -103,7 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <!-- 根据部门编号，取得该部门的付款总额 -->
-    <select id="getFkrlTotalByBmbh" parameterType="String" resultType="java.lang.Double">
+    <select id="getFkrlTotalByBmbh" parameterType="java.lang.Double" resultType="java.lang.Double">
         select ifnull(sum(fkrl_je), 0) as fkrl_je from zjzy_fkrl_info where fkrl_bmbh = #{Bmbh}
     </select>
 </mapper>

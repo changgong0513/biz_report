@@ -117,6 +117,6 @@ public class ZjzyFkrlInfoController extends BaseController
      */
     @GetMapping(value = "/bmbh/total")
     public AjaxResult getFkrlTotalByBmbh() {
-        return AjaxResult.success(zjzyFkrlInfoService.getFkrlTotalByBmbh(String.valueOf(this.getDeptId())));
+        return AjaxResult.success(zjzyFkrlInfoService.getFkrlTotalByBmbh(this.getDeptId()));
     }
 }

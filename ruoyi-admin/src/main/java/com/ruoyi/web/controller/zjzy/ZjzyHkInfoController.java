@@ -12,6 +12,7 @@ import com.ruoyi.report.masterdata.domain.MasterDataMaterialInfo;
 import com.ruoyi.report.masterdata.service.IMasterDataClientInfoService;
 import com.ruoyi.zjzy.domain.ZjzyHkInfo;
 import com.ruoyi.zjzy.service.IZjzyHkInfoService;
+import com.ruoyi.zjzy.service.IZjzyHkrlInfoService;
 import org.apache.xmlbeans.impl.jam.JElement;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class ZjzyHkInfoController extends BaseController
 {
     @Autowired
     private IZjzyHkInfoService zjzyHkInfoService;
+
+    @Autowired
+    private IZjzyHkrlInfoService zjzyHkrlInfoService;
 
     @Autowired
     private IMasterDataClientInfoService masterDataClientInfoService;
@@ -104,7 +108,13 @@ public class ZjzyHkInfoController extends BaseController
      */
     @GetMapping(value = "/total")
     public AjaxResult getHkrlTotal() {
-        return AjaxResult.success(zjzyHkInfoService.getHkrlTotal());
+
+        Long deptId = this.getDeptId();
+        if (deptId == 100 || deptId == 103) {
+            return AjaxResult.success(zjzyHkInfoService.getHkrlTotal());
+        }
+
+        return AjaxResult.success(zjzyHkrlInfoService.getHkrlTotalByBmbh(deptId));
     }
 
     /**
