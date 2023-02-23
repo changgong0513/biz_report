@@ -59,4 +59,12 @@ public interface IZjzyHkrlInfoService
      * @return 结果
      */
     public int deleteZjzyHkrlInfoByHkrlId(Long hkrlId);
+
+    /**
+     * 根据部门编号，取得该部门的回款总额
+     *
+     * @param bmbh
+     * @return
+     */
+    public double getHkrlTotalByBmbh(final double bmbh);
 }

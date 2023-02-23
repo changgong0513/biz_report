@@ -93,4 +93,14 @@ public class ZjzyHkrlInfoServiceImpl implements IZjzyHkrlInfoService
     {
         return zjzyHkrlInfoMapper.deleteZjzyHkrlInfoByHkrlId(hkrlId);
     }
+
+    /**
+     * 根据部门编号，取得该部门的回款总额
+     *
+     * @param bmbh
+     * @return
+     */
+    public double getHkrlTotalByBmbh(final double bmbh) {
+        return zjzyHkrlInfoMapper.getHkrlTotalByBmbh(bmbh);
+    }
 }

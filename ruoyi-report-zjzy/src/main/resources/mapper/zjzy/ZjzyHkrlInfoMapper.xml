@@ -101,4 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{hkrlId}
         </foreach>
     </delete>
+
+    <!-- 根据部门编号，取得该部门的回款总额 -->
+    <select id="getHkrlTotalByBmbh" parameterType="java.lang.Double" resultType="java.lang.Double">
+        select ifnull(sum(hkrl_je), 0) as hkrl_je from zjzy_hkrl_info where hkrl_bmbh = #{bmbh}
+    </select>
 </mapper>

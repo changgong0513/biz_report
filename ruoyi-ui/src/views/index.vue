@@ -103,11 +103,7 @@ export default {
   computed: {
     /** 资金占用 */
     calZjzyTotal: function () {
-      if (this.fkrlTotal && this.hkrlTotal) {
-        return Number(this.fkrlTotal) - Number(this.hkrlTotal)
-      }
-      
-      return 0;
+      return Number(this.fkrlTotal) - Number(this.hkrlTotal)
     },
   },
   methods: {
